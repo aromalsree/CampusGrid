@@ -73,7 +73,8 @@ This document outlines the project tasks divided among **4 developers**, categor
 - [ ] **Task 4.1:** Develop the administrative User List view featuring search capabilities, filters, and pagination (`user_list.html`).
 
 - [ ] **Task 4.2:** Implement secure User Deletion / Account Deactivation functionality with confirmation prompts.
-- [ ] **Task 4.3:** need to set up media and static in debunging 
+- [ ] **Task 4.3:** need to set up media and static in debunging
+- [ ] fix spelling error in md files 
 ----
 ##  Whoever is free - Developer  5 : Media acuarment
 * **Assigned To:** Developer 5
