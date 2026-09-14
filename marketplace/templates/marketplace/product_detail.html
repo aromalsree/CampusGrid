@@ -1,0 +1,508 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ product.title }} — ₹{{ product.price|floatformat:0 }} | CampusGrid{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" x-data="{
+    activeImg: '{% if product.primary_image %}{{ product.primary_image.url }}{% endif %}',
+    dealMode: '{{ product.buy_or_rent }}',
+    samplePdfModal: false,
+    reportModal: false,
+    reviewModal: false,
+    rentalStart: '',
+    rentalEnd: '',
+    dailyRate: {{ product.rent_daily_rate|default:0 }},
+    calculateRent() {
+        if (!this.rentalStart || !this.rentalEnd) return 0;
+        const start = new Date(this.rentalStart);
+        const end = new Date(this.rentalEnd);
+        const diffTime = end - start;
+        const days = Math.max(Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1, 1);
+        return days * this.dailyRate;
+    }
+}">
+    
+    <!-- Breadcrumb -->
+    <div class="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400 mb-6">
+        <a href="{% url 'marketplace:index' %}" class="hover:text-emerald-500">Home</a>
+        <span>/</span>
+        <a href="{% url 'marketplace:product_list' %}" class="hover:text-emerald-500">Marketplace</a>
+        <span>/</span>
+        <a href="{% url 'marketplace:product_list' %}?category={{ product.category.slug }}" class="hover:text-emerald-500">{{ product.category.name }}</a>
+        <span>/</span>
+        <span class="text-slate-800 dark:text-slate-200 font-semibold truncate">{{ product.title }}</span>
+    </div>
+
+    <!-- MAIN PRODUCT SECTION (2 Columns) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- LEFT COLUMN: IMAGE GALLERY -->
+        <div class="lg:col-span-7 space-y-4">
+            <div class="bg-white dark:bg-navy-800 rounded-3xl border border-slate-200 dark:border-slate-700 p-4 shadow-sm relative overflow-hidden">
+                <!-- Main Image Preview -->
+                <div class="h-80 sm:h-96 md:h-[420px] rounded-2xl bg-slate-100 dark:bg-navy-900 overflow-hidden flex items-center justify-center">
+                    <template x-if="activeImg">
+                        <img :src="activeImg" alt="{{ product.title }}" class="w-full h-full object-contain">
+                    </template>
+                    <template x-if="!activeImg">
+                        <div class="text-slate-400 flex flex-col items-center justify-center">
+                            <i data-lucide="package" class="w-16 h-16"></i>
+                            <span class="text-xs mt-2 font-medium">No Image Uploaded</span>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Urgent Clearance Overlay Badge -->
+                {% if product.is_urgent %}
+                    <span class="absolute top-6 left-6 px-3 py-1 rounded-full text-xs font-black bg-rose-500 text-white shadow-lg flex items-center space-x-1">
+                        <i data-lucide="flame" class="w-3.5 h-3.5"></i>
+                        <span>URGENT MOVING-OUT CLEARANCE</span>
+                    </span>
+                {% endif %}
+
+                <!-- Wishlist Toggle Button -->
+                <a href="{% url 'marketplace:toggle_wishlist' product_id=product.id %}?next={{ request.path }}"
+                   class="absolute top-6 right-6 p-2.5 rounded-full bg-white/90 dark:bg-navy-900/90 text-slate-700 dark:text-slate-200 hover:text-rose-500 transition shadow-lg" title="Wishlist">
+                    <i data-lucide="heart" class="w-5 h-5"></i>
+                </a>
+            </div>
+
+            <!-- Thumbnail Selector Gallery (if additional images exist) -->
+            <div class="flex items-center space-x-3 overflow-x-auto pb-2">
+                {% if product.primary_image %}
+                    <button type="button" @click="activeImg = '{{ product.primary_image.url }}'"
+                            class="w-16 h-16 rounded-xl border-2 overflow-hidden shrink-0 transition"
+                            :class="activeImg === '{{ product.primary_image.url }}' ? 'border-emerald-500 ring-2 ring-emerald-500/20' : 'border-slate-200 dark:border-slate-700'">
+                        <img src="{{ product.primary_image.url }}" class="w-full h-full object-cover">
+                    </button>
+                {% endif %}
+                {% for img in product.additional_images.all %}
+                    <button type="button" @click="activeImg = '{{ img.image.url }}'"
+                            class="w-16 h-16 rounded-xl border-2 overflow-hidden shrink-0 transition"
+                            :class="activeImg === '{{ img.image.url }}' ? 'border-emerald-500 ring-2 ring-emerald-500/20' : 'border-slate-200 dark:border-slate-700'">
+                        <img src="{{ img.image.url }}" class="w-full h-full object-cover">
+                    </button>
+                {% endfor %}
+            </div>
+
+            <!-- ELECTRONICS SPECIFICATIONS MATRIX (If electronics item) -->
+            {% if product.electronics_spec %}
+                <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="cpu" class="w-5 h-5 text-emerald-500"></i>
+                            <h3 class="font-heading font-bold text-base text-slate-900 dark:text-white">Technical Specifications</h3>
+                        </div>
+                        <a href="{% url 'marketplace:compare' %}?p1={{ product.id }}" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center space-x-1">
+                            <i data-lucide="scale" class="w-3.5 h-3.5"></i>
+                            <span>Compare in Spec Engine</span>
+                        </a>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-navy-900/60 border border-slate-200 dark:border-slate-700/60">
+                            <span class="text-slate-400 block text-[11px]">Processor / CPU</span>
+                            <span class="font-bold text-slate-800 dark:text-slate-200 mt-0.5 block">{{ product.electronics_spec.processor }}</span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-navy-900/60 border border-slate-200 dark:border-slate-700/60">
+                            <span class="text-slate-400 block text-[11px]">RAM & Storage</span>
+                            <span class="font-bold text-slate-800 dark:text-slate-200 mt-0.5 block">
+                                {{ product.electronics_spec.ram_gb }} GB RAM • {{ product.electronics_spec.storage_gb }} GB ({{ product.electronics_spec.get_storage_type_display }})
+                            </span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-navy-900/60 border border-slate-200 dark:border-slate-700/60">
+                            <span class="text-slate-400 block text-[11px]">Battery Health Capacity</span>
+                            <span class="font-bold text-emerald-500 mt-0.5 flex items-center">
+                                <i data-lucide="battery-charging" class="w-4 h-4 mr-1"></i>
+                                {{ product.electronics_spec.battery_health_percent }}% Health
+                            </span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-navy-900/60 border border-slate-200 dark:border-slate-700/60">
+                            <span class="text-slate-400 block text-[11px]">Used Duration</span>
+                            <span class="font-bold text-slate-800 dark:text-slate-200 mt-0.5 block">{{ product.electronics_spec.usage_duration_months }} months</span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-navy-900/60 border border-slate-200 dark:border-slate-700/60 sm:col-span-2">
+                            <span class="text-slate-400 block text-[11px]">Display & GPU</span>
+                            <span class="font-semibold text-slate-800 dark:text-slate-200 mt-0.5 block">
+                                {{ product.electronics_spec.display_specs }} • {{ product.electronics_spec.graphics|default:"Standard Graphics" }}
+                            </span>
+                        </div>
+                        {% if product.electronics_spec.extra_specs %}
+                            <div class="p-3 rounded-xl bg-slate-50 dark:bg-navy-900/60 border border-slate-200 dark:border-slate-700/60 sm:col-span-2">
+                                <span class="text-slate-400 block text-[11px]">Inclusions & Cycle Count</span>
+                                <span class="text-slate-700 dark:text-slate-300 mt-0.5 block">{{ product.electronics_spec.extra_specs }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+
+        <!-- RIGHT COLUMN: PRODUCT INFO, SELLER CARD, BUY/RENT ACTION -->
+        <div class="lg:col-span-5 space-y-6">
+            
+            <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-700 shadow-sm space-y-5">
+                
+                <!-- Category, Condition, Campus -->
+                <div>
+                    <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                        <span class="px-2.5 py-0.5 rounded-md font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                            {{ product.category.name }}
+                        </span>
+                        <span class="flex items-center text-slate-500 dark:text-slate-400">
+                            <i data-lucide="map-pin" class="w-3.5 h-3.5 mr-1 text-emerald-500"></i>
+                            {{ product.campus }}
+                        </span>
+                    </div>
+
+                    <h1 class="font-heading text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-3 leading-snug">
+                        {{ product.title }}
+                    </h1>
+
+                    <!-- Ratings Summary -->
+                    <div class="flex items-center space-x-2 mt-2">
+                        <div class="flex text-amber-400 text-xs">
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                            <span class="ml-1 font-bold text-slate-900 dark:text-white">{{ product.average_rating }}</span>
+                        </div>
+                        <span class="text-slate-400 text-xs">({{ product.review_count }} student reviews)</span>
+                        <span class="text-slate-300 dark:text-slate-700">•</span>
+                        <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-navy-900 text-slate-700 dark:text-slate-300">
+                            Condition: {{ product.get_condition_display }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Price Block -->
+                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-navy-900/80 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-slate-500 dark:text-slate-400 block">Selling Price / Base Fee</span>
+                        <span class="text-3xl font-black text-slate-900 dark:text-white">₹{{ product.price|floatformat:0 }}</span>
+                    </div>
+                    {% if product.allows_rental and product.rent_daily_rate %}
+                        <div class="text-right border-l border-slate-200 dark:border-slate-700 pl-4">
+                            <span class="text-xs text-amber-500 font-semibold block">Rental Available</span>
+                            <span class="text-base font-bold text-slate-900 dark:text-slate-100">₹{{ product.rent_daily_rate|floatformat:0 }}<span class="text-xs font-normal text-slate-400">/day</span></span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Description & Inclusions</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                        {{ product.description }}
+                    </p>
+                </div>
+
+                <!-- DIGITAL ASSET SAMPLE PREVIEW & PROTECTED DOWNLOAD -->
+                {% if product.product_type == 'DIGITAL' %}
+                    <div class="p-4 rounded-2xl bg-teal-500/10 border border-teal-500/30 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="file-text" class="w-5 h-5 text-teal-400"></i>
+                                <span class="text-xs font-bold text-teal-300">Digital Resource Asset</span>
+                            </div>
+                            {% if product.sample_preview_pdf %}
+                                <button type="button" @click="samplePdfModal = true" class="text-xs font-semibold text-teal-400 hover:underline">
+                                    Preview Sample PDF →
+                                </button>
+                            {% endif %}
+                        </div>
+                        <p class="text-[11px] text-slate-300">
+                            Instant download unlocked upon verified order placement. Encrypted server delivery.
+                        </p>
+                        {% if is_buyer_or_renter or user == product.seller %}
+                            <a href="{% url 'marketplace:digital_download' slug=product.slug %}"
+                               class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow transition flex items-center justify-center space-x-1.5">
+                                <i data-lucide="download" class="w-4 h-4"></i>
+                                <span>Download Full Digital Asset</span>
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <!-- ACTION BUTTONS: BUY / RENT / BOOK SESSION -->
+                <div class="space-y-3 pt-2">
+                    
+                    {% if product.product_type == 'SERVICE' %}
+                        <!-- Academic Service Mentorship CTA -->
+                        <div class="p-4 rounded-2xl bg-navy-900 border border-slate-700 space-y-3">
+                            <div class="text-xs text-slate-300">
+                                <span class="font-bold text-emerald-400">{{ product.get_service_rate_type_display|default:"Flat Rate" }}:</span>
+                                <span>{{ product.service_duration_info|default:"Direct Student Mentorship" }}</span>
+                            </div>
+                            <form action="{% url 'marketplace:book_service_session' product_id=product.id %}" method="POST" class="space-y-2">
+                                {% csrf_token %}
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div>
+                                        <label class="text-[10px] text-slate-400">Preferred Date</label>
+                                        <input type="date" name="preferred_date" required class="w-full bg-navy-800 border border-slate-700 rounded-xl p-2 text-white">
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] text-slate-400">Preferred Time Slot</label>
+                                        <input type="text" name="preferred_time" placeholder="e.g. 4 PM - 5 PM" required class="w-full bg-navy-800 border border-slate-700 rounded-xl p-2 text-white">
+                                    </div>
+                                </div>
+                                <input type="hidden" name="estimated_hours" value="1">
+                                <textarea name="client_notes" placeholder="Describe your topic, doubt, or assignment requirements..." rows="2" class="w-full text-xs bg-navy-800 border border-slate-700 rounded-xl p-2 text-white"></textarea>
+                                <button type="submit" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-lg transition">
+                                    Book Mentorship Session
+                                </button>
+                            </form>
+                        </div>
+
+                    {% elif product.allows_rental and not product.allows_purchase %}
+                        <!-- Rental Only Booking Form -->
+                        <form action="{% url 'marketplace:rent_product' product_id=product.id %}" method="POST" class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-3">
+                            {% csrf_token %}
+                            <div class="text-xs font-bold text-amber-400">Reserve Rental Dates</div>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <div>
+                                    <label class="text-[10px] text-slate-400">Start Date</label>
+                                    <input type="date" name="start_date" x-model="rentalStart" required class="w-full bg-white dark:bg-navy-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2 text-slate-800 dark:text-white">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] text-slate-400">Return Date</label>
+                                    <input type="date" name="end_date" x-model="rentalEnd" required class="w-full bg-white dark:bg-navy-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2 text-slate-800 dark:text-white">
+                                </div>
+                            </div>
+                            <textarea name="notes" placeholder="Meeting spot notes on campus..." rows="2" class="w-full text-xs bg-white dark:bg-navy-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2 text-slate-800 dark:text-white"></textarea>
+                            
+                            <template x-if="calculateRent() > 0">
+                                <div class="text-xs font-bold text-amber-500 flex justify-between">
+                                    <span>Estimated Total Rent:</span>
+                                    <span x-text="'₹' + calculateRent()"></span>
+                                </div>
+                            </template>
+
+                            <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow transition">
+                                Submit Rental Request
+                            </button>
+                        </form>
+
+                    {% else %}
+                        <!-- Standard Add to Cart / Buy Now -->
+                        <div class="flex gap-2">
+                            <a href="{% url 'marketplace:add_to_cart' product_id=product.id %}"
+                               class="flex-1 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center space-x-1.5">
+                                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                                <span>Add to Cart</span>
+                            </a>
+                            <a href="{% url 'marketplace:add_to_cart' product_id=product.id %}?next={% url 'marketplace:checkout' %}"
+                               class="flex-1 py-3 bg-navy-900 dark:bg-slate-700 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow transition flex items-center justify-center space-x-1.5">
+                                <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
+                                <span>Buy Now</span>
+                            </a>
+                        </div>
+
+                        <!-- Rental Option Tab if Product allows BOTH -->
+                        {% if product.allows_rental and product.rent_daily_rate %}
+                            <details class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs">
+                                <summary class="font-bold text-amber-400 cursor-pointer flex justify-between items-center">
+                                    <span>Prefer to Rent this Item? (₹{{ product.rent_daily_rate|floatformat:0 }}/day)</span>
+                                    <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                                </summary>
+                                <form action="{% url 'marketplace:rent_product' product_id=product.id %}" method="POST" class="mt-3 space-y-2">
+                                    {% csrf_token %}
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <input type="date" name="start_date" required class="bg-white dark:bg-navy-900 border border-slate-300 dark:border-slate-700 rounded-xl p-1.5 text-slate-800 dark:text-white">
+                                        <input type="date" name="end_date" required class="bg-white dark:bg-navy-900 border border-slate-300 dark:border-slate-700 rounded-xl p-1.5 text-slate-800 dark:text-white">
+                                    </div>
+                                    <textarea name="notes" placeholder="Campus meetup notes..." rows="1" class="w-full bg-white dark:bg-navy-900 border border-slate-300 dark:border-slate-700 rounded-xl p-1.5 text-slate-800 dark:text-white"></textarea>
+                                    <button type="submit" class="w-full py-2 bg-amber-500 text-slate-950 font-bold rounded-xl text-xs">Request Rental</button>
+                                </form>
+                            </details>
+                        {% endif %}
+
+                    {% endif %}
+
+                    <!-- WhatsApp Direct Contact CTA -->
+                    {% if whatsapp_url %}
+                        <a href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer"
+                           class="w-full py-3 bg-[#25D366]/20 hover:bg-[#25D366]/30 text-[#25D366] border border-[#25D366]/40 font-bold text-xs rounded-xl shadow-sm transition flex items-center justify-center space-x-2">
+                            <i data-lucide="message-circle" class="w-4 h-4"></i>
+                            <span>Chat on WhatsApp with Seller</span>
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- SELLER PROFILE CARD -->
+                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-navy-900/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-navy-800 to-slate-700 text-white font-bold flex items-center justify-center text-sm shadow">
+                            {{ product.seller.username|first|upper }}
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-slate-900 dark:text-white block">{{ product.seller.username }}</span>
+                            <span class="text-[11px] text-slate-400 block">{{ product.seller.profile.campus }}</span>
+                        </div>
+                    </div>
+                    {% if product.seller.profile.is_verified_student %}
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 flex items-center">
+                            <i data-lucide="check-circle" class="w-3 h-3 mr-1"></i> Verified Student
+                        </span>
+                    {% else %}
+                        <span class="text-[10px] text-slate-400">Campus Seller</span>
+                    {% endif %}
+                </div>
+
+                <!-- Report Listing Trigger -->
+                <div class="text-center pt-1">
+                    <button type="button" @click="reportModal = true" class="text-[11px] text-slate-400 hover:text-rose-500 transition flex items-center justify-center mx-auto space-x-1">
+                        <i data-lucide="flag" class="w-3 h-3"></i>
+                        <span>Report this listing for incorrect info or scam</span>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- REVIEWS & RATINGS SECTION -->
+    <div class="mt-16 bg-white dark:bg-navy-800 rounded-3xl p-6 sm:p-10 border border-slate-200 dark:border-slate-700 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-700">
+            <div>
+                <h3 class="font-heading text-xl font-bold text-slate-900 dark:text-white">Verified Peer Reviews</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Ratings from students who purchased or rented this item</p>
+            </div>
+            
+            {% if user.is_authenticated and not user_has_reviewed and user != product.seller %}
+                <button type="button" @click="reviewModal = true"
+                        class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-1.5 self-start">
+                    <i data-lucide="message-square-plus" class="w-3.5 h-3.5"></i>
+                    <span>Write a Review</span>
+                </button>
+            {% endif %}
+        </div>
+
+        <!-- Reviews List -->
+        <div class="divide-y divide-slate-100 dark:divide-slate-700/60 mt-6">
+            {% for rev in product.reviews.all %}
+                <div class="py-4 space-y-1.5">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs font-bold text-slate-900 dark:text-white">{{ rev.reviewer.username }}</span>
+                            {% if rev.is_verified_purchase %}
+                                <span class="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                                    ✓ Verified Purchase
+                                </span>
+                            {% endif %}
+                        </div>
+                        <div class="flex text-amber-400 text-xs">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= rev.rating %}
+                                    <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+                                {% else %}
+                                    <i data-lucide="star" class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{{ rev.comment }}</p>
+                    <span class="text-[10px] text-slate-400 block">{{ rev.created_at|timesince }} ago</span>
+                </div>
+            {% empty %}
+                <div class="py-8 text-center text-xs text-slate-400">
+                    No reviews yet. Be the first to share feedback after completing the transaction!
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- RELATED PRODUCTS -->
+    {% if related_products %}
+    <div class="mt-16">
+        <h3 class="font-heading text-xl font-bold text-slate-900 dark:text-white mb-6">More from this Category</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            {% for r in related_products %}
+                <div class="bg-white dark:bg-navy-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm hover:-translate-y-1 transition group">
+                    <div class="h-36 bg-slate-100 dark:bg-navy-900 overflow-hidden">
+                        {% if r.primary_image %}
+                            <img src="{{ r.primary_image.url }}" alt="{{ r.title }}" class="w-full h-full object-cover group-hover:scale-105 transition">
+                        {% endif %}
+                    </div>
+                    <div class="p-3">
+                        <h4 class="font-heading font-bold text-xs text-slate-900 dark:text-white line-clamp-1">
+                            <a href="{% url 'marketplace:product_detail' slug=r.slug %}" class="hover:text-emerald-500">{{ r.title }}</a>
+                        </h4>
+                        <span class="text-xs font-bold text-emerald-500 mt-1 block">₹{{ r.price|floatformat:0 }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- MODALS: REPORT LISTING & REVIEW MODAL -->
+    
+    <!-- Report Modal -->
+    <div x-show="reportModal" @click.away="reportModal = false" x-cloak
+         class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 max-w-md w-full border border-slate-200 dark:border-slate-700 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-700">
+                <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white flex items-center">
+                    <i data-lucide="flag" class="w-4 h-4 mr-2 text-rose-500"></i> Report Listing
+                </h3>
+                <button @click="reportModal = false" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <form action="{% url 'marketplace:report_product' product_id=product.id %}" method="POST" class="space-y-3">
+                {% csrf_token %}
+                {{ report_form.reason }}
+                {{ report_form.details }}
+                <button type="submit" class="w-full py-2.5 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl shadow transition">
+                    Submit Report for Moderation
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div x-show="reviewModal" @click.away="reviewModal = false" x-cloak
+         class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 max-w-md w-full border border-slate-200 dark:border-slate-700 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-700">
+                <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white flex items-center">
+                    <i data-lucide="star" class="w-4 h-4 mr-2 text-amber-400"></i> Submit Review
+                </h3>
+                <button @click="reviewModal = false" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <form action="{% url 'marketplace:add_review' product_id=product.id %}" method="POST" class="space-y-3">
+                {% csrf_token %}
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">Rating</label>
+                    {{ review_form.rating }}
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">Comment</label>
+                    {{ review_form.comment }}
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow transition">
+                    Post Verified Review
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sample Preview PDF Modal (Safe sample preview) -->
+    {% if product.sample_preview_pdf %}
+    <div x-show="samplePdfModal" @click.away="samplePdfModal = false" x-cloak
+         class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 max-w-3xl w-full h-[80vh] flex flex-col border border-slate-200 dark:border-slate-700 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-700">
+                <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white flex items-center">
+                    <i data-lucide="file-text" class="w-4 h-4 mr-2 text-teal-400"></i> Sample Preview: {{ product.title }}
+                </h3>
+                <button @click="samplePdfModal = false" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <iframe src="{{ product.sample_preview_pdf.url }}" class="flex-1 w-full rounded-xl border border-slate-200 dark:border-slate-700"></iframe>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

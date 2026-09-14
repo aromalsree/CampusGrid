@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Create Listing | CampusGrid{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8" x-data="{
+    prodType: 'PHYSICAL',
+    dealMode: 'BUY',
+    isElectronics: false,
+    checkCategory(event) {
+        const catText = event.target.options[event.target.selectedIndex].text.toLowerCase();
+        this.isElectronics = catText.includes('electronic') || catText.includes('laptop') || catText.includes('phone') || catText.includes('gadget');
+    }
+}">
+    
+    <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
+        <div class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-xs font-bold border border-emerald-500/20 mb-2">
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+            <span>LISTING CREATOR</span>
+        </div>
+        <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">List an Item or Academic Service</h1>
+        <p class="text-xs text-slate-400 mt-1">Adaptive form adjusts automatically for physical goods, laptops, study PDFs, or mentorship services.</p>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" class="bg-white dark:bg-navy-800 rounded-3xl p-6 sm:p-10 border border-slate-200 dark:border-slate-700 shadow-xl space-y-6 text-xs">
+        {% csrf_token %}
+
+        <!-- BASIC DETAILS -->
+        <div class="space-y-4">
+            <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white pb-2 border-b border-slate-200 dark:border-slate-700 flex items-center">
+                <i data-lucide="info" class="w-4 h-4 mr-2 text-emerald-500"></i> Basic Information
+            </h3>
+
+            <div>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Listing Title *</label>
+                {{ form.title }}
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Product Type *</label>
+                    <select name="product_type" x-model="prodType" class="w-full bg-slate-50 dark:bg-navy-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-slate-800 dark:text-slate-100 font-medium">
+                        <option value="PHYSICAL">Physical Product / Device</option>
+                        <option value="DIGITAL">Digital Academic Resource (PDF / Code)</option>
+                        <option value="SERVICE">Academic Service / Tutoring</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Category *</label>
+                    <div @change="checkCategory($event)">
+                        {{ form.category }}
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Condition *</label>
+                    {{ form.condition }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Selling Price (₹) *</label>
+                    {{ form.price }}
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Deal Mode *</label>
+                    <select name="buy_or_rent" x-model="dealMode" class="w-full bg-slate-50 dark:bg-navy-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-slate-800 dark:text-slate-100 font-medium">
+                        <option value="BUY">Sale Only (Buy)</option>
+                        <option value="RENT">Rental Only</option>
+                        <option value="BOTH">Available for Both Sale & Rent</option>
+                    </select>
+                </div>
+
+                <div x-show="dealMode === 'RENT' || dealMode === 'BOTH'">
+                    <label class="block font-bold text-amber-500 mb-1">Daily Rental Rate (₹/day)</label>
+                    {{ form.rent_daily_rate }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">College / Campus Location *</label>
+                    {{ form.campus }}
+                </div>
+                <div class="flex items-center space-x-2 pt-6">
+                    {{ form.is_urgent }}
+                    <label for="id_is_urgent" class="font-bold text-rose-500 cursor-pointer">Mark as Urgent Moving-Out Clearance</label>
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Detailed Description & Notes *</label>
+                {{ form.description }}
+            </div>
+        </div>
+
+        <!-- DIGITAL RESOURCE FIELDS -->
+        <div x-show="prodType === 'DIGITAL'" class="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700" x-cloak>
+            <h3 class="font-heading font-bold text-sm text-teal-400 flex items-center">
+                <i data-lucide="file-text" class="w-4 h-4 mr-2"></i> Digital Asset Delivery Files
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Sample PDF Preview (Publicly viewable sample)</label>
+                    {{ form.sample_preview_pdf }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Full Encrypted Asset File (Delivered after payment)</label>
+                    {{ form.digital_file }}
+                </div>
+            </div>
+        </div>
+
+        <!-- ACADEMIC SERVICE FIELDS -->
+        <div x-show="prodType === 'SERVICE'" class="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700" x-cloak>
+            <h3 class="font-heading font-bold text-sm text-emerald-400 flex items-center">
+                <i data-lucide="graduation-cap" class="w-4 h-4 mr-2"></i> Academic Service / Tutoring Structure
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Rate Billing Structure</label>
+                    {{ form.service_rate_type }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Duration & Session Info</label>
+                    {{ form.service_duration_info }}
+                </div>
+            </div>
+        </div>
+
+        <!-- ELECTRONICS TECHNICAL SPECIFICATIONS -->
+        <div class="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+            <div class="flex items-center justify-between">
+                <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white flex items-center">
+                    <i data-lucide="cpu" class="w-4 h-4 mr-2 text-emerald-500"></i> Electronics Specifications (Optional for Laptops/Phones)
+                </h3>
+                <span class="text-[11px] text-slate-400">Powers the Smart Comparison Engine</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Processor / CPU Model</label>
+                    {{ spec_form.processor }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">RAM (GB)</label>
+                    {{ spec_form.ram_gb }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Storage (GB)</label>
+                    {{ spec_form.storage_gb }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Storage Type</label>
+                    {{ spec_form.storage_type }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Battery Health (%)</label>
+                    {{ spec_form.battery_health_percent }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Used Duration (Months)</label>
+                    {{ spec_form.usage_duration_months }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Display Specs (e.g. 13.3" Retina 2560x1600)</label>
+                    {{ spec_form.display_specs }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Operating System</label>
+                    {{ spec_form.operating_system }}
+                </div>
+            </div>
+        </div>
+
+        <!-- PHOTOS UPLOAD -->
+        <div class="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+            <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white flex items-center">
+                <i data-lucide="image" class="w-4 h-4 mr-2 text-emerald-500"></i> Photos
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Cover / Primary Photo *</label>
+                    {{ form.primary_image }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Additional Gallery Photos (Multiple)</label>
+                    <input type="file" name="additional_images" multiple class="w-full bg-slate-50 dark:bg-navy-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2 text-slate-800 dark:text-slate-100">
+                </div>
+            </div>
+        </div>
+
+        <!-- FORM ACTIONS -->
+        <div class="pt-6 border-t border-slate-200 dark:border-slate-700 flex justify-end space-x-3">
+            <a href="{% url 'marketplace:seller_dashboard' %}" class="px-5 py-2.5 bg-slate-100 dark:bg-navy-700 font-bold rounded-xl text-slate-600 dark:text-slate-300">
+                Cancel
+            </a>
+            <button type="submit" class="px-8 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-lg transition flex items-center space-x-1.5">
+                <i data-lucide="check" class="w-4 h-4"></i>
+                <span>Publish Listing to Campus</span>
+            </button>
+        </div>
+
+    </form>
+
+</div>
+{% endblock %}

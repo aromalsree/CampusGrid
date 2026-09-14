@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Rentals & Reservations | CampusGrid{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6" x-data="{ tab: 'MY_RENTALS' }">
+    
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
+        <div>
+            <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Peer Rentals Management</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Track items you have rented and approve rental requests for your listings</p>
+        </div>
+
+        <div class="flex p-1 rounded-2xl bg-slate-100 dark:bg-navy-800 border border-slate-200 dark:border-slate-700 text-xs font-bold">
+            <button @click="tab = 'MY_RENTALS'" :class="tab === 'MY_RENTALS' ? 'bg-emerald-500 text-white shadow' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'"
+                    class="px-4 py-2 rounded-xl transition">
+                My Rentals ({{ my_rentals.count }})
+            </button>
+            <button @click="tab = 'OWNER_RENTALS'" :class="tab === 'OWNER_RENTALS' ? 'bg-emerald-500 text-white shadow' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'"
+                    class="px-4 py-2 rounded-xl transition">
+                Incoming Requests ({{ received_rentals.count }})
+            </button>
+        </div>
+    </div>
+
+    <!-- MY RENTALS (ITEMS I RENTED) -->
+    <div x-show="tab === 'MY_RENTALS'" class="space-y-4">
+        {% for rental in my_rentals %}
+            <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2">
+                        <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white">{{ rental.product.title }}</h3>
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold 
+                            {% if rental.status == 'ACTIVE' %}bg-emerald-500/10 text-emerald-500 border border-emerald-500/20
+                            {% elif rental.status == 'RETURN_DUE' %}bg-rose-500/10 text-rose-500 border border-rose-500/20
+                            {% else %}bg-amber-500/10 text-amber-500 border border-amber-500/20{% endif %}">
+                            {{ rental.get_status_display }}
+                        </span>
+                    </div>
+                    <div class="text-xs text-slate-400">
+                        Owner: <strong class="text-slate-300">{{ rental.owner.username }}</strong> • 
+                        Dates: {{ rental.start_date|date:"M d" }} → {{ rental.end_date|date:"M d, Y" }} ({{ rental.duration_days }} days)
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4 self-end md:self-center">
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400 block">Total Rent</span>
+                        <span class="text-base font-black text-amber-500">₹{{ rental.total_rent|floatformat:0 }}</span>
+                    </div>
+                    <a href="{% url 'marketplace:product_detail' slug=rental.product.slug %}"
+                       class="px-4 py-2 bg-slate-100 dark:bg-navy-700 hover:bg-slate-200 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-xl transition">
+                        View Product
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <div class="bg-white dark:bg-navy-800 rounded-3xl p-12 text-center border border-slate-200 dark:border-slate-700 text-slate-400 text-xs">
+                You haven't rented any equipment yet.
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- OWNER RENTALS (REQUESTS ON MY PRODUCTS) -->
+    <div x-show="tab === 'OWNER_RENTALS'" class="space-y-4" x-cloak>
+        {% for rental in received_rentals %}
+            <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2">
+                        <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white">{{ rental.product.title }}</h3>
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                            {{ rental.get_status_display }}
+                        </span>
+                    </div>
+                    <div class="text-xs text-slate-400">
+                        Renter: <strong class="text-slate-300">{{ rental.renter.username }}</strong> • 
+                        Dates: {{ rental.start_date|date:"M d" }} → {{ rental.end_date|date:"M d, Y" }}
+                    </div>
+                    {% if rental.notes %}
+                        <div class="text-[11px] text-slate-400 italic">"{{ rental.notes }}"</div>
+                    {% endif %}
+                </div>
+
+                <!-- Owner Status Transition Actions -->
+                <form action="{% url 'marketplace:update_rental_status' rental_id=rental.id %}" method="POST" class="flex items-center space-x-2 self-end md:self-center">
+                    {% csrf_token %}
+                    {% if rental.status == 'REQUESTED' %}
+                        <button type="submit" name="status" value="APPROVED" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow transition">
+                            Approve
+                        </button>
+                        <button type="submit" name="status" value="CANCELLED" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl shadow transition">
+                            Decline
+                        </button>
+                    {% elif rental.status == 'APPROVED' %}
+                        <button type="submit" name="status" value="ACTIVE" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow transition">
+                            Mark Handed Over (Active)
+                        </button>
+                    {% elif rental.status == 'ACTIVE' %}
+                        <button type="submit" name="status" value="RETURNED" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow transition">
+                            Mark Returned
+                        </button>
+                    {% endif %}
+                </form>
+            </div>
+        {% empty %}
+            <div class="bg-white dark:bg-navy-800 rounded-3xl p-12 text-center border border-slate-200 dark:border-slate-700 text-slate-400 text-xs">
+                No rental requests for your listings right now.
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

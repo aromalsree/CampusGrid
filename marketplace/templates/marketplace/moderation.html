@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Admin Trust & Safety Moderation | CampusGrid{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8" x-data="{ tab: 'VERIFICATION' }">
+    
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
+        <div>
+            <div class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-rose-500/10 text-rose-500 text-xs font-bold border border-rose-500/20 mb-2">
+                <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
+                <span>TRUST & SAFETY CONTROL</span>
+            </div>
+            <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Moderation Desk</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Review academic credentials, approve student badges, and resolve peer reports</p>
+        </div>
+
+        <div class="flex p-1 rounded-2xl bg-slate-100 dark:bg-navy-800 border border-slate-200 dark:border-slate-700 text-xs font-bold">
+            <button @click="tab = 'VERIFICATION'" :class="tab === 'VERIFICATION' ? 'bg-emerald-500 text-white shadow' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'"
+                    class="px-4 py-2 rounded-xl transition">
+                Pending Verifications ({{ pending_verifications.count }})
+            </button>
+            <button @click="tab = 'REPORTS'" :class="tab === 'REPORTS' ? 'bg-rose-500 text-white shadow' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'"
+                    class="px-4 py-2 rounded-xl transition">
+                Reported Listings ({{ pending_reports.count }})
+            </button>
+        </div>
+    </div>
+
+    <!-- STUDENT VERIFICATIONS QUEUE -->
+    <div x-show="tab === 'VERIFICATION'" class="space-y-4">
+        <div class="bg-white dark:bg-navy-800 rounded-3xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+            <div class="p-6 border-b border-slate-200 dark:border-slate-700">
+                <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white">Academic Student Verification Requests</h3>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 dark:bg-navy-900 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-200 dark:border-slate-700">
+                        <tr>
+                            <th class="p-4">Student</th>
+                            <th class="p-4">Academic Email</th>
+                            <th class="p-4">Campus</th>
+                            <th class="p-4">Joined</th>
+                            <th class="p-4 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700/60">
+                        {% for prof in pending_verifications %}
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-navy-700/30 transition">
+                                <td class="p-4 font-bold text-slate-900 dark:text-white">
+                                    {{ prof.user.get_full_name|default:prof.user.username }}
+                                </td>
+                                <td class="p-4 text-emerald-500 font-mono">
+                                    {{ prof.user.email }}
+                                </td>
+                                <td class="p-4 text-slate-400">
+                                    {{ prof.campus }}
+                                </td>
+                                <td class="p-4 text-slate-400">
+                                    {{ prof.user.date_joined|date:"M d, Y" }}
+                                </td>
+                                <td class="p-4 text-right">
+                                    <form method="POST" action="{% url 'marketplace:admin_approve_verification' profile_id=prof.id %}" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs shadow transition">
+                                            Approve Badge
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5" class="p-8 text-center text-slate-400 text-xs">
+                                    All student verification requests have been processed.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- REPORTED LISTINGS QUEUE -->
+    <div x-show="tab === 'REPORTS'" class="space-y-4" x-cloak>
+        <div class="bg-white dark:bg-navy-800 rounded-3xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+            <div class="p-6 border-b border-slate-200 dark:border-slate-700">
+                <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white">Open Content Reports</h3>
+            </div>
+
+            <div class="divide-y divide-slate-100 dark:divide-slate-700/60">
+                {% for rep in pending_reports %}
+                    <div class="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-500 border border-rose-500/20">
+                                    {{ rep.get_reason_display }}
+                                </span>
+                                <h4 class="font-heading font-bold text-sm text-slate-900 dark:text-white">
+                                    <a href="{% url 'marketplace:product_detail' slug=rep.product.slug %}" target="_blank" class="hover:text-emerald-500">
+                                        {{ rep.product.title }} ↗
+                                    </a>
+                                </h4>
+                            </div>
+                            <p class="text-xs text-slate-600 dark:text-slate-300">{{ rep.details }}</p>
+                            <span class="text-[10px] text-slate-400 block">
+                                Reported by {{ rep.reporter.username }} • Seller: {{ rep.product.seller.username }}
+                            </span>
+                        </div>
+
+                        <div class="flex items-center space-x-2 shrink-0">
+                            <form method="POST" action="{% url 'marketplace:admin_resolve_report' report_id=rep.id %}" class="inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="reject">
+                                <button type="submit" class="px-4 py-2 bg-slate-100 dark:bg-navy-700 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl transition">
+                                    Dismiss Report
+                                </button>
+                            </form>
+                            <form method="POST" action="{% url 'marketplace:admin_resolve_report' report_id=rep.id %}" class="inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="resolve_disable">
+                                <button type="submit" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl shadow transition">
+                                    Deactivate Product
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="p-8 text-center text-slate-400 text-xs">
+                        No pending reports in the moderation queue.
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit {{ product.title }} | CampusGrid{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    
+    <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
+        <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Edit Listing</h1>
+        <p class="text-xs text-slate-400 mt-1">Update details, price, condition, or specifications for {{ product.title }}</p>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" class="bg-white dark:bg-navy-800 rounded-3xl p-6 sm:p-10 border border-slate-200 dark:border-slate-700 shadow-xl space-y-6 text-xs">
+        {% csrf_token %}
+
+        <!-- BASIC DETAILS -->
+        <div class="space-y-4">
+            <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white pb-2 border-b border-slate-200 dark:border-slate-700">
+                Basic Information
+            </h3>
+
+            <div>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Listing Title</label>
+                {{ form.title }}
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Product Type</label>
+                    {{ form.product_type }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Category</label>
+                    {{ form.category }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Condition</label>
+                    {{ form.condition }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Price (₹)</label>
+                    {{ form.price }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Deal Mode</label>
+                    {{ form.buy_or_rent }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Daily Rental Rate (₹/day)</label>
+                    {{ form.rent_daily_rate }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Campus</label>
+                    {{ form.campus }}
+                </div>
+                <div class="flex items-center space-x-2 pt-6">
+                    {{ form.is_urgent }}
+                    <label for="id_is_urgent" class="font-bold text-rose-500 cursor-pointer">Mark as Urgent Moving-Out Clearance</label>
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Description</label>
+                {{ form.description }}
+            </div>
+        </div>
+
+        <!-- SPECIFICATIONS (If electronics) -->
+        {% if spec_form %}
+        <div class="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+            <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white">Technical Specifications</h3>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Processor</label>
+                    {{ spec_form.processor }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">RAM (GB)</label>
+                    {{ spec_form.ram_gb }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Storage (GB)</label>
+                    {{ spec_form.storage_gb }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Storage Type</label>
+                    {{ spec_form.storage_type }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Battery Health (%)</label>
+                    {{ spec_form.battery_health_percent }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Used Months</label>
+                    {{ spec_form.usage_duration_months }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- PHOTO & GALLERY -->
+        <div class="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+            <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white">Listing Photos</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Primary Cover Photo</label>
+                    {{ form.primary_image }}
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Add More Gallery Photos</label>
+                    <input type="file" name="additional_images" multiple class="w-full bg-slate-50 dark:bg-navy-900 border border-slate-300 dark:border-slate-700 rounded-xl p-2 text-slate-800 dark:text-slate-100">
+                </div>
+            </div>
+
+            {% if product.additional_images.all %}
+                <div>
+                    <label class="block font-bold text-slate-700 dark:text-slate-300 mb-2">Existing Gallery Photos</label>
+                    <div class="flex flex-wrap gap-3">
+                        {% for img in product.additional_images.all %}
+                            <div class="relative group w-20 h-20 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-navy-900">
+                                <img src="{{ img.image.url }}" class="w-full h-full object-cover">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="pt-6 border-t border-slate-200 dark:border-slate-700 flex justify-end space-x-3">
+            <a href="{% url 'marketplace:seller_dashboard' %}" class="px-5 py-2.5 bg-slate-100 dark:bg-navy-700 font-bold rounded-xl text-slate-600 dark:text-slate-300">
+                Cancel
+            </a>
+            <button type="submit" class="px-8 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-lg transition">
+                Save Changes
+            </button>
+        </div>
+
+    </form>
+
+</div>
+{% endblock %}

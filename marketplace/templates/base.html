@@ -1,0 +1,1052 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" x-data="{ 
+    darkMode: localStorage.getItem('cg_theme') === 'dark' || (!('cg_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
+    sidebarCollapsed: localStorage.getItem('cg_sidebar_collapsed') === 'true',
+    mobileSidebar: false,
+    notifOpen: false,
+    userMenu: false,
+    campusOpen: false,
+    toggleSidebar() {
+        this.sidebarCollapsed = !this.sidebarCollapsed;
+        localStorage.setItem('cg_sidebar_collapsed', this.sidebarCollapsed);
+    }
+}" :class="{ 'dark': darkMode }" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CampusGrid — Your Campus. Your Marketplace.{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Premium student second-hand marketplace, electronics comparison engine, digital academic assets, and verified peer services.{% endblock %}">
+
+    <!-- Fonts: Plus Jakarta Sans (Headings) & Inter (UI/Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#F0FDFA',
+                            100: '#CCFBF1',
+                            500: '#10B981',
+                            600: '#059669',
+                            700: '#047857',
+                        },
+                        charcoal: {
+                            950: '#060911',
+                            900: '#090D16',
+                            850: '#0F1523',
+                            800: '#121826',
+                            750: '#161F31',
+                            700: '#1B243B',
+                            600: '#283452',
+                        },
+                        emerald: {
+                            400: '#34D399',
+                            500: '#10B981',
+                            600: '#059669',
+                        },
+                        amber: {
+                            400: '#FBBF24',
+                            500: '#F59E0B',
+                            600: '#D97706',
+                        },
+                        rose: {
+                            500: '#EF4444',
+                            600: '#DC2626',
+                        }
+                    },
+                    fontFamily: {
+                        heading: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'subtle': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03)',
+                        'card': '0 4px 20px -2px rgba(0, 0, 0, 0.08)',
+                        'glow-emerald': '0 0 25px -5px rgba(16, 185, 129, 0.35)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- GSAP & ScrollTrigger CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- Three.js (for subtle depth/canvas) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        [x-cloak] { display: none !important; }
+
+        :root {
+            --cg-bg: #F8FAFC;
+            --cg-surface: #FFFFFF;
+            --cg-surface-raised: #F1F5F9;
+            --cg-border: #E2E8F0;
+            --cg-text: #0F172A;
+            --cg-text-muted: #64748B;
+            --cg-accent: #10B981;
+        }
+
+        .dark {
+            --cg-bg: #090D16;
+            --cg-surface: #121826;
+            --cg-surface-raised: #1B243B;
+            --cg-border: #283452;
+            --cg-text: #F8FAFC;
+            --cg-text-muted: #94A3B8;
+            --cg-accent: #10B981;
+        }
+
+        body {
+            background-color: var(--cg-bg);
+            color: var(--cg-text);
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        /* Form Input Text Contrast Guarantee - NO INVISIBLE TYPED TEXT */
+        input, select, textarea {
+            color: #0F172A !important;
+        }
+        .dark input, .dark select, .dark textarea {
+            color: #F8FAFC !important;
+            background-color: #121826 !important;
+        }
+        input::placeholder, textarea::placeholder {
+            color: #64748B !important;
+            opacity: 0.95;
+        }
+        .dark input::placeholder, .dark textarea::placeholder {
+            color: #94A3B8 !important;
+            opacity: 0.95;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none !important;
+        }
+
+        /* Sidebar hover micro-interactions */
+        aside a {
+            transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+        aside a:hover {
+            transform: translateX(3px);
+        }
+
+        /* Custom subtle scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0D9488;
+        }
+
+        /* Page Entrance Animation */
+        .page-fade-in {
+            animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hand-drawn animated dashed strokes and path flow */
+        @keyframes strokeDashFlow {
+            to {
+                stroke-dashoffset: -40;
+            }
+        }
+        .dash-flow {
+            stroke-dasharray: 8, 6;
+            animation: strokeDashFlow 1.5s linear infinite;
+        }
+
+        /* SVG Sketch Draw Animation */
+        @keyframes sketchDraw {
+            0% { stroke-dashoffset: 600; opacity: 0.2; }
+            50% { stroke-dashoffset: 0; opacity: 1; }
+            100% { stroke-dashoffset: 0; opacity: 1; }
+        }
+        .sketch-draw {
+            stroke-dasharray: 600;
+            stroke-dashoffset: 600;
+            animation: sketchDraw 3s ease-in-out infinite alternate;
+        }
+
+        /* Character Breathing / Idle Subtle Animation */
+        @keyframes characterBreathe {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-3px) rotate(0.5deg); }
+        }
+        .character-idle {
+            animation: characterBreathe 3.2s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+
+        /* Character Arm Gesture / Packing / Point Animation */
+        @keyframes armGesture {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-12deg); }
+        }
+        .character-arm {
+            animation: armGesture 2.5s ease-in-out infinite;
+            transform-origin: 20% 20%;
+        }
+
+        /* Character Packing Action (Arjun lifting calculator into box) */
+        @keyframes packAction {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            40% { transform: translateY(-14px) rotate(4deg); }
+            70% { transform: translateY(6px) rotate(-2deg); }
+        }
+        .character-pack {
+            animation: packAction 3.8s ease-in-out infinite;
+            transform-origin: center bottom;
+        }
+
+        /* Character Searching / Frustrated Action (Meera checking notes) */
+        @keyframes searchAction {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-3deg) translateY(-2px); }
+            75% { transform: rotate(3deg) translateY(-2px); }
+        }
+        .character-search {
+            animation: searchAction 2.2s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        /* Character Celebration / Joy Action (Meera finding gear) */
+        @keyframes celebrateAction {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-10px) scale(1.04); }
+        }
+        .character-celebrate {
+            animation: celebrateAction 1.8s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+
+        /* Character Eye Blink */
+        @keyframes eyeBlink {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
+        }
+        .character-blink {
+            animation: eyeBlink 4.5s infinite;
+            transform-origin: center;
+        }
+
+        /* Mascot Floating Animation */
+        @keyframes mascotFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-7px) rotate(2deg); }
+        }
+        .mascot-float {
+            animation: mascotFloat 3s ease-in-out infinite;
+        }
+
+        /* Energy Pulse & Core Wave */
+        @keyframes energyWave {
+            0% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 0 20px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .core-pulse {
+            animation: energyWave 2.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+
+        /* Subtle 3D Depth & Perspective */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .preserve-3d {
+            transform-style: preserve-3d;
+        }
+        .tilt-card-left {
+            transform: perspective(1000px) rotateY(8deg) rotateX(4deg);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .tilt-card-left:hover {
+            transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.02);
+        }
+        .tilt-card-right {
+            transform: perspective(1000px) rotateY(-8deg) rotateX(4deg);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .tilt-card-right:hover {
+            transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.02);
+        }
+
+        /* Floating animations for objects & nodes */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(1deg); }
+        }
+        @keyframes floatFast {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(-1.5deg); }
+        }
+        .floating-slow {
+            animation: floatSlow 4s ease-in-out infinite;
+        }
+        .floating-fast {
+            animation: floatFast 2.8s ease-in-out infinite;
+        }
+
+        /* Product travel animation along connection */
+        @keyframes travelHorizontal {
+            0% { transform: translateX(0) scale(0.9); opacity: 0.7; }
+            50% { transform: translateX(50%) scale(1.1); opacity: 1; }
+            100% { transform: translateX(100%) scale(0.9); opacity: 0.7; }
+        }
+        .travel-item {
+            animation: travelHorizontal 3.5s ease-in-out infinite;
+        }
+
+        /* Continuous pulse ticker animation */
+        @keyframes tickerAnimation {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .ticker-track {
+            display: flex;
+            width: max-content;
+            animation: tickerAnimation 28s linear infinite;
+        }
+        .ticker-track:hover {
+            animation-play-state: paused;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .ticker-track, .dash-flow, .floating-slow, .floating-fast, .travel-item, .character-idle, .character-arm, .character-blink, .core-pulse, .sketch-draw {
+                animation: none !important;
+            }
+            .tilt-card-left, .tilt-card-right {
+                transform: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white font-sans bg-[#F8FAFC] dark:bg-[#0B0F17] text-slate-900 dark:text-slate-100">
+
+    <!-- 1. TOP BAR -->
+    <header class="sticky top-0 z-40 bg-white/95 dark:bg-charcoal-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-charcoal-700/80 transition-colors">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 gap-4">
+                
+                <!-- Left: Sidebar Toggle Button + Logo / Brand Wordmark -->
+                <div class="flex items-center space-x-3 sm:space-x-4 shrink-0">
+                    <!-- Desktop Sidebar Collapse Toggle Button -->
+                    <button @click="toggleSidebar()" type="button"
+                            class="hidden lg:flex p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800 transition focus:outline-none"
+                            :title="sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'">
+                        <i data-lucide="panel-left-close" class="w-5 h-5" :class="{ 'rotate-180': sidebarCollapsed }"></i>
+                    </button>
+
+                    <!-- Mobile Drawer Toggle -->
+                    <button @click="mobileSidebar = true" type="button"
+                            class="lg:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800 transition focus:outline-none"
+                            title="Open Menu">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+
+                    <!-- Brand Mark -->
+                    <a href="{% url 'marketplace:index' %}" class="flex items-center space-x-2.5 group">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-charcoal-800 to-charcoal-950 border border-slate-700/70 flex items-center justify-center shadow-md group-hover:border-brand-500 transition">
+                            <i data-lucide="layers" class="w-5 h-5 text-brand-500"></i>
+                        </div>
+                        <div>
+                            <span class="font-heading text-lg sm:text-xl font-black tracking-tight text-slate-900 dark:text-white flex items-center">
+                                CAMPUS<span class="text-brand-500">GRID</span>
+                            </span>
+                            <span class="text-[9px] block -mt-1 text-slate-500 dark:text-slate-400 font-medium tracking-wide">
+                                Verified Peer Marketplace
+                            </span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Center: Global Quick Search Bar -->
+                <div class="hidden md:flex flex-1 max-w-lg mx-auto">
+                    <form action="{% url 'marketplace:product_list' %}" method="GET" class="w-full relative">
+                        <input type="text" name="q" value="{{ request.GET.q|default:'' }}"
+                               placeholder="Search laptops, books, digital notes, services..." 
+                               class="w-full pl-10 pr-12 py-2 text-xs bg-slate-100 dark:bg-charcoal-800 border border-slate-200 dark:border-charcoal-700 rounded-xl focus:ring-2 focus:ring-brand-500 dark:text-slate-100 placeholder-slate-400 transition">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-2.5"></i>
+                        <span class="absolute right-3 top-2 px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-200 dark:bg-charcoal-700 text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-charcoal-600">
+                            /
+                        </span>
+                    </form>
+                </div>
+
+                <!-- Right: Campus Selector, Wishlist, Cart, Notifications, User Avatar -->
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    
+                    <!-- Campus Selector Pill -->
+                    <div class="relative hidden sm:block" x-data="{ campusDrop: false }">
+                        <button @click="campusDrop = !campusDrop" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-charcoal-800 border border-slate-200 dark:border-charcoal-700 text-slate-700 dark:text-slate-200 text-xs font-semibold hover:border-brand-500 transition focus:outline-none">
+                            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-brand-500"></i>
+                            <span class="max-w-[130px] truncate">{{ selected_campus }}</span>
+                            <i data-lucide="chevron-down" class="w-3 h-3 text-slate-400"></i>
+                        </button>
+                        <div x-show="campusDrop" @click.away="campusDrop = false" x-cloak
+                             class="absolute right-0 mt-1.5 w-64 bg-white dark:bg-charcoal-800 border border-slate-200 dark:border-charcoal-700 rounded-2xl shadow-xl py-1 z-50">
+                            <div class="px-3.5 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 dark:border-charcoal-700">
+                                Switch Campus
+                            </div>
+                            <div class="max-h-60 overflow-y-auto py-1">
+                                {% for c in campus_list %}
+                                    <a href="{% url 'marketplace:set_campus' %}?campus={{ c|urlencode }}&next={{ request.path }}"
+                                       class="block px-3.5 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-brand-500/10 hover:text-brand-500 transition {% if selected_campus == c %}font-bold text-brand-500 bg-brand-500/10{% endif %}">
+                                        {{ c }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button @click="darkMode = !darkMode; localStorage.setItem('cg_theme', darkMode ? 'dark' : 'light')" 
+                            class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800 transition focus:outline-none"
+                            title="Toggle Light / Dark Mode">
+                        <template x-if="darkMode">
+                            <i data-lucide="sun" class="w-4 h-4 text-amber-400"></i>
+                        </template>
+                        <template x-if="!darkMode">
+                            <i data-lucide="moon" class="w-4 h-4 text-slate-600"></i>
+                        </template>
+                    </button>
+
+                    {% if user.is_authenticated %}
+                        <!-- Wishlist Counter -->
+                        <a href="{% url 'marketplace:wishlist_view' %}" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800 transition relative focus:outline-none" title="Wishlist">
+                            <i data-lucide="heart" class="w-4 h-4"></i>
+                            {% if wishlist_count > 0 %}
+                                <span class="absolute top-1 right-1 bg-amber-500 text-slate-950 text-[9px] font-black rounded-full w-3.5 h-3.5 flex items-center justify-center">
+                                    {{ wishlist_count }}
+                                </span>
+                            {% endif %}
+                        </a>
+
+                        <!-- Shopping Cart Counter -->
+                        <a href="{% url 'marketplace:cart_view' %}" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800 transition relative focus:outline-none" title="Shopping Cart">
+                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                            {% if cart_count > 0 %}
+                                <span class="absolute top-1 right-1 bg-brand-500 text-white text-[9px] font-black rounded-full w-3.5 h-3.5 flex items-center justify-center">
+                                    {{ cart_count }}
+                                </span>
+                            {% endif %}
+                        </a>
+
+                        <!-- Notifications Dropdown -->
+                        <div class="relative" x-data="{ notifDrop: false }">
+                            <button @click="notifDrop = !notifDrop" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800 transition relative focus:outline-none" title="Notifications">
+                                <i data-lucide="bell" class="w-4 h-4"></i>
+                                {% if unread_notifications_count > 0 %}
+                                    <span class="absolute top-1 right-1 bg-rose-500 text-white text-[9px] font-black rounded-full w-3.5 h-3.5 flex items-center justify-center animate-pulse">
+                                        {{ unread_notifications_count }}
+                                    </span>
+                                {% endif %}
+                            </button>
+
+                            <div x-show="notifDrop" @click.away="notifDrop = false" x-cloak
+                                 class="absolute right-0 mt-2 w-80 bg-white dark:bg-charcoal-850 border border-slate-200 dark:border-charcoal-700 rounded-2xl shadow-2xl py-2 z-50">
+                                <div class="px-4 py-2.5 border-b border-slate-100 dark:border-charcoal-700 flex items-center justify-between">
+                                    <span class="font-heading font-bold text-xs text-slate-900 dark:text-slate-100">Notifications</span>
+                                    <a href="{% url 'marketplace:mark_all_notifications_read' %}" class="text-[11px] font-semibold text-brand-500 hover:underline">Mark all read</a>
+                                </div>
+                                <div class="max-h-72 overflow-y-auto divide-y divide-slate-100 dark:divide-charcoal-700/50">
+                                    {% for notif in recent_notifications %}
+                                        <a href="{% url 'marketplace:mark_notification_read' notif.id %}" class="block px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-charcoal-800 transition {% if not notif.is_read %}bg-brand-500/5{% endif %}">
+                                            <div class="text-xs font-semibold text-slate-900 dark:text-slate-100">{{ notif.title }}</div>
+                                            <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">{{ notif.message }}</div>
+                                            <div class="text-[10px] text-slate-400 mt-1">{{ notif.created_at|timesince }} ago</div>
+                                        </a>
+                                    {% empty %}
+                                        <div class="p-5 text-center text-xs text-slate-400">No notifications yet.</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="border-t border-slate-100 dark:border-charcoal-700 text-center pt-2 px-2">
+                                    <a href="{% url 'marketplace:notifications_view' %}" class="text-xs font-bold text-brand-500 hover:underline block py-1">View All Notifications →</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Profile Dropdown -->
+                        <div class="relative" x-data="{ userDrop: false }">
+                            <button @click="userDrop = !userDrop" class="flex items-center space-x-2 pl-1 focus:outline-none">
+                                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-teal-500 text-white font-bold flex items-center justify-center text-xs shadow">
+                                    {{ user.username|first|upper }}
+                                </div>
+                                <i data-lucide="chevron-down" class="w-3 h-3 text-slate-400 hidden sm:block"></i>
+                            </button>
+
+                            <div x-show="userDrop" @click.away="userDrop = false" x-cloak
+                                 class="absolute right-0 mt-2 w-56 bg-white dark:bg-charcoal-850 border border-slate-200 dark:border-charcoal-700 rounded-2xl shadow-2xl py-2 z-50 divide-y divide-slate-100 dark:divide-charcoal-700/50">
+                                <div class="px-4 py-2.5">
+                                    <div class="text-xs font-bold text-slate-900 dark:text-slate-100">{{ user.get_full_name|default:user.username }}</div>
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">{{ user.email }}</div>
+                                </div>
+                                <div class="py-1">
+                                    <a href="{% url 'marketplace:dashboard' %}" class="flex items-center px-4 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-charcoal-800 transition">
+                                        <i data-lucide="layout-dashboard" class="w-4 h-4 mr-2 text-slate-400"></i> Student Dashboard
+                                    </a>
+                                    <a href="{% url 'marketplace:seller_dashboard' %}" class="flex items-center px-4 py-2 text-xs text-brand-500 font-bold hover:bg-slate-100 dark:hover:bg-charcoal-800 transition">
+                                        <i data-lucide="store" class="w-4 h-4 mr-2 text-brand-500"></i> Seller Center
+                                    </a>
+                                    <a href="{% url 'marketplace:add_product' %}" class="flex items-center px-4 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-charcoal-800 transition">
+                                        <i data-lucide="plus-circle" class="w-4 h-4 mr-2 text-slate-400"></i> Post New Listing
+                                    </a>
+                                </div>
+                                <div class="py-1">
+                                    <a href="{% url 'marketplace:orders_list' %}" class="flex items-center px-4 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-charcoal-800 transition">
+                                        <i data-lucide="package" class="w-4 h-4 mr-2 text-slate-400"></i> My Orders
+                                    </a>
+                                    <a href="{% url 'marketplace:rentals_list' %}" class="flex items-center px-4 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-charcoal-800 transition">
+                                        <i data-lucide="calendar" class="w-4 h-4 mr-2 text-slate-400"></i> My Rentals
+                                    </a>
+                                    <a href="{% url 'marketplace:user_profile' %}" class="flex items-center px-4 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-charcoal-800 transition">
+                                        <i data-lucide="user" class="w-4 h-4 mr-2 text-slate-400"></i> Profile & Campus ID
+                                    </a>
+                                    {% if user.is_staff %}
+                                        <a href="{% url 'marketplace:moderation_dashboard' %}" class="flex items-center px-4 py-2 text-xs text-amber-500 font-bold hover:bg-slate-100 dark:hover:bg-charcoal-800 transition">
+                                            <i data-lucide="shield-check" class="w-4 h-4 mr-2 text-amber-500"></i> Admin Moderation
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                <div class="pt-1">
+                                    <form action="{% url 'marketplace:logout' %}" method="POST" class="w-full">
+                                        {% csrf_token %}
+                                        <button type="submit" class="w-full text-left flex items-center px-4 py-2 text-xs text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition font-semibold">
+                                            <i data-lucide="log-out" class="w-4 h-4 mr-2"></i> Sign Out
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    {% else %}
+                        <!-- Guest Auth Buttons -->
+                        <a href="{% url 'marketplace:login' %}" class="text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-brand-500 px-3 py-2 transition">
+                            Log In
+                        </a>
+                        <a href="{% url 'marketplace:register' %}" class="text-xs font-bold bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-xl shadow-md transition flex items-center space-x-1">
+                            <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+                            <span>Register</span>
+                        </a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. APPLICATION SHELL BODY: SIDEBAR + MAIN CONTENT -->
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- DESKTOP COLLAPSIBLE SIDEBAR -->
+        <aside class="hidden lg:flex flex-col border-r border-slate-200/80 dark:border-charcoal-700/80 bg-white dark:bg-charcoal-900 shrink-0 transition-all duration-300 select-none z-30"
+               :class="sidebarCollapsed ? 'w-20' : 'w-64'">
+            
+            <!-- Sidebar Navigation Content -->
+            <div class="flex-1 overflow-y-auto px-3 py-5 space-y-6">
+                
+                <!-- GROUP: DISCOVER -->
+                <div class="space-y-1">
+                    <div class="px-3 pb-1 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500"
+                         x-show="!sidebarCollapsed">
+                        Discover
+                    </div>
+
+                    <a href="{% url 'marketplace:index' %}" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.resolver_match.url_name == 'index' %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'Home' : ''">
+                        <i data-lucide="home" class="w-4 h-4 shrink-0 {% if request.resolver_match.url_name == 'index' %}text-brand-500{% else %}text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200{% endif %}"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">Home</span>
+                    </a>
+
+                    <a href="{% url 'marketplace:product_list' %}" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.resolver_match.url_name == 'product_list' and not request.GET.deal and not request.GET.type %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'Marketplace' : ''">
+                        <i data-lucide="shopping-bag" class="w-4 h-4 shrink-0 {% if request.resolver_match.url_name == 'product_list' and not request.GET.deal and not request.GET.type %}text-brand-500{% else %}text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200{% endif %}"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">Marketplace</span>
+                    </a>
+
+                    <a href="{% url 'marketplace:compare' %}" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.resolver_match.url_name == 'compare' %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'Smart Compare' : ''">
+                        <i data-lucide="scale" class="w-4 h-4 shrink-0 {% if request.resolver_match.url_name == 'compare' %}text-brand-500{% else %}text-amber-500{% endif %}"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">Smart Compare</span>
+                    </a>
+
+                    <a href="{% url 'marketplace:semester_bundles_list' %}" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.resolver_match.url_name == 'semester_bundles_list' %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'Semester Bundles' : ''">
+                        <i data-lucide="package" class="w-4 h-4 shrink-0 {% if request.resolver_match.url_name == 'semester_bundles_list' %}text-brand-500{% else %}text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200{% endif %}"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">Semester Bundles</span>
+                    </a>
+
+                    <a href="{% url 'marketplace:student_requests_list' %}" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.resolver_match.url_name == 'student_requests_list' %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'Need Board' : ''">
+                        <i data-lucide="message-square-plus" class="w-4 h-4 shrink-0 {% if request.resolver_match.url_name == 'student_requests_list' %}text-brand-500{% else %}text-teal-400{% endif %}"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">Need Board</span>
+                    </a>
+                </div>
+
+                <!-- GROUP: BUY & RENT -->
+                <div class="space-y-1">
+                    <div class="px-3 pb-1 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500"
+                         x-show="!sidebarCollapsed">
+                        Buy & Rent
+                    </div>
+
+                    <a href="{% url 'marketplace:product_list' %}?deal=BUY" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.GET.deal == 'BUY' %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'Buy Listings' : ''">
+                        <i data-lucide="tag" class="w-4 h-4 shrink-0 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">Buy Listings</span>
+                    </a>
+
+                    <a href="{% url 'marketplace:product_list' %}?deal=RENT" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.GET.deal == 'RENT' %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'Equipment Rentals' : ''">
+                        <i data-lucide="calendar" class="w-4 h-4 shrink-0 text-amber-500"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">Equipment Rentals</span>
+                    </a>
+
+                    <a href="{% url 'marketplace:wishlist_view' %}" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.resolver_match.url_name == 'wishlist_view' %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'Saved Wishlist' : ''">
+                        <i data-lucide="heart" class="w-4 h-4 shrink-0 text-rose-500"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">Saved Wishlist</span>
+                    </a>
+
+                    <a href="{% url 'marketplace:cart_view' %}" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.resolver_match.url_name == 'cart_view' %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'Shopping Cart' : ''">
+                        <i data-lucide="shopping-cart" class="w-4 h-4 shrink-0 text-brand-500"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">Shopping Cart</span>
+                    </a>
+
+                    <a href="{% url 'marketplace:orders_list' %}" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.resolver_match.url_name == 'orders_list' %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'My Orders' : ''">
+                        <i data-lucide="package-check" class="w-4 h-4 shrink-0 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">My Orders</span>
+                    </a>
+                </div>
+
+                <!-- GROUP: SELL -->
+                <div class="space-y-1">
+                    <div class="px-3 pb-1 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500"
+                         x-show="!sidebarCollapsed">
+                        Seller Center
+                    </div>
+
+                    <a href="{% url 'marketplace:seller_dashboard' %}" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.resolver_match.url_name == 'seller_dashboard' %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-brand-600 dark:text-brand-400 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'Seller Dashboard' : ''">
+                        <i data-lucide="store" class="w-4 h-4 shrink-0 text-brand-500"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">Seller Dashboard</span>
+                    </a>
+
+                    <a href="{% url 'marketplace:add_product' %}" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.resolver_match.url_name == 'add_product' %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'Post New Listing' : ''">
+                        <i data-lucide="plus-circle" class="w-4 h-4 shrink-0 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">Post New Listing</span>
+                    </a>
+
+                    <a href="{% url 'marketplace:create_bundle' %}" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.resolver_match.url_name == 'create_bundle' %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'Create Bundle' : ''">
+                        <i data-lucide="layers" class="w-4 h-4 shrink-0 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">Create Bundle</span>
+                    </a>
+                </div>
+
+                <!-- GROUP: ACCOUNT -->
+                <div class="space-y-1">
+                    <div class="px-3 pb-1 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500"
+                         x-show="!sidebarCollapsed">
+                        Account
+                    </div>
+
+                    <a href="{% url 'marketplace:dashboard' %}" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.resolver_match.url_name == 'dashboard' %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'Student Dashboard' : ''">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4 shrink-0 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">Student Dashboard</span>
+                    </a>
+
+                    <a href="{% url 'marketplace:rentals_list' %}" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.resolver_match.url_name == 'rentals_list' %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'My Rentals' : ''">
+                        <i data-lucide="calendar-check" class="w-4 h-4 shrink-0 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">My Rentals</span>
+                    </a>
+
+                    <a href="{% url 'marketplace:notifications_view' %}" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.resolver_match.url_name == 'notifications_view' %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'Notifications' : ''">
+                        <i data-lucide="bell" class="w-4 h-4 shrink-0 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">Notifications</span>
+                    </a>
+
+                    <a href="{% url 'marketplace:user_profile' %}" 
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.resolver_match.url_name == 'user_profile' %}bg-brand-500/10 text-brand-500 font-bold{% else %}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-charcoal-800{% endif %}"
+                       :title="sidebarCollapsed ? 'Campus Profile' : ''">
+                        <i data-lucide="user" class="w-4 h-4 shrink-0 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200"></i>
+                        <span x-show="!sidebarCollapsed" class="truncate">Campus Profile</span>
+                    </a>
+                </div>
+
+                <!-- GROUP: ADMIN (STAFF ONLY) -->
+                {% if user.is_staff %}
+                    <div class="space-y-1">
+                        <div class="px-3 pb-1 text-[10px] font-black uppercase tracking-wider text-amber-500"
+                             x-show="!sidebarCollapsed">
+                            Administration
+                        </div>
+
+                        <a href="{% url 'marketplace:moderation_dashboard' %}" 
+                           class="flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition group {% if request.resolver_match.url_name == 'moderation_dashboard' %}bg-amber-500/10 text-amber-500 font-bold{% else %}text-amber-500 hover:bg-amber-500/10{% endif %}"
+                           :title="sidebarCollapsed ? 'Moderation Desk' : ''">
+                            <i data-lucide="shield-check" class="w-4 h-4 shrink-0 text-amber-500"></i>
+                            <span x-show="!sidebarCollapsed" class="truncate">Moderation Desk</span>
+                        </a>
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <!-- Bottom Sidebar Controls -->
+            <div class="p-3 border-t border-slate-200/80 dark:border-charcoal-700/80">
+                <button @click="toggleSidebar()" type="button"
+                        class="w-full flex items-center justify-center p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-charcoal-800 transition text-xs font-semibold">
+                    <i data-lucide="panel-left-close" class="w-4 h-4" :class="{ 'rotate-180': sidebarCollapsed }"></i>
+                    <span x-show="!sidebarCollapsed" class="ml-2">Collapse</span>
+                </button>
+            </div>
+
+        </aside>
+
+        <!-- MOBILE SLIDE-IN DRAWER -->
+        <div x-show="mobileSidebar" x-cloak
+             class="fixed inset-0 z-50 lg:hidden flex">
+            <!-- Backdrop -->
+            <div @click="mobileSidebar = false" 
+                 x-show="mobileSidebar"
+                 x-transition:enter="transition-opacity ease-linear duration-200"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition-opacity ease-linear duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-charcoal-950/80 backdrop-blur-sm"></div>
+
+            <!-- Drawer Container -->
+            <div x-show="mobileSidebar"
+                 x-transition:enter="transition ease-out duration-300 transform"
+                 x-transition:enter-start="-translate-x-full"
+                 x-transition:enter-end="translate-x-0"
+                 x-transition:leave="transition ease-in duration-200 transform"
+                 x-transition:leave-start="translate-x-0"
+                 x-transition:leave-end="-translate-x-full"
+                 class="relative max-w-xs w-full bg-white dark:bg-charcoal-900 h-full flex flex-col shadow-2xl border-r border-slate-200 dark:border-charcoal-700 p-4 space-y-4 overflow-y-auto">
+                
+                <!-- Drawer Header -->
+                <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-charcoal-700">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 rounded-lg bg-charcoal-800 flex items-center justify-center text-brand-500">
+                            <i data-lucide="layers" class="w-4 h-4"></i>
+                        </div>
+                        <span class="font-heading font-black text-slate-900 dark:text-white">CAMPUS<span class="text-brand-500">GRID</span></span>
+                    </div>
+                    <button @click="mobileSidebar = false" class="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Drawer Navigation Links -->
+                <div class="space-y-4 text-xs font-semibold">
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-black uppercase text-slate-400 block px-2">Discover</span>
+                        <a href="{% url 'marketplace:index' %}" class="flex items-center space-x-2.5 p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-charcoal-800">
+                            <i data-lucide="home" class="w-4 h-4 text-slate-400"></i>
+                            <span>Home</span>
+                        </a>
+                        <a href="{% url 'marketplace:product_list' %}" class="flex items-center space-x-2.5 p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-charcoal-800">
+                            <i data-lucide="shopping-bag" class="w-4 h-4 text-brand-500"></i>
+                            <span>Marketplace</span>
+                        </a>
+                        <a href="{% url 'marketplace:compare' %}" class="flex items-center space-x-2.5 p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-charcoal-800">
+                            <i data-lucide="scale" class="w-4 h-4 text-amber-500"></i>
+                            <span>Smart Compare</span>
+                        </a>
+                        <a href="{% url 'marketplace:semester_bundles_list' %}" class="flex items-center space-x-2.5 p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-charcoal-800">
+                            <i data-lucide="package" class="w-4 h-4 text-slate-400"></i>
+                            <span>Semester Bundles</span>
+                        </a>
+                        <a href="{% url 'marketplace:student_requests_list' %}" class="flex items-center space-x-2.5 p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-charcoal-800">
+                            <i data-lucide="message-square-plus" class="w-4 h-4 text-teal-400"></i>
+                            <span>Need Board</span>
+                        </a>
+                    </div>
+
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-black uppercase text-slate-400 block px-2">Account & Activity</span>
+                        <a href="{% url 'marketplace:dashboard' %}" class="flex items-center space-x-2.5 p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-charcoal-800">
+                            <i data-lucide="layout-dashboard" class="w-4 h-4 text-slate-400"></i>
+                            <span>Student Dashboard</span>
+                        </a>
+                        <a href="{% url 'marketplace:orders_list' %}" class="flex items-center space-x-2.5 p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-charcoal-800">
+                            <i data-lucide="package-check" class="w-4 h-4 text-slate-400"></i>
+                            <span>My Orders</span>
+                        </a>
+                        <a href="{% url 'marketplace:rentals_list' %}" class="flex items-center space-x-2.5 p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-charcoal-800">
+                            <i data-lucide="calendar" class="w-4 h-4 text-amber-500"></i>
+                            <span>My Rentals</span>
+                        </a>
+                        <a href="{% url 'marketplace:wishlist_view' %}" class="flex items-center space-x-2.5 p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-charcoal-800">
+                            <i data-lucide="heart" class="w-4 h-4 text-rose-500"></i>
+                            <span>Saved Wishlist</span>
+                        </a>
+                        <a href="{% url 'marketplace:cart_view' %}" class="flex items-center space-x-2.5 p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-charcoal-800">
+                            <i data-lucide="shopping-cart" class="w-4 h-4 text-brand-500"></i>
+                            <span>Cart</span>
+                        </a>
+                    </div>
+
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-black uppercase text-slate-400 block px-2">Selling</span>
+                        <a href="{% url 'marketplace:seller_dashboard' %}" class="flex items-center space-x-2.5 p-2 rounded-xl text-brand-500 hover:bg-slate-100 dark:hover:bg-charcoal-800">
+                            <i data-lucide="store" class="w-4 h-4"></i>
+                            <span>Seller Center</span>
+                        </a>
+                        <a href="{% url 'marketplace:add_product' %}" class="flex items-center space-x-2.5 p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-charcoal-800">
+                            <i data-lucide="plus-circle" class="w-4 h-4 text-slate-400"></i>
+                            <span>Post Listing</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- MAIN SCROLLABLE CONTENT VIEWPORT -->
+        <div class="flex-1 flex flex-col overflow-y-auto min-h-screen">
+            
+            <!-- Global Toast Alert Messages (Django Messages Framework) -->
+            {% if messages %}
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 w-full">
+                    {% for message in messages %}
+                        <div x-data="{ show: true }" x-show="show" x-transition
+                             class="p-4 rounded-2xl shadow-md border mb-3 flex items-center justify-between
+                             {% if message.tags == 'emerald' or message.tags == 'success' %}bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30
+                             {% elif message.tags == 'rose' or message.tags == 'error' %}bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30
+                             {% elif message.tags == 'amber' or message.tags == 'warning' %}bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30
+                             {% else %}bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/30{% endif %}">
+                            <div class="flex items-center space-x-2 text-xs font-semibold">
+                                {% if message.tags == 'emerald' or message.tags == 'success' %}
+                                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 shrink-0"></i>
+                                {% elif message.tags == 'rose' or message.tags == 'error' %}
+                                    <i data-lucide="alert-circle" class="w-4 h-4 text-rose-500 shrink-0"></i>
+                                {% elif message.tags == 'amber' or message.tags == 'warning' %}
+                                    <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-500 shrink-0"></i>
+                                {% else %}
+                                    <i data-lucide="info" class="w-4 h-4 text-slate-500 shrink-0"></i>
+                                {% endif %}
+                                <span>{{ message }}</span>
+                            </div>
+                            <button @click="show = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                                <i data-lucide="x" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Dynamic Child Page Content -->
+            <main class="flex-grow page-fade-in">
+                {% block content %}
+                {% endblock %}
+            </main>
+
+            <!-- Global Unified Footer -->
+            <footer class="bg-white dark:bg-charcoal-900 border-t border-slate-200/80 dark:border-charcoal-700/80 text-slate-400 mt-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                        
+                        <!-- Brand Info -->
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-7 h-7 rounded-lg bg-charcoal-800 border border-slate-700 flex items-center justify-center">
+                                    <i data-lucide="layers" class="w-3.5 h-3.5 text-brand-500"></i>
+                                </div>
+                                <span class="font-heading text-base font-black text-slate-900 dark:text-white tracking-tight">
+                                    CAMPUS<span class="text-brand-500">GRID</span>
+                                </span>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                The trusted student ecosystem for buying, renting, comparing electronics, and discovering verified academic resources.
+                            </p>
+                        </div>
+
+                        <!-- Marketplace Directories -->
+                        <div>
+                            <h3 class="font-heading text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-200 mb-2.5">Marketplace</h3>
+                            <ul class="space-y-1.5 text-xs">
+                                <li><a href="{% url 'marketplace:product_list' %}?deal=BUY" class="hover:text-brand-500 transition">Physical Products</a></li>
+                                <li><a href="{% url 'marketplace:product_list' %}?deal=RENT" class="hover:text-brand-500 transition">Student Rentals</a></li>
+                                <li><a href="{% url 'marketplace:product_list' %}?type=DIGITAL" class="hover:text-brand-500 transition">Source Code & Notes</a></li>
+                                <li><a href="{% url 'marketplace:semester_bundles_list' %}" class="hover:text-brand-500 transition">Semester Bundles</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Features & Engine -->
+                        <div>
+                            <h3 class="font-heading text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-200 mb-2.5">Platform Tools</h3>
+                            <ul class="space-y-1.5 text-xs">
+                                <li><a href="{% url 'marketplace:compare' %}" class="hover:text-brand-500 transition">Smart Spec Comparison</a></li>
+                                <li><a href="{% url 'marketplace:student_requests_list' %}" class="hover:text-brand-500 transition">Student Need Request Board</a></li>
+                                <li><a href="{% url 'marketplace:seller_dashboard' %}" class="hover:text-brand-500 transition">Seller Control Center</a></li>
+                                <li><a href="{% url 'marketplace:dashboard' %}" class="hover:text-brand-500 transition">Student Dashboard</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Trust & Security -->
+                        <div>
+                            <h3 class="font-heading text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-200 mb-2.5">Trust & Verification</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-2">
+                                Institutional accounts verified via academic domains for genuine peer security.
+                            </p>
+                            <div class="text-[11px] text-slate-400">
+                                &copy; 2026 CampusGrid. All rights reserved.
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+
+    </div>
+
+    <!-- FLOATING COMPARISON TRAY (Alpine.js State) -->
+    <div x-data="{
+        compareList: JSON.parse(localStorage.getItem('cg_compare_list') || '[]'),
+        isOpen: true,
+        init() {
+            window.addEventListener('cg-compare-update', () => {
+                this.compareList = JSON.parse(localStorage.getItem('cg_compare_list') || '[]');
+            });
+        },
+        removeItem(id) {
+            this.compareList = this.compareList.filter(item => item.id !== id);
+            localStorage.setItem('cg_compare_list', JSON.stringify(this.compareList));
+        },
+        clearAll() {
+            this.compareList = [];
+            localStorage.setItem('cg_compare_list', JSON.stringify([]));
+        },
+        goToCompare() {
+            if (this.compareList.length >= 2) {
+                window.location.href = '{% url 'marketplace:compare' %}?p1=' + this.compareList[0].id + '&p2=' + this.compareList[1].id;
+            } else if (this.compareList.length === 1) {
+                window.location.href = '{% url 'marketplace:compare' %}?p1=' + this.compareList[0].id;
+            } else {
+                window.location.href = '{% url 'marketplace:compare' %}';
+            }
+        }
+    }" x-show="compareList.length > 0" x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="translate-y-full opacity-0" x-transition:enter-end="translate-y-0 opacity-100" x-transition:leave="transition ease-in duration-200 transform" x-transition:leave-start="translate-y-0 opacity-100" x-transition:leave-end="translate-y-full opacity-0" x-cloak
+         class="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 w-full max-w-2xl px-4 pb-4 pointer-events-none">
+        
+        <div class="pointer-events-auto bg-charcoal-900/95 border border-charcoal-700/80 text-white rounded-2xl p-4 shadow-2xl backdrop-blur-xl flex items-center justify-between gap-4">
+            <div class="flex items-center space-x-3 overflow-x-auto py-1">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="text-xs font-bold font-heading whitespace-nowrap">Compare (<span x-text="compareList.length"></span>/2)</span>
+                </div>
+                
+                <!-- Thumbnails of items queued -->
+                <div class="flex items-center space-x-2">
+                    <template x-for="item in compareList" :key="item.id">
+                        <div class="relative group bg-charcoal-800 border border-charcoal-700 rounded-xl px-2.5 py-1.5 flex items-center space-x-2 shrink-0">
+                            <span class="text-xs font-medium text-slate-200 truncate max-w-[110px]" x-text="item.title"></span>
+                            <button type="button" @click="removeItem(item.id)" class="text-slate-400 hover:text-rose-400 transition" title="Remove">
+                                <i data-lucide="x" class="w-3 h-3"></i>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex items-center space-x-2 shrink-0">
+                <button type="button" @click="clearAll()" class="text-[11px] text-slate-400 hover:text-rose-400 transition px-2">
+                    Clear
+                </button>
+                <button type="button" @click="goToCompare()"
+                        class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-500/20 transition flex items-center space-x-1.5">
+                    <i data-lucide="scale" class="w-3.5 h-3.5"></i>
+                    <span>Compare Now</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Initialize Lucide Icons & Global Helpers -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+
+            // Register GSAP ScrollTrigger if available
+            if (window.gsap && window.ScrollTrigger) {
+                gsap.registerPlugin(ScrollTrigger);
+            }
+        });
+
+        // Global Helper to Add Items to Comparison Tray
+        window.addToCompare = function(id, title, img) {
+            let list = JSON.parse(localStorage.getItem('cg_compare_list') || '[]');
+            if (list.some(item => item.id === id)) {
+                return;
+            }
+            if (list.length >= 2) {
+                list.shift(); // Keep maximum 2 items for direct A vs B comparison
+            }
+            list.push({ id: id, title: title, img: img });
+            localStorage.setItem('cg_compare_list', JSON.stringify(list));
+            window.dispatchEvent(new CustomEvent('cg-compare-update'));
+            setTimeout(() => { if (window.lucide) lucide.createIcons(); }, 100);
+        };
+    </script>
+</body>
+</html>

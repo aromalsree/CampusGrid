@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Order #{{ order.order_number }} | CampusGrid{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    
+    <!-- Top Bar -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
+        <div>
+            <div class="flex items-center space-x-2">
+                <h1 class="font-heading text-2xl font-extrabold text-slate-900 dark:text-white">Order #{{ order.order_number }}</h1>
+                <span class="px-3 py-0.5 rounded-full text-xs font-bold 
+                    {% if order.order_status == 'COMPLETED' %}bg-emerald-500/10 text-emerald-500 border border-emerald-500/20
+                    {% elif order.order_status == 'CANCELLED' %}bg-rose-500/10 text-rose-500 border border-rose-500/20
+                    {% else %}bg-amber-500/10 text-amber-500 border border-amber-500/20{% endif %}">
+                    {{ order.get_order_status_display }}
+                </span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Placed on {{ order.created_at|date:"F d, Y at h:i A" }}</p>
+        </div>
+
+        <a href="{% url 'marketplace:orders_list' %}" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
+            ← Back to Orders
+        </a>
+    </div>
+
+    <!-- Status Progression Visual Bar -->
+    <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Campus Handover Progress</h3>
+        <div class="grid grid-cols-4 gap-2 text-center text-xs">
+            <div class="space-y-1">
+                <div class="w-8 h-8 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center mx-auto shadow">✓</div>
+                <span class="font-semibold text-slate-800 dark:text-slate-200 block">Placed</span>
+            </div>
+            <div class="space-y-1">
+                <div class="w-8 h-8 rounded-full {% if order.order_status in 'CONFIRMED,READY,COMPLETED' %}bg-emerald-500 text-white{% else %}bg-slate-100 dark:bg-navy-900 text-slate-400{% endif %} font-bold flex items-center justify-center mx-auto">
+                    {% if order.order_status in 'CONFIRMED,READY,COMPLETED' %}✓{% else %}2{% endif %}
+                </div>
+                <span class="font-semibold text-slate-800 dark:text-slate-200 block">Confirmed</span>
+            </div>
+            <div class="space-y-1">
+                <div class="w-8 h-8 rounded-full {% if order.order_status in 'READY,COMPLETED' %}bg-emerald-500 text-white{% else %}bg-slate-100 dark:bg-navy-900 text-slate-400{% endif %} font-bold flex items-center justify-center mx-auto">
+                    {% if order.order_status in 'READY,COMPLETED' %}✓{% else %}3{% endif %}
+                </div>
+                <span class="font-semibold text-slate-800 dark:text-slate-200 block">Ready</span>
+            </div>
+            <div class="space-y-1">
+                <div class="w-8 h-8 rounded-full {% if order.order_status == 'COMPLETED' %}bg-emerald-500 text-white{% else %}bg-slate-100 dark:bg-navy-900 text-slate-400{% endif %} font-bold flex items-center justify-center mx-auto">
+                    {% if order.order_status == 'COMPLETED' %}✓{% else %}4{% endif %}
+                </div>
+                <span class="font-semibold text-slate-800 dark:text-slate-200 block">Completed</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ORDER ITEMS TABLE -->
+    <div class="bg-white dark:bg-navy-800 rounded-3xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+        <div class="p-6 border-b border-slate-200 dark:border-slate-700">
+            <h3 class="font-heading font-bold text-base text-slate-900 dark:text-white">Ordered Items</h3>
+        </div>
+
+        <div class="divide-y divide-slate-100 dark:divide-slate-700/60 p-6 space-y-4">
+            {% for item in order.items.all %}
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 first:pt-0">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-14 h-14 rounded-xl bg-slate-100 dark:bg-navy-900 overflow-hidden shrink-0">
+                            {% if item.product and item.product.primary_image %}
+                                <img src="{{ item.product.primary_image.url }}" class="w-full h-full object-cover">
+                            {% else %}
+                                <i data-lucide="package" class="w-6 h-6 text-slate-400 m-4"></i>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <h4 class="font-heading font-bold text-sm text-slate-900 dark:text-white">
+                                {{ item.product_title }}
+                            </h4>
+                            <span class="text-xs text-slate-400 block">
+                                Qty: {{ item.quantity }} • Type: {{ item.item_type }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <!-- Digital download CTA -->
+                        {% if item.item_type == 'DIGITAL' and item.product %}
+                            <a href="{% url 'marketplace:digital_download' slug=item.product.slug %}"
+                               class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow transition flex items-center space-x-1.5">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                                <span>Download File</span>
+                            </a>
+                        {% endif %}
+
+                        <span class="text-base font-black text-slate-900 dark:text-white">
+                            ₹{{ item.subtotal|floatformat:0 }}
+                        </span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="p-6 bg-slate-50 dark:bg-navy-900/60 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center">
+            <span class="text-sm font-bold text-slate-900 dark:text-white">Total Paid / Handover Amount</span>
+            <span class="text-2xl font-black text-emerald-500">₹{{ order.total_amount|floatformat:0 }}</span>
+        </div>
+    </div>
+
+    <!-- HANDOVER & PAYMENT INFO -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 space-y-2 text-xs">
+            <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white pb-2 border-b border-slate-200 dark:border-slate-700">
+                Handover Location
+            </h3>
+            <div><span class="text-slate-400">Recipient:</span> <strong class="text-slate-200">{{ order.full_name }}</strong></div>
+            <div><span class="text-slate-400">Phone:</span> <strong class="text-slate-200">{{ order.phone }}</strong></div>
+            <div><span class="text-slate-400">Campus:</span> <strong class="text-slate-200">{{ order.campus }}</strong></div>
+            {% if order.delivery_location_notes %}
+                <div><span class="text-slate-400">Meetup Spot:</span> <span class="text-slate-300">{{ order.delivery_location_notes }}</span></div>
+            {% endif %}
+        </div>
+
+        <div class="bg-white dark:bg-navy-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 space-y-2 text-xs">
+            <h3 class="font-heading font-bold text-sm text-slate-900 dark:text-white pb-2 border-b border-slate-200 dark:border-slate-700">
+                Payment Status
+            </h3>
+            <div><span class="text-slate-400">Method:</span> <strong class="text-slate-200">{{ order.get_payment_method_display }}</strong></div>
+            <div><span class="text-slate-400">Status:</span> <span class="font-bold text-emerald-500">{{ order.get_payment_status_display }}</span></div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
