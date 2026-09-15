@@ -1,4 +1,5 @@
 
+
 # Users  - module
 list of all tasks
 - Create user modules with AbstractUser
@@ -56,7 +57,7 @@ This document outlines the project tasks divided among **4 developers**, categor
 * **Overview:** Establish robust security layer rules to handle permissions, user groups, and view restrictions across the platform.
 
 ### Tasks:
-- [ ] **Task 1.1:** Create a custom user model extending `AbstractUser` with required fields (e.g., bio, phone number, profile image).
+- [x] **Task 1.1:** Create a custom user model extending `AbstractUser` with required fields (e.g., bio, phone number, profile image).
 - [ ] **Task 3.1:** Set up dynamic Role-Based Access Control (RBAC) or standard user groups (e.g., Admin, Manager, Standard User) with granular permission levels.
 - [ ] **Task 3.2:** Develop access control decorators or class-based view mixins to restrict routes based on roles.
 - [ ] **Task 3.3:** Apply permission checks across all dashboard routes and administration views to block unauthorized access.

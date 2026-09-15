@@ -42,3 +42,4 @@ class App_users(AbstractUser):
     user_roles = models.CharField(max_length=10, choices=Roles.choices, default=Roles.USER)
     institution = models.CharField(max_length=120)
     phone = models.CharField(max_length=17,validators=[phone_regex_validator],blank=True)
+    
