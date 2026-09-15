@@ -1,0 +1,17 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}500 — Server Error | CampusGrid{% endblock %}
+
+{% block content %}
+<div class="cg-container" style="padding: 5rem 1.5rem; text-align: center;">
+    <div style="font-size: 5rem; font-weight: 900; color: var(--cg-rose-600); line-height: 1; margin-bottom: 1rem;">
+        500
+    </div>
+    <h1 style="font-size: 2rem; margin-bottom: 0.75rem;">CampusGrid System Error</h1>
+    <p class="text-muted" style="max-width: 480px; margin: 0 auto 2rem; font-size: 1rem;">
+        Something unexpected occurred while processing your request. Our technical staff has been notified.
+    </p>
+    <a href="/" class="btn btn-primary">Return to Homepage</a>
+</div>
+{% endblock %}

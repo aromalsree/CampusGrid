@@ -1,0 +1,32 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Browse Categories | CampusGrid{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/marketplace.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cg-container" style="padding-top: 2rem; padding-bottom: 4rem;">
+    {% include "base/breadcrumbs.html" with breadcrumb_current="Categories" %}
+
+    <div style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">Marketplace Categories</h1>
+        <p class="text-sm text-muted">Explore items, study assets, and campus equipment organized by faculty domain</p>
+    </div>
+
+    <div class="categories-grid" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
+        {% if categories %}
+            {% for category in categories %}
+                {% include "components/category_card.html" with category=category %}
+            {% endfor %}
+        {% else %}
+            {% include "components/category_card.html" with category=None %}
+            {% include "components/category_card.html" with category=None %}
+            {% include "components/category_card.html" with category=None %}
+            {% include "components/category_card.html" with category=None %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

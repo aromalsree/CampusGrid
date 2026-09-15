@@ -1,0 +1,18 @@
+<nav aria-label="Breadcrumb" style="padding: 1rem 0; font-size: 0.875rem; color: var(--cg-slate-500);">
+    <div class="cg-container" style="display: flex; align-items: center; gap: 0.5rem;">
+        <a href="/" style="color: var(--cg-slate-500); display: inline-flex; align-items: center; gap: 0.25rem;">Home</a>
+        <span>/</span>
+        {% if breadcrumbs %}
+            {% for item in breadcrumbs %}
+                {% if forloop.last %}
+                    <span style="color: var(--cg-navy-900); font-weight: 600;">{{ item.title }}</span>
+                {% else %}
+                    <a href="{{ item.url }}" style="color: var(--cg-slate-500);">{{ item.title }}</a>
+                    <span>/</span>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <span style="color: var(--cg-navy-900); font-weight: 600;">{% block breadcrumb_current %}Page{% endblock %}</span>
+        {% endif %}
+    </div>
+</nav>

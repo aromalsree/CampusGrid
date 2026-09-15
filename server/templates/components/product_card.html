@@ -1,0 +1,50 @@
+{% load static %}
+<div class="cg-product-card">
+    <div class="cg-card-media">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.title }}" loading="lazy">
+        {% elif product.primary_image %}
+            <img src="{{ product.primary_image.url }}" alt="{{ product.title }}" loading="lazy">
+        {% else %}
+            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--cg-slate-100); color: var(--cg-slate-400); font-size: 0.875rem; font-weight: 500;">
+                Campus Listing
+            </div>
+        {% endif %}
+        <div style="position: absolute; top: 0.75rem; right: 0.75rem; z-index: 2;">
+            {% include "components/wishlist_button.html" with product=product in_wishlist=product.in_wishlist %}
+        </div>
+    </div>
+    
+    <div class="cg-card-body">
+        <div class="cg-card-tags">
+            {% include "components/seller_badge.html" with is_verified=product.seller.is_verified %}
+            <span class="cg-badge cg-badge-slate">{{ product.condition|default:"Good" }}</span>
+        </div>
+        
+        <h3 class="cg-card-title">
+            <a href="{% if product.slug %}/products/{{ product.slug }}/{% else %}/products/{{ product.id|default:'1' }}/{% endif %}">
+                {{ product.title|default:"Campus Textbook / Hardware" }}
+            </a>
+        </h3>
+
+        <div style="display: flex; align-items: center; gap: 0.375rem; font-size: 0.8125rem; color: var(--cg-slate-500); margin-bottom: 0.75rem;">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            <span>{{ product.campus|default:"Campus Handover" }}</span>
+        </div>
+
+        <div class="cg-card-footer">
+            <div class="cg-price-wrap">
+                <span class="cg-price">&#8377;{{ product.price|default:"450" }}</span>
+                {% if product.listing_type == "RENTAL" %}
+                    <span class="cg-price-unit">per day</span>
+                {% endif %}
+            </div>
+            <a href="{% if product.slug %}/products/{{ product.slug }}/{% else %}/products/{{ product.id|default:'1' }}/{% endif %}" class="btn btn-sm btn-outline">
+                View
+            </a>
+        </div>
+    </div>
+</div>

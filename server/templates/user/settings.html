@@ -1,0 +1,55 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Account Settings | CampusGrid{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/user.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cg-container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+    <div class="dashboard-wrapper">
+        {% include "components/dashboard_sidebar.html" with active_tab="settings" %}
+
+        <main>
+            <div style="background: #FFFFFF; border: 1px solid var(--cg-border); border-radius: var(--radius-lg); padding: 2rem;">
+                <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Account Settings</h2>
+                <p class="text-sm text-muted" style="margin-bottom: 2rem;">Manage your notification preferences and campus privacy</p>
+
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.25rem; border-bottom: 1px solid var(--cg-slate-100);">
+                        <div>
+                            <div style="font-weight: 600; color: var(--cg-navy-900);">Email Alerts for Student Requests</div>
+                            <div class="text-sm text-muted">Receive alerts when a buyer matches your listed items</div>
+                        </div>
+                        <input type="checkbox" checked style="width: 18px; height: 18px; accent-color: var(--cg-emerald-600);">
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.25rem; border-bottom: 1px solid var(--cg-slate-100);">
+                        <div>
+                            <div style="font-weight: 600; color: var(--cg-navy-900);">WhatsApp Handover Visibility</div>
+                            <div class="text-sm text-muted">Allow verified peers to initiate WhatsApp chats for listings</div>
+                        </div>
+                        <input type="checkbox" checked style="width: 18px; height: 18px; accent-color: var(--cg-emerald-600);">
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; color: var(--cg-navy-900);">Campus Selection</div>
+                            <div class="text-sm text-muted">Primary campus for meetup & handover filters</div>
+                        </div>
+                        <select class="form-control" style="width: 220px;">
+                            <option>IIT Bombay</option>
+                            <option>BITS Pilani</option>
+                            <option>NIT Trichy</option>
+                            <option>DTU Delhi</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

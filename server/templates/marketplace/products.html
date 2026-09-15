@@ -1,0 +1,91 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Marketplace Catalogue | CampusGrid{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/marketplace.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cg-container">
+    {% include "base/breadcrumbs.html" with breadcrumb_current="Marketplace Catalogue" %}
+
+    <div class="marketplace-layout">
+        <!-- Filter Sidebar -->
+        <aside class="filter-sidebar">
+            <h3 style="font-size: 1.15rem; margin-bottom: 1.25rem;">Filter Listings</h3>
+
+            <form id="filter-form" method="GET" action="">
+                <div class="filter-group">
+                    <div class="filter-title">Category</div>
+                    <label class="filter-item">
+                        <input type="radio" name="category" value="" {% if not request.GET.category %}checked{% endif %}>
+                        <span>All Categories</span>
+                    </label>
+                    <label class="filter-item">
+                        <input type="radio" name="category" value="laptops" {% if request.GET.category == 'laptops' %}checked{% endif %}>
+                        <span>Laptops & Electronics</span>
+                    </label>
+                    <label class="filter-item">
+                        <input type="radio" name="category" value="books" {% if request.GET.category == 'books' %}checked{% endif %}>
+                        <span>Textbooks & Guides</span>
+                    </label>
+                    <label class="filter-item">
+                        <input type="radio" name="category" value="notes" {% if request.GET.category == 'notes' %}checked{% endif %}>
+                        <span>Academic Notes & PDFs</span>
+                    </label>
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-title">Listing Type</div>
+                    <label class="filter-item">
+                        <input type="radio" name="type" value="" {% if not request.GET.type %}checked{% endif %}>
+                        <span>All Types</span>
+                    </label>
+                    <label class="filter-item">
+                        <input type="radio" name="type" value="sell" {% if request.GET.type == 'sell' %}checked{% endif %}>
+                        <span>Direct Buy / Sell</span>
+                    </label>
+                    <label class="filter-item">
+                        <input type="radio" name="type" value="rental" {% if request.GET.type == 'rental' %}checked{% endif %}>
+                        <span>Campus Rental</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-sm btn-primary btn-full">Apply Filters</button>
+            </form>
+        </aside>
+
+        <!-- Main Product Results Grid -->
+        <main>
+            <div class="cg-flex-between" style="margin-bottom: 1.5rem;">
+                <div>
+                    <h1 style="font-size: 1.5rem;">Campus Catalogue</h1>
+                    <span class="text-sm text-muted">{{ products|length|default:"Showing listings" }}</span>
+                </div>
+            </div>
+
+            {% if products %}
+                <div class="product-grid">
+                    {% for product in products %}
+                        {% include "components/product_card.html" with product=product %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="product-grid">
+                    {% include "components/product_card.html" with product=None %}
+                    {% include "components/product_card.html" with product=None %}
+                    {% include "components/product_card.html" with product=None %}
+                </div>
+            {% endif %}
+
+            {% include "components/pagination.html" with page_obj=page_obj %}
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/marketplace.js' %}"></script>
+{% endblock %}

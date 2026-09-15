@@ -1,0 +1,61 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Electronics Comparison Matrix | CampusGrid{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/marketplace.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cg-container" style="padding-top: 2rem; padding-bottom: 4rem;">
+    {% include "base/breadcrumbs.html" with breadcrumb_current="Electronics Comparison Matrix" %}
+
+    <div style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">Hardware Comparison Engine</h1>
+        <p class="text-sm text-muted">Objective side-by-side spec evaluator for campus laptops, tablets, and devices</p>
+    </div>
+
+    <table class="compare-matrix-table">
+        <thead>
+            <tr>
+                <th style="width: 25%;">Specification</th>
+                <th style="width: 37.5%;">Device A (MacBook Pro M1)</th>
+                <th style="width: 37.5%;">Device B (ThinkPad T14)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Price</strong></td>
+                <td><span style="font-weight: 700; color: var(--cg-emerald-600);">&#8377;58,000</span> (Higher Value)</td>
+                <td><span style="font-weight: 700;">&#8377;46,000</span> <span class="cg-badge cg-badge-emerald">&check; Lower Price</span></td>
+            </tr>
+            <tr>
+                <td><strong>Processor</strong></td>
+                <td>Apple M1 8-Core <span class="cg-badge cg-badge-emerald">&check; Higher Performance</span></td>
+                <td>Intel Core i5-1135G7</td>
+            </tr>
+            <tr>
+                <td><strong>RAM</strong></td>
+                <td>16 GB Unified</td>
+                <td>16 GB DDR4</td>
+            </tr>
+            <tr>
+                <td><strong>Storage</strong></td>
+                <td>512 GB NVMe SSD</td>
+                <td>512 GB PCIe SSD</td>
+            </tr>
+            <tr>
+                <td><strong>Battery Health</strong></td>
+                <td>91% Battery Health</td>
+                <td>94% Battery Health <span class="cg-badge cg-badge-emerald">&check; Better Battery</span></td>
+            </tr>
+            <tr>
+                <td><strong>Condition</strong></td>
+                <td><span class="cg-badge cg-badge-slate">Excellent</span></td>
+                <td><span class="cg-badge cg-badge-slate">Good</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}{{ product.title|default:"Product Details" }} | CampusGrid{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/marketplace.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cg-container" style="padding-top: 1.5rem; padding-bottom: 4rem;">
+    {% include "base/breadcrumbs.html" with breadcrumb_current=product.title|default:"Product Details" %}
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 1.5rem;">
+        <!-- Left: Product Image Showcase -->
+        <div>
+            <div style="background: #FFFFFF; border: 1px solid var(--cg-border); border-radius: var(--radius-xl); overflow: hidden; padding: 1.5rem; text-align: center;">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.title }}" style="max-height: 420px; margin: 0 auto; object-fit: contain;">
+                {% else %}
+                    <div style="height: 360px; display: flex; align-items: center; justify-content: center; background: var(--cg-slate-100); border-radius: var(--radius-lg); color: var(--cg-slate-400);">
+                        Product Showcase Image
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right: Details & Handover Call to Action -->
+        <div>
+            <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem;">
+                {% include "components/seller_badge.html" with is_verified=product.seller.is_verified %}
+                <span class="cg-badge cg-badge-slate">{{ product.condition|default:"Good Condition" }}</span>
+            </div>
+
+            <h1 style="font-size: 2rem; margin-bottom: 0.75rem;">{{ product.title|default:"MacBook Pro M1 (16GB, 512GB)" }}</h1>
+
+            <div style="font-size: 1.85rem; font-weight: 800; color: var(--cg-navy-900); margin-bottom: 1.5rem;">
+                &#8377;{{ product.price|default:"58,000" }}
+            </div>
+
+            <div style="background: var(--cg-slate-50); border: 1px solid var(--cg-border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.75rem;">
+                <h4 style="font-size: 0.9375rem; margin-bottom: 0.5rem;">Seller Information</h4>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-weight: 600;">{{ product.seller.username|default:"alex_cs" }}</div>
+                        <div class="text-xs text-muted">{{ product.seller.institution|default:"Department of Computer Science" }}</div>
+                    </div>
+                    {% include "components/wishlist_button.html" with product=product %}
+                </div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Description</h3>
+                <p class="text-sm text-muted" style="line-height: 1.7;">
+                    {{ product.description|default:"Gently used for 2 semesters of coursework. Battery health is at 91%. Comes with original 67W charger and box. Perfect for CS/IT students needing a fast build machine." }}
+                </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <a href="https://wa.me/{{ product.seller.phone|default:'' }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg" style="background-color: #25D366; border-color: #25D366; color: #FFFFFF;">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+                    </svg>
+                    <span>Chat on WhatsApp for Handover</span>
+                </a>
+                <a href="/compare/?item1={{ product.id }}" class="btn btn-outline btn-lg">
+                    Compare Specs
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

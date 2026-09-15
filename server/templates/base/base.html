@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="{% block meta_description %}CampusGrid — Multi-Campus P2P Marketplace & Academic Exchange for Students{% endblock %}">
+    <title>{% block title %}CampusGrid — Student Marketplace{% endblock %}</title>
+
+    <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Global Design System & Component Styles -->
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Top Navigation Header -->
+    {% include "base/navbar.html" %}
+
+    <!-- Global Alert / Messages System -->
+    {% include "base/messages.html" %}
+
+    <!-- Main Content Container -->
+    <main id="main-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Global Platform Footer -->
+    {% include "base/footer.html" %}
+
+    <!-- Scripts -->
+    <script src="{% static 'js/global.js' %}"></script>
+    <script src="{% static 'js/navigation.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,60 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}My Listings | CampusGrid{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cg-container">
+    <div class="dashboard-wrapper">
+        {% include "components/dashboard_sidebar.html" with active_tab="listings" %}
+
+        <main>
+            <div class="cg-flex-between" style="margin-bottom: 1.75rem;">
+                <div>
+                    <h1 style="font-size: 1.75rem;">My Active Listings</h1>
+                    <p class="text-sm text-muted">Manage the items, hardware, and study kits you have posted</p>
+                </div>
+                <a href="/seller/products/add/" class="btn btn-primary btn-sm">+ Add Listing</a>
+            </div>
+
+            <div style="background: #FFFFFF; border: 1px solid var(--cg-border); border-radius: var(--radius-lg); overflow: hidden;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9375rem;">
+                    <thead>
+                        <tr style="background: var(--cg-slate-50); border-bottom: 1px solid var(--cg-border);">
+                            <th style="padding: 1rem 1.25rem;">Item</th>
+                            <th style="padding: 1rem 1.25rem;">Type</th>
+                            <th style="padding: 1rem 1.25rem;">Price</th>
+                            <th style="padding: 1rem 1.25rem;">Status</th>
+                            <th style="padding: 1rem 1.25rem; text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--cg-slate-100);">
+                            <td style="padding: 1rem 1.25rem; font-weight: 600;">MacBook Pro M1 (16GB, 512GB)</td>
+                            <td style="padding: 1rem 1.25rem;"><span class="cg-badge cg-badge-slate">Physical</span></td>
+                            <td style="padding: 1rem 1.25rem; font-weight: 700;">&#8377;58,000</td>
+                            <td style="padding: 1rem 1.25rem;"><span class="cg-badge cg-badge-emerald">Active</span></td>
+                            <td style="padding: 1rem 1.25rem; text-align: right;">
+                                <a href="#" class="btn btn-sm btn-outline">Edit</a>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--cg-slate-100);">
+                            <td style="padding: 1rem 1.25rem; font-weight: 600;">Data Structures & Algorithms Handwritten Notes</td>
+                            <td style="padding: 1rem 1.25rem;"><span class="cg-badge cg-badge-slate">Digital PDF</span></td>
+                            <td style="padding: 1rem 1.25rem; font-weight: 700;">&#8377;120</td>
+                            <td style="padding: 1rem 1.25rem;"><span class="cg-badge cg-badge-emerald">Active</span></td>
+                            <td style="padding: 1rem 1.25rem; text-align: right;">
+                                <a href="#" class="btn btn-sm btn-outline">Edit</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

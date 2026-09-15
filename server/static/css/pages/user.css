@@ -1,0 +1,67 @@
+/* User Authentication & Profile Styles */
+.auth-page-container {
+  min-height: calc(100vh - 72px - 250px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.25rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 480px;
+  background: #FFFFFF;
+  border: 1px solid var(--cg-border);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-header h1 {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cg-navy-800);
+  margin-bottom: 0.375rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.6875rem 1rem;
+  border: 1px solid var(--cg-slate-300);
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  color: var(--cg-navy-900);
+  background: #FFFFFF;
+  transition: var(--transition);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--cg-emerald-500);
+  box-shadow: 0 0 0 3px var(--cg-emerald-100);
+}
+
+.edu-badge-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--cg-emerald-600);
+  font-weight: 600;
+  margin-top: 0.375rem;
+}

@@ -1,0 +1,51 @@
+{% load static %}
+<header class="cg-header">
+    <div class="cg-container">
+        <div class="cg-nav-inner">
+            <!-- Brand Logo -->
+            <a href="/" class="cg-brand" aria-label="CampusGrid Home">
+                <div class="cg-brand-icon">CG</div>
+                <span>CampusGrid</span>
+            </a>
+
+            <!-- Primary Navigation Links -->
+            <nav class="cg-nav-links" aria-label="Primary Navigation">
+                <a href="/" class="cg-nav-link">Home</a>
+                <a href="/products/" class="cg-nav-link">Marketplace</a>
+                <a href="/compare/" class="cg-nav-link">Compare</a>
+                <a href="/requests/" class="cg-nav-link">Need Board</a>
+            </nav>
+
+            <!-- Action & Auth Controls -->
+            <div class="cg-nav-actions">
+                {% if request.user.is_authenticated %}
+                    <a href="/wishlist/" class="cg-nav-link" title="Wishlist" aria-label="Wishlist">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </a>
+                    <a href="/notifications/" class="cg-nav-link" title="Notifications" aria-label="Notifications">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        </svg>
+                    </a>
+                    <a href="/dashboard/" class="cg-nav-link">Dashboard</a>
+                    <a href="/profile/" class="btn btn-sm btn-outline">{{ request.user.username|default:"Profile" }}</a>
+                    <a href="/seller/products/add/" class="btn btn-sm btn-primary">+ Sell Item</a>
+                {% else %}
+                    <a href="/login/" class="btn btn-sm btn-outline">Log in</a>
+                    <a href="/register/" class="btn btn-sm btn-primary">Join CampusGrid</a>
+                {% endif %}
+
+                <!-- Mobile Menu Hamburger Button -->
+                <button type="button" class="btn btn-sm btn-outline" data-mobile-menu-toggle aria-label="Open Mobile Menu" style="display: none;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Responsive Mobile Drawer Include -->
+    {% include "base/mobile_nav.html" %}
+</header>

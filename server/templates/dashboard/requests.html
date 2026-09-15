@@ -1,0 +1,41 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Student Need Board | CampusGrid{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cg-container">
+    <div class="dashboard-wrapper">
+        {% include "components/dashboard_sidebar.html" with active_tab="requests" %}
+
+        <main>
+            <div class="cg-flex-between" style="margin-bottom: 1.75rem;">
+                <div>
+                    <h1 style="font-size: 1.75rem;">Student Need Requests</h1>
+                    <p class="text-sm text-muted">Post items you urgently need or fulfill requests posted by campus peers</p>
+                </div>
+                <button type="button" class="btn btn-primary btn-sm">+ Post a Request</button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="background: #FFFFFF; border: 1px solid var(--cg-border); border-radius: var(--radius-lg); padding: 1.5rem;">
+                    <div class="cg-flex-between" style="margin-bottom: 0.5rem;">
+                        <span class="cg-badge cg-badge-amber">Wanted to Buy / Borrow</span>
+                        <span style="font-weight: 700; color: var(--cg-emerald-600);">Budget: Up to &#8377;1,200</span>
+                    </div>
+                    <h3 style="font-size: 1.15rem; margin-bottom: 0.35rem;">Scientific Calculator (Casio fx-991EX Classwiz)</h3>
+                    <p class="text-sm text-muted" style="margin-bottom: 1rem;">Needed for Mid-semester exam next week. Can meet anywhere on academic quad.</p>
+                    <div class="cg-flex-between" style="font-size: 0.8125rem; color: var(--cg-slate-500); padding-top: 0.75rem; border-top: 1px solid var(--cg-slate-100);">
+                        <span>Posted by <strong>priya_ee</strong> &bull; IIT Bombay</span>
+                        <a href="#" class="btn btn-sm btn-outline">Offer Item</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

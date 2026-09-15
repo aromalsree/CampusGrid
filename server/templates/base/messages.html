@@ -1,0 +1,12 @@
+{% if messages %}
+<div class="cg-messages-wrap" aria-live="polite">
+    {% for message in messages %}
+    <div class="cg-alert cg-alert-{{ message.tags|default:'info' }}" role="alert">
+        <div style="display: flex; align-items: center; gap: 0.625rem;">
+            <span>{{ message }}</span>
+        </div>
+        <button type="button" class="cg-alert-close" aria-label="Close alert">&times;</button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

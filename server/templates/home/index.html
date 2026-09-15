@@ -1,0 +1,128 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}CampusGrid — Multi-Campus P2P Marketplace & Academic Exchange{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="cg-container">
+        <div class="hero-content">
+            <div class="hero-pill">
+                <span>Verified Peer Network</span>
+            </div>
+            <h1 class="hero-title">
+                The Campus Marketplace Built for <span>Verified Students</span>
+            </h1>
+            <p class="hero-subtitle">
+                Buy, sell, and rent engineering hardware, curated semester kits, verified study notes, and campus essentials with zero middleman fees.
+            </p>
+            
+            <div class="hero-search-wrap">
+                {% include "components/search_bar.html" with placeholder="Search MacBook, engineering textbooks, lab kits, DSA notes..." %}
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                <a href="/products/" class="btn btn-navy">Explore Marketplace</a>
+                <a href="/compare/" class="btn btn-outline">Compare Electronics</a>
+                <a href="/seller/products/add/" class="btn btn-outline-primary">+ Post a Listing</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Value Proposition Features -->
+<section class="cg-section" style="background: #FFFFFF; border-bottom: 1px solid var(--cg-border);">
+    <div class="cg-container">
+        <div class="feature-grid">
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--cg-emerald-50); color: var(--cg-emerald-600); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.35rem;">Verified University Peers</h3>
+                    <p class="text-sm text-muted">All active profiles validated with recognized university email credentials.</p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--cg-amber-50); color: var(--cg-amber-600); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.35rem;">Zero Middleman Fees</h3>
+                    <p class="text-sm text-muted">Direct student-to-student transactions with Cash on Handover or digital payment.</p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--cg-slate-100); color: var(--cg-navy-900); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.35rem;">WhatsApp Campus Meetup</h3>
+                    <p class="text-sm text-muted">One-click deep link to coordinate safe campus handover directly on WhatsApp.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Categories -->
+<section class="cg-section">
+    <div class="cg-container">
+        <div class="cg-flex-between" style="margin-bottom: 1.5rem;">
+            <div>
+                <h2>Popular Categories</h2>
+                <p class="text-sm text-muted">Find exactly what you need for this semester</p>
+            </div>
+            <a href="/products/" class="btn btn-sm btn-outline">View All &rarr;</a>
+        </div>
+
+        <div class="categories-grid">
+            {% if categories %}
+                {% for category in categories %}
+                    {% include "components/category_card.html" with category=category %}
+                {% endfor %}
+            {% else %}
+                {% include "components/category_card.html" with category=None %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Campus Listings -->
+<section class="cg-section" style="background: var(--cg-slate-100); border-top: 1px solid var(--cg-border);">
+    <div class="cg-container">
+        <div class="cg-flex-between" style="margin-bottom: 1.5rem;">
+            <div>
+                <h2>Recent Campus Listings</h2>
+                <p class="text-sm text-muted">Freshly posted items from peers across your university</p>
+            </div>
+            <a href="/products/" class="btn btn-sm btn-outline">Browse Catalogue &rarr;</a>
+        </div>
+
+        <div class="product-grid">
+            {% if featured_products %}
+                {% for product in featured_products %}
+                    {% include "components/product_card.html" with product=product %}
+                {% endfor %}
+            {% else %}
+                {% include "components/product_card.html" with product=None %}
+                {% include "components/product_card.html" with product=None %}
+                {% include "components/product_card.html" with product=None %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

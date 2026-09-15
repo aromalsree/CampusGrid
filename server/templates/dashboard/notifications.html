@@ -1,0 +1,46 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Notifications | CampusGrid{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cg-container">
+    <div class="dashboard-wrapper">
+        {% include "components/dashboard_sidebar.html" with active_tab="notifications" %}
+
+        <main>
+            <div class="cg-flex-between" style="margin-bottom: 1.75rem;">
+                <div>
+                    <h1 style="font-size: 1.75rem;">Campus Alerts & Notifications</h1>
+                    <p class="text-sm text-muted">Stay up to date on your inquiries, handovers, and requests</p>
+                </div>
+                <button type="button" class="btn btn-outline btn-sm">Mark All as Read</button>
+            </div>
+
+            <div style="background: #FFFFFF; border: 1px solid var(--cg-border); border-radius: var(--radius-lg); overflow: hidden;">
+                <div style="padding: 1.25rem; border-bottom: 1px solid var(--cg-slate-100); display: flex; align-items: flex-start; gap: 1rem; background: var(--cg-slate-50);">
+                    <div style="width: 10px; height: 10px; border-radius: var(--radius-full); background: var(--cg-emerald-600); margin-top: 0.5rem; flex-shrink: 0;"></div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; color: var(--cg-navy-900);">Student Verification Approved!</div>
+                        <p class="text-sm text-muted" style="margin-top: 0.25rem;">Your institutional email has been verified. You now have full seller capabilities and the verified badge.</p>
+                        <span class="text-xs text-muted" style="margin-top: 0.5rem; display: block;">2 hours ago</span>
+                    </div>
+                </div>
+
+                <div style="padding: 1.25rem; display: flex; align-items: flex-start; gap: 1rem;">
+                    <div style="width: 10px; height: 10px; border-radius: var(--radius-full); background: transparent; margin-top: 0.5rem; flex-shrink: 0;"></div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; color: var(--cg-navy-900);">New Need Request Match</div>
+                        <p class="text-sm text-muted" style="margin-top: 0.25rem;">A student is seeking "Digital Logic Design notes" &mdash; you have an active listing in this category.</p>
+                        <span class="text-xs text-muted" style="margin-top: 0.5rem; display: block;">Yesterday</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

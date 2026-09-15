@@ -1,0 +1,333 @@
+/* CampusGrid Modular Component Styles */
+
+/* 1. Navbar */
+.cg-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid var(--cg-border);
+  transition: var(--transition);
+}
+
+.cg-header.scrolled {
+  box-shadow: var(--shadow-sm);
+}
+
+.cg-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+  gap: 1.5rem;
+}
+
+.cg-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--cg-navy-900);
+  letter-spacing: -0.02em;
+}
+
+.cg-brand-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--cg-navy-900), var(--cg-emerald-600));
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.cg-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  list-style: none;
+}
+
+.cg-nav-link {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--cg-navy-700);
+  position: relative;
+  padding: 0.25rem 0;
+}
+
+.cg-nav-link:hover, .cg-nav-link.active {
+  color: var(--cg-emerald-600);
+}
+
+.cg-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* 2. Messages & Alerts */
+.cg-messages-wrap {
+  width: 100%;
+  max-width: 1240px;
+  margin: 1rem auto 0 auto;
+  padding: 0 1.25rem;
+}
+
+.cg-alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1.25rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.cg-alert-success {
+  background-color: var(--cg-emerald-50);
+  color: var(--cg-emerald-600);
+  border-color: var(--cg-emerald-100);
+}
+
+.cg-alert-error, .cg-alert-danger {
+  background-color: var(--cg-rose-50);
+  color: var(--cg-rose-600);
+  border-color: #FECDD3;
+}
+
+.cg-alert-warning {
+  background-color: var(--cg-amber-50);
+  color: var(--cg-amber-600);
+  border-color: var(--cg-amber-100);
+}
+
+.cg-alert-info {
+  background-color: var(--cg-slate-100);
+  color: var(--cg-navy-800);
+  border-color: var(--cg-slate-200);
+}
+
+.cg-alert-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.6;
+  font-size: 1.15rem;
+  line-height: 1;
+  padding: 0.25rem;
+  transition: var(--transition);
+}
+.cg-alert-close:hover { opacity: 1; }
+
+/* 3. Product Card */
+.cg-product-card {
+  background: var(--cg-bg-card);
+  border: 1px solid var(--cg-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition);
+  position: relative;
+}
+
+.cg-product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--cg-slate-300);
+}
+
+.cg-card-media {
+  position: relative;
+  width: 100%;
+  padding-top: 65%;
+  background-color: var(--cg-slate-100);
+  overflow: hidden;
+}
+
+.cg-card-media img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.cg-product-card:hover .cg-card-media img {
+  transform: scale(1.03);
+}
+
+.cg-card-body {
+  padding: 1.125rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+.cg-card-tags {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.cg-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+}
+
+.cg-badge-emerald {
+  background: var(--cg-emerald-100);
+  color: var(--cg-emerald-600);
+}
+
+.cg-badge-amber {
+  background: var(--cg-amber-100);
+  color: var(--cg-amber-600);
+}
+
+.cg-badge-slate {
+  background: var(--cg-slate-100);
+  color: var(--cg-slate-500);
+}
+
+.cg-card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--cg-navy-900);
+  margin-bottom: 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cg-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--cg-slate-100);
+}
+
+.cg-price-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.cg-price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--cg-navy-900);
+}
+
+.cg-price-unit {
+  font-size: 0.75rem;
+  color: var(--cg-slate-500);
+}
+
+/* 4. Search Bar */
+.cg-search-bar {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid var(--cg-border);
+  border-radius: var(--radius-full);
+  padding: 0.35rem 0.5rem 0.35rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  width: 100%;
+}
+
+.cg-search-bar:focus-within {
+  border-color: var(--cg-emerald-500);
+  box-shadow: 0 0 0 3px var(--cg-emerald-100);
+}
+
+.cg-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.9375rem;
+  color: var(--cg-navy-900);
+  background: transparent;
+}
+
+/* 5. Footer */
+.cg-footer {
+  background-color: var(--cg-navy-900);
+  color: var(--cg-slate-300);
+  padding-top: 4rem;
+  padding-bottom: 2rem;
+  margin-top: 4rem;
+  border-top: 1px solid var(--cg-navy-800);
+}
+
+.cg-footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+@media (max-width: 900px) {
+  .cg-footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  .cg-footer-grid { grid-template-columns: 1fr; }
+}
+
+.cg-footer-col h4 {
+  color: #FFFFFF;
+  font-size: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.cg-footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cg-footer-link {
+  color: var(--cg-slate-400);
+  font-size: 0.9rem;
+}
+
+.cg-footer-link:hover {
+  color: var(--cg-emerald-400);
+}
+
+.cg-footer-bottom {
+  border-top: 1px solid var(--cg-navy-800);
+  padding-top: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--cg-slate-500);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}

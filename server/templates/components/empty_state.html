@@ -1,0 +1,18 @@
+<div style="text-align: center; padding: 4rem 1.5rem; background: #FFFFFF; border: 1px solid var(--cg-border); border-radius: var(--radius-xl); max-width: 540px; margin: 2rem auto;">
+    <div style="width: 64px; height: 64px; background: var(--cg-slate-100); border-radius: var(--radius-full); display: inline-flex; align-items: center; justify-content: center; color: var(--cg-slate-400); margin-bottom: 1.25rem;">
+        <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+        </svg>
+    </div>
+    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--cg-navy-900); margin-bottom: 0.5rem;">
+        {{ title|default:"No listings found" }}
+    </h3>
+    <p style="font-size: 0.9375rem; color: var(--cg-slate-500); margin-bottom: 1.5rem; line-height: 1.5;">
+        {{ description|default:"Try adjusting your keyword search or filter parameters to find what you are looking for." }}
+    </p>
+    {% if action_url %}
+        <a href="{{ action_url }}" class="btn btn-primary">
+            {{ action_text|default:"Browse All Items" }}
+        </a>
+    {% endif %}
+</div>

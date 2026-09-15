@@ -1,0 +1,67 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Student Dashboard | CampusGrid{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cg-container">
+    <div class="dashboard-wrapper">
+        {% include "components/dashboard_sidebar.html" with active_tab="overview" %}
+
+        <main>
+            <div class="cg-flex-between" style="margin-bottom: 1.75rem;">
+                <div>
+                    <h1 style="font-size: 1.75rem;">Student Hub Overview</h1>
+                    <p class="text-sm text-muted">Welcome back, {{ request.user.username|default:"Student" }}</p>
+                </div>
+                <a href="/seller/products/add/" class="btn btn-primary btn-sm">+ Create New Listing</a>
+            </div>
+
+            <!-- Key Metric Cards -->
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <span class="stat-number">{{ active_listings_count|default:"3" }}</span>
+                    <span class="stat-label">Active Campus Listings</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">{{ wishlist_count|default:"8" }}</span>
+                    <span class="stat-label">Saved Wishlist Items</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">{{ inquiries_count|default:"14" }}</span>
+                    <span class="stat-label">Handover Inquiries</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">{{ unread_alerts_count|default:"2" }}</span>
+                    <span class="stat-label">Unread Notifications</span>
+                </div>
+            </div>
+
+            <!-- Recent Activity Section -->
+            <div style="background: #FFFFFF; border: 1px solid var(--cg-border); border-radius: var(--radius-lg); padding: 1.5rem;">
+                <h3 style="font-size: 1.15rem; margin-bottom: 1rem;">Recent Activity</h3>
+                <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.75rem; border-bottom: 1px solid var(--cg-slate-100);">
+                        <div>
+                            <div style="font-weight: 600; font-size: 0.9375rem;">WhatsApp Handover Initiated</div>
+                            <div class="text-xs text-muted">A verified peer clicked handover for "Engineering Mathematics Vol II"</div>
+                        </div>
+                        <span class="text-xs text-muted">1 hour ago</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; font-size: 0.9375rem;">Need Board Match Found</div>
+                            <div class="text-xs text-muted">A junior posted a request matching your "Arduino Uno Starter Kit"</div>
+                        </div>
+                        <span class="text-xs text-muted">3 hours ago</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

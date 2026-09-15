@@ -1,0 +1,80 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Join CampusGrid | Verified Student Registration{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/user.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-page-container">
+    <div class="auth-card" style="max-width: 520px;">
+        <div class="auth-header">
+            <div class="cg-brand-icon" style="margin: 0 auto 1rem; width: 44px; height: 44px;">CG</div>
+            <h1>Create Student Account</h1>
+            <p class="text-muted text-sm">Join your campus peer network for buying, selling & notes</p>
+        </div>
+
+        <form method="POST" action="">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="cg-alert cg-alert-error" style="margin-bottom: 1.25rem;">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="id_username" class="form-label">Username</label>
+                <input type="text" name="username" id="id_username" class="form-control" required placeholder="alex_cs">
+            </div>
+
+            <div class="form-group">
+                <label for="id_email" class="form-label">University / Academic Email</label>
+                <input type="email" name="email" id="id_email" class="form-control" required placeholder="alex@campus.edu">
+                <div id="edu-detected-badge" class="edu-badge-hint" style="display: none;">
+                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>Academic domain recognized &mdash; automatic student verification eligible!</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_institution" class="form-label">College / University Name</label>
+                <input type="text" name="institution" id="id_institution" class="form-control" required placeholder="e.g. IIT Bombay, BITS Pilani, NIT">
+            </div>
+
+            <div class="form-group">
+                <label for="id_phone" class="form-label">WhatsApp Contact Number (For Handover)</label>
+                <input type="tel" name="phone" id="id_phone" class="form-control" placeholder="+91 98765 43210">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="id_password" class="form-label">Password</label>
+                    <input type="password" name="password" id="id_password" class="form-control" required placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
+                </div>
+                <div class="form-group">
+                    <label for="id_password_confirm" class="form-label">Confirm Password</label>
+                    <input type="password" name="password_confirm" id="id_password_confirm" class="form-control" required placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full" style="margin-top: 1rem;">
+                Register & Verify Account
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--cg-slate-100); font-size: 0.875rem;">
+            <span class="text-muted">Already registered?</span>
+            <a href="/login/" style="color: var(--cg-emerald-600); font-weight: 600; margin-left: 0.25rem;">Log In</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/user.js' %}"></script>
+{% endblock %}

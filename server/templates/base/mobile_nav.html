@@ -1,0 +1,28 @@
+<div id="cg-mobile-nav" class="cg-mobile-drawer" style="display: none;" aria-label="Mobile Navigation">
+    <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div class="cg-brand">
+                <div class="cg-brand-icon">CG</div>
+                <span>CampusGrid</span>
+            </div>
+            <button type="button" data-mobile-menu-toggle aria-label="Close Menu" style="font-size: 1.5rem; line-height: 1;">&times;</button>
+        </div>
+        <nav style="display: flex; flex-direction: column; gap: 0.875rem; margin-top: 1rem;">
+            <a href="/" class="cg-nav-link">Home</a>
+            <a href="/products/" class="cg-nav-link">Marketplace</a>
+            <a href="/compare/" class="cg-nav-link">Compare Electronics</a>
+            <a href="/requests/" class="cg-nav-link">Student Need Board</a>
+            <hr style="border: 0; border-top: 1px solid var(--cg-border); margin: 0.5rem 0;">
+            {% if request.user.is_authenticated %}
+                <a href="/dashboard/" class="cg-nav-link">Dashboard</a>
+                <a href="/profile/" class="cg-nav-link">Profile</a>
+                <a href="/seller/products/add/" class="btn btn-sm btn-primary">+ Sell Item</a>
+                <a href="/logout/" class="btn btn-sm btn-outline">Log out</a>
+            {% else %}
+                <a href="/login/" class="btn btn-full btn-outline">Log in</a>
+                <a href="/register/" class="btn btn-full btn-primary">Join CampusGrid</a>
+            {% endif %}
+        </nav>
+    </div>
+</div>
+<div data-mobile-overlay style="display: none;" aria-hidden="true"></div>
