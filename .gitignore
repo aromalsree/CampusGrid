@@ -3,6 +3,7 @@ plan/
 .venv
 
 # Django #
+migrations/
 *.log
 *.pot
 *.pyc
@@ -10,6 +11,7 @@ __pycache__
 db.sqlite3
 media
 # Visual Studio Code # 
+
 .vscode/* 
 !.vscode/settings.json 
 !.vscode/tasks.json 
