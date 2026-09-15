@@ -1,7 +1,12 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.validators import RegexValidator
 
-
+phone_regex_validator = RegexValidator(
+    regex=r'^\+?[1-9]\d{7,14}$',
+    message="Phone number must be entered in the format: '+999999999'. 8 to 15 digits allowed.",
+    code="invalid_phone_number"
+)
 class App_users(AbstractUser):
     # =========================================================================
     # INHERITED FIELDS FROM AbstractUser (Included Automatically):

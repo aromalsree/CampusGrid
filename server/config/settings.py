@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'userops.apps.UseropsConfig'
 ]
 
 MIDDLEWARE = [
@@ -128,7 +129,7 @@ MAILERS = {
 
 #Custamised Auth module
 
-AUTH_USER_MODEL = "userops.App_user"
+AUTH_USER_MODEL = "userops.App_users"
 
 # Base url to serve media files
 MEDIA_URL = 'media/'
