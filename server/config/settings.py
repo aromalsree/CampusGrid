@@ -127,8 +127,8 @@ MAILERS = {
 }
 
 #Custamised Auth module
-AUTH_USER_MODEL = ""
 
+AUTH_USER_MODEL = "userops."
 
 # Base url to serve media files
 MEDIA_URL = 'media/'
