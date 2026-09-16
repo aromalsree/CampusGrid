@@ -1,0 +1,141 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Manage Users | Admin | CampusGrid{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cg-container">
+    <div class="dashboard-wrapper">
+        {% include "components/admin_sidebar.html" with active_tab="admin_users" %}
+
+        <main>
+            <div class="cg-flex-between" style="margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h1 style="font-size: 1.75rem;">Manage Users</h1>
+                    <p class="text-sm text-muted">{{ total_count }} total users</p>
+                </div>
+                <a href="/admin/auth/user/add/" class="btn btn-primary">+ Add User</a>
+            </div>
+
+            <!-- Filters -->
+            <div style="background: #FFFFFF; border: 1px solid var(--cg-border); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem;">
+                <form method="GET" style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label class="form-label" for="search">Search</label>
+                        <input type="text" id="search" name="q" class="form-input" placeholder="Username, email, name, institution..." value="{{ query }}">
+                    </div>
+                    <div style="min-width: 150px;">
+                        <label class="form-label" for="role">Role</label>
+                        <select id="role" name="role" class="form-input">
+                            <option value="">All Roles</option>
+                            <option value="USER" {% if role_filter == 'USER' %}selected{% endif %}>User</option>
+                            <option value="ADMIN" {% if role_filter == 'ADMIN' %}selected{% endif %}>Admin</option>
+                        </select>
+                    </div>
+                    <div style="min-width: 150px;">
+                        <label class="form-label" for="status">Status</label>
+                        <select id="status" name="status" class="form-input">
+                            <option value="">All Status</option>
+                            <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+                            <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                        {% if query or role_filter or status_filter %}
+                        <a href="/user/admin/users/" class="btn btn-outline">Clear</a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+
+            <!-- Users Table -->
+            <div style="background: #FFFFFF; border: 1px solid var(--cg-border); border-radius: var(--radius-lg); overflow: hidden;">
+                {% if page_obj %}
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--cg-slate-100); background: var(--cg-slate-50);">
+                                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--cg-slate-500); font-size: 0.8125rem; text-transform: uppercase;">User</th>
+                                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--cg-slate-500); font-size: 0.8125rem; text-transform: uppercase;">Email</th>
+                                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--cg-slate-500); font-size: 0.8125rem; text-transform: uppercase;">Role</th>
+                                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--cg-slate-500); font-size: 0.8125rem; text-transform: uppercase;">Institution</th>
+                                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--cg-slate-500); font-size: 0.8125rem; text-transform: uppercase;">Status</th>
+                                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--cg-slate-500); font-size: 0.8125rem; text-transform: uppercase;">Joined</th>
+                                <th style="padding: 1rem; text-align: right; font-weight: 600; color: var(--cg-slate-500); font-size: 0.8125rem; text-transform: uppercase;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in page_obj %}
+                            <tr style="border-bottom: 1px solid var(--cg-slate-100);">
+                                <td style="padding: 1rem;">
+                                    <div style="font-weight: 500;">{{ user.username }}</div>
+                                    {% if user.first_name or user.last_name %}
+                                    <div class="text-xs text-muted">{{ user.first_name }} {{ user.last_name }}</div>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 1rem;">{{ user.email }}</td>
+                                <td style="padding: 1rem;">
+                                    <form method="POST" action="{% url 'admin_user_change_role' user.id %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <select name="role" class="form-input" style="width: auto; display: inline-block; padding: 0.25rem 0.5rem; font-size: 0.8125rem;"
+                                            onchange="this.form.submit()"
+                                            {% if user == request.user %}disabled{% endif %}>
+                                            <option value="USER" {% if user.user_roles == 'USER' %}selected{% endif %}>User</option>
+                                            <option value="ADMIN" {% if user.user_roles == 'ADMIN' %}selected{% endif %}>Admin</option>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td style="padding: 1rem;">{{ user.institution|default:"—" }}</td>
+                                <td style="padding: 1rem;">
+                                    <form method="POST" action="{% url 'admin_user_toggle_status' user.id %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm {% if user.is_active %}btn-outline{% else %}btn-secondary{% endif %}"
+                                            style="padding: 0.375rem 0.75rem; font-size: 0.8125rem;"
+                                            {% if user == request.user %}disabled{% endif %}>
+                                            {% if user.is_active %}Active{% else %}Inactive{% endif %}
+                                        </button>
+                                    </form>
+                                </td>
+                                <td style="padding: 1rem;">{{ user.date_joined|date:"M d, Y H:i" }}</td>
+                                <td style="padding: 1rem; text-align: right;">
+                                    <a href="/admin/auth/user/{{ user.id }}/change/" class="btn btn-sm btn-outline" style="padding: 0.375rem 0.75rem; font-size: 0.8125rem;">Edit in Django Admin</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+                <div style="padding: 1rem; border-top: 1px solid var(--cg-slate-100); display: flex; justify-content: center; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                    {% if page_obj.has_previous %}
+                    <a href="?page=1{% if query %}&q={{ query }}{% endif %}{% if role_filter %}&role={{ role_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="btn btn-sm btn-outline">First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if role_filter %}&role={{ role_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="btn btn-sm btn-outline">Previous</a>
+                    {% endif %}
+
+                    <span style="padding: 0.5rem; color: var(--cg-slate-600);">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                    </span>
+
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if role_filter %}&role={{ role_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="btn btn-sm btn-outline">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if role_filter %}&role={{ role_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="btn btn-sm btn-outline">Last</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% else %}
+                <div style="padding: 3rem; text-align: center;">
+                    <p class="text-muted">No users found matching your criteria.</p>
+                </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}
