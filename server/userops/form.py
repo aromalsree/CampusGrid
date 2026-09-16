@@ -74,3 +74,5 @@ class LoginForm(AuthenticationForm):
                                                                 "required": True,
                                                                 "placeholder": "••••••••",
                                                             }))
+
+    
