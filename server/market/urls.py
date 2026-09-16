@@ -1,0 +1,30 @@
+from django.urls import path
+from . import views
+
+app_name = 'market'
+
+urlpatterns = [
+    # Marketplace Catalogue / Product Listings
+    path('', views.product_list, name='product_list'),
+    path('products/', views.product_list, name='products'),
+
+    # Create Product Listing
+    path('create/', views.create_listing, name='create_listing'),
+    path('products/create/', views.create_listing, name='create_listing_prefixed'),
+    path('seller/products/add/', views.create_listing, name='seller_products_add'),
+
+    # Category Directory
+    path('categories/', views.categories, name='categories'),
+    path('products/categories/', views.categories, name='products_categories'),
+
+    # Hardware Comparison Matrix
+    path('compare/', views.compare, name='compare'),
+    path('products/compare/', views.compare, name='products_compare'),
+
+    # Product Details (supports pk / integer id, slug, or generic string)
+    path('<int:pk>/', views.product_detail, name='product_detail_by_id'),
+    path('<slug:slug>/', views.product_detail, name='product_detail_by_slug'),
+    path('products/<int:pk>/', views.product_detail, name='products_detail_by_id'),
+    path('products/<slug:slug>/', views.product_detail, name='products_detail_by_slug'),
+    path('products/<str:slug_or_id>/', views.product_detail, name='product_detail'),
+]

@@ -1,0 +1,599 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Create Listing | CampusGrid{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/marketplace.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/user.css' %}">
+<style>
+  .listing-create-container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding-top: 1.5rem;
+    padding-bottom: 5rem;
+  }
+
+  .listing-page-header {
+    margin-bottom: 2rem;
+  }
+
+  .listing-page-header h1 {
+    font-size: 2.15rem;
+    color: var(--cg-navy-900);
+    margin-bottom: 0.35rem;
+  }
+
+  .listing-page-header p {
+    font-size: 1rem;
+    color: var(--cg-slate-500);
+  }
+
+  .listing-grid-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  @media (max-width: 960px) {
+    .listing-grid-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .listing-form-card {
+    background: #FFFFFF;
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-xl);
+    padding: 2.25rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .form-section {
+    margin-bottom: 2.25rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--cg-slate-100);
+  }
+
+  .form-section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .section-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-full);
+    background: var(--cg-emerald-50);
+    color: var(--cg-emerald-600);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--cg-navy-900);
+  }
+
+  .section-subtitle {
+    font-size: 0.8125rem;
+    color: var(--cg-slate-500);
+  }
+
+  .form-help-text {
+    font-size: 0.775rem;
+    color: var(--cg-slate-500);
+    margin-top: 0.35rem;
+    display: block;
+  }
+
+  .form-error-msg {
+    font-size: 0.8125rem;
+    color: var(--cg-rose-600);
+    font-weight: 500;
+    margin-top: 0.375rem;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .input-currency-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-currency-prefix {
+    position: absolute;
+    left: 1rem;
+    font-weight: 700;
+    color: var(--cg-navy-800);
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  .input-currency-wrap .form-control {
+    padding-left: 2.25rem;
+  }
+
+  .checkbox-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    background: var(--cg-slate-50);
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .checkbox-card:hover {
+    border-color: var(--cg-slate-400);
+    background: #FFFFFF;
+  }
+
+  .checkbox-card input[type="checkbox"] {
+    margin-top: 0.2rem;
+    accent-color: var(--cg-emerald-600);
+    width: 1.125rem;
+    height: 1.125rem;
+    cursor: pointer;
+  }
+
+  .checkbox-label-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--cg-navy-900);
+    display: block;
+  }
+
+  .checkbox-label-desc {
+    font-size: 0.775rem;
+    color: var(--cg-slate-500);
+    display: block;
+    margin-top: 0.15rem;
+  }
+
+  /* Photo Upload Dropzone */
+  .upload-dropzone {
+    border: 2px dashed var(--cg-slate-300);
+    border-radius: var(--radius-lg);
+    background: var(--cg-slate-50);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+  }
+
+  .upload-dropzone:hover {
+    border-color: var(--cg-emerald-500);
+    background: var(--cg-emerald-50);
+  }
+
+  .upload-dropzone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .upload-icon {
+    width: 44px;
+    height: 44px;
+    margin: 0 auto 0.75rem auto;
+    border-radius: var(--radius-full);
+    background: #FFFFFF;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cg-emerald-600);
+  }
+
+  .preview-strip {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .preview-thumb {
+    width: 68px;
+    height: 68px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--cg-border);
+    object-fit: cover;
+    background: var(--cg-slate-100);
+  }
+
+  /* Sidebar Info Card */
+  .tips-card {
+    background: #FFFFFF;
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-xl);
+    padding: 1.75rem;
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 96px;
+  }
+
+  .tips-card h3 {
+    font-size: 1.05rem;
+    color: var(--cg-navy-900);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .tip-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--cg-slate-600);
+  }
+
+  .tip-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .tip-check {
+    color: var(--cg-emerald-600);
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+
+  .trust-guarantee-box {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: var(--cg-slate-50);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--cg-slate-200);
+    font-size: 0.8rem;
+    color: var(--cg-slate-600);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="listing-create-container">
+    {% include "base/breadcrumbs.html" with breadcrumb_current="Create Listing" %}
+
+    <div class="listing-page-header">
+        <h1>Create a Listing</h1>
+        <p>Share something useful with your campus community &mdash; books, tech, notes, or semester essentials.</p>
+    </div>
+
+    <div class="listing-grid-layout">
+        <!-- Main Form Card -->
+        <div class="listing-form-card">
+            {% url 'market:create_listing' as market_create_url %}
+            {% url 'create_listing' as direct_create_url %}
+            <form method="POST" action="{{ market_create_url|default:direct_create_url|default:'' }}" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+
+                <!-- Non-field error alert -->
+                {% if form.non_field_errors %}
+                    <div class="cg-alert cg-alert-error" style="background-color: var(--cg-rose-50); color: var(--cg-rose-600); border-color: var(--cg-rose-200); margin-bottom: 1.5rem;">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <!-- SECTION 1: Item Details -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-badge">1</span>
+                        <div>
+                            <div class="section-title">Listing Details</div>
+                            <div class="section-subtitle">Basic identity and category of your offer</div>
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <div class="form-group">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">
+                            {{ form.title.label }} <span style="color: var(--cg-rose-600);">*</span>
+                        </label>
+                        {{ form.title }}
+                        <span class="form-help-text">Add a clear title specifying brand, edition, or course code.</span>
+                        {% if form.title.errors %}
+                            <div class="form-error-msg">&bull; {{ form.title.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Category & Type (Two Columns) -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="{{ form.category.id_for_label }}" class="form-label">
+                                {{ form.category.label }} <span style="color: var(--cg-rose-600);">*</span>
+                            </label>
+                            {{ form.category }}
+                            <span class="form-help-text">{{ form.category.help_text }}</span>
+                            {% if form.category.errors %}
+                                <div class="form-error-msg">&bull; {{ form.category.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.listing_type.id_for_label }}" class="form-label">
+                                {{ form.listing_type.label }} <span style="color: var(--cg-rose-600);">*</span>
+                            </label>
+                            {{ form.listing_type }}
+                            <span class="form-help-text">Sale, peer rental, academic service, or digital note.</span>
+                            {% if form.listing_type.errors %}
+                                <div class="form-error-msg">&bull; {{ form.listing_type.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">
+                            {{ form.description.label }} <span style="color: var(--cg-rose-600);">*</span>
+                        </label>
+                        {{ form.description }}
+                        <span class="form-help-text">Mention warranty status, wear & tear, syllabus relevance, or included cables/accessories.</span>
+                        {% if form.description.errors %}
+                            <div class="form-error-msg">&bull; {{ form.description.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- SECTION 2: Pricing & Terms -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-badge">2</span>
+                        <div>
+                            <div class="section-title">Pricing & Financials</div>
+                            <div class="section-subtitle">Set an honest, student-friendly price</div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                        <!-- Price -->
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="{{ form.price.id_for_label }}" class="form-label">
+                                {{ form.price.label }} <span style="color: var(--cg-rose-600);">*</span>
+                            </label>
+                            <div class="input-currency-wrap">
+                                <span class="input-currency-prefix">&#8377;</span>
+                                {{ form.price }}
+                            </div>
+                            <span class="form-help-text">Amount in INR. No platform commission is charged.</span>
+                            {% if form.price.errors %}
+                                <div class="form-error-msg">&bull; {{ form.price.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Rental Period (shown / relevant for rental listings) -->
+                        <div class="form-group" id="rental-period-group" style="margin-bottom: 0;">
+                            <label for="{{ form.rental_period.id_for_label }}" class="form-label">
+                                {{ form.rental_period.label }}
+                            </label>
+                            {{ form.rental_period }}
+                            <span class="form-help-text">Billing frequency (only required if offering for rent).</span>
+                            {% if form.rental_period.errors %}
+                                <div class="form-error-msg">&bull; {{ form.rental_period.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Negotiable Checkbox Card -->
+                    <label class="checkbox-card" for="{{ form.is_negotiable.id_for_label }}">
+                        {{ form.is_negotiable }}
+                        <div>
+                            <span class="checkbox-label-title">Open to peer negotiation</span>
+                            <span class="checkbox-label-desc">Let buyers discuss reasonable price adjustments over WhatsApp handover chat.</span>
+                        </div>
+                    </label>
+                    {% if form.is_negotiable.errors %}
+                        <div class="form-error-msg">&bull; {{ form.is_negotiable.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- SECTION 3: Condition & Logistics -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-badge">3</span>
+                        <div>
+                            <div class="section-title">Condition & Campus Handover</div>
+                            <div class="section-subtitle">Where and how students can meet you</div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                        <!-- Condition -->
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="{{ form.condition.id_for_label }}" class="form-label">
+                                {{ form.condition.label }}
+                            </label>
+                            {{ form.condition }}
+                            <span class="form-help-text">Assess item condition objectively.</span>
+                            {% if form.condition.errors %}
+                                <div class="form-error-msg">&bull; {{ form.condition.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Location -->
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="{{ form.location.id_for_label }}" class="form-label">
+                                {{ form.location.label }}
+                            </label>
+                            {{ form.location }}
+                            <span class="form-help-text">Campus spot where you prefer meeting (e.g. Library, Mess 2).</span>
+                            {% if form.location.errors %}
+                                <div class="form-error-msg">&bull; {{ form.location.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Urgent Checkbox Card -->
+                    <label class="checkbox-card" for="{{ form.is_urgent.id_for_label }}">
+                        {{ form.is_urgent }}
+                        <div>
+                            <span class="checkbox-label-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                                Mark as Urgent Clearance
+                                <span class="cg-badge cg-badge-amber" style="font-size: 0.7rem;">Quick Sale</span>
+                            </span>
+                            <span class="checkbox-label-desc">Highlight to peers if moving out, graduating, or need to liquidate items this week.</span>
+                        </div>
+                    </label>
+                    {% if form.is_urgent.errors %}
+                        <div class="form-error-msg">&bull; {{ form.is_urgent.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- SECTION 4: Photos & Showcase -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-badge">4</span>
+                        <div>
+                            <div class="section-title">Item Photos</div>
+                            <div class="section-subtitle">Clear campus photos build trust and sell 3x faster</div>
+                        </div>
+                    </div>
+
+                    <div class="upload-dropzone" id="dropzone-area">
+                        <input type="file" name="images" id="id_listing_images" multiple accept="image/png, image/jpeg, image/webp" aria-label="Upload item images">
+                        <div class="upload-icon">
+                            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div style="font-weight: 600; color: var(--cg-navy-900); margin-bottom: 0.25rem;">
+                            Click to upload or drag photos here
+                        </div>
+                        <p class="text-xs text-muted">
+                            Supports PNG, JPG, or WEBP up to 5MB each. First image will be used as the primary card cover.
+                        </p>
+                        <div class="preview-strip" id="preview-container"></div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 2rem; gap: 1rem; flex-wrap: wrap;">
+                    <a href="/products/" class="btn btn-outline" style="min-width: 120px;">
+                        Cancel
+                    </a>
+
+                    <div style="display: flex; gap: 0.75rem; align-items: center;">
+                        <button type="submit" class="btn btn-primary btn-lg" style="min-width: 180px;">
+                            Publish Listing &rarr;
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Sidebar: Campus Guidelines -->
+        <aside>
+            <div class="tips-card">
+                <h3>
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--cg-emerald-600);">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                    Posting Guidelines
+                </h3>
+
+                <div class="tip-item">
+                    <span class="tip-check">&check;</span>
+                    <span><strong>Honest Condition:</strong> Disclose any marks, highlights in books, or battery health for electronics.</span>
+                </div>
+
+                <div class="tip-item">
+                    <span class="tip-check">&check;</span>
+                    <span><strong>Fair Peer Pricing:</strong> Research current market prices and offer genuine student discounts.</span>
+                </div>
+
+                <div class="tip-item">
+                    <span class="tip-check">&check;</span>
+                    <span><strong>Safe Public Handover:</strong> Always conduct handovers in well-lit campus hubs (library, cafeteria, hostel lobby).</span>
+                </div>
+
+                <div class="tip-item">
+                    <span class="tip-check">&check;</span>
+                    <span><strong>Verified Contacts:</strong> Interested students will reach you via your verified WhatsApp profile number.</span>
+                </div>
+
+                <div class="trust-guarantee-box">
+                    <strong style="color: var(--cg-navy-900); display: block; margin-bottom: 0.25rem;">CampusGrid Anti-Scam Shield</strong>
+                    No online gateway payments &mdash; inspect the physical item in person before completing the exchange.
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Dynamic visibility toggle for Rental Period
+    const listingTypeSelect = document.getElementById('id_listing_type');
+    const rentalGroup = document.getElementById('rental-period-group');
+
+    function syncListingType() {
+      if (!listingTypeSelect || !rentalGroup) return;
+      const val = listingTypeSelect.value.toUpperCase();
+      if (val === 'RENT') {
+        rentalGroup.style.opacity = '1';
+        rentalGroup.style.pointerEvents = 'auto';
+        rentalGroup.querySelector('.form-label').innerHTML = 'Rental Billing Period <span style="color: var(--cg-rose-600);">*</span>';
+      } else {
+        rentalGroup.style.opacity = '0.45';
+        rentalGroup.style.pointerEvents = 'none';
+        rentalGroup.querySelector('.form-label').innerHTML = 'Rental Billing Period <span class="text-xs text-muted">(For rent only)</span>';
+      }
+    }
+
+    if (listingTypeSelect) {
+      listingTypeSelect.addEventListener('change', syncListingType);
+      syncListingType();
+    }
+
+    // 2. Client-side Image Selection Previews
+    const fileInput = document.getElementById('id_listing_images');
+    const previewContainer = document.getElementById('preview-container');
+
+    if (fileInput && previewContainer) {
+      fileInput.addEventListener('change', (e) => {
+        previewContainer.innerHTML = '';
+        const files = Array.from(e.target.files).slice(0, 4); // Preview up to 4 files
+        files.forEach(file => {
+          if (!file.type.startsWith('image/')) return;
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const img = document.createElement('img');
+            img.src = event.target.result;
+            img.className = 'preview-thumb';
+            img.alt = file.name;
+            img.title = file.name;
+            previewContainer.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+    }
+  });
+</script>
+{% endblock %}
