@@ -58,3 +58,19 @@ class UserRegForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+            
+
+
+# custom login auth form 
+class LoginForm(AuthenticationForm):
+
+
+    username = forms.CharField(widget=forms.TextInput(attrs={"name": "username", "id": "id_username", "class": "form-control",
+                                                            "required": true, "autofocus": true, "placeholder": "student@university.edu"}))
+    password = forms.CharField(widget=forms.TextInput(attrs={
+                                                                "name": "password",
+                                                                "id": "id_password",
+                                                                "class": "form-control",
+                                                                "required": True,
+                                                                "placeholder": "••••••••",
+                                                            }))
