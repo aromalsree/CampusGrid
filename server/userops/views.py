@@ -3,53 +3,44 @@ from django.contrib.auth import login, logout, authenticate
 from .form import LoginForm
 from django.contrib import messages
 from .form import UserRegForm
+from django.views import View
+from django.core.paginator import Paginator
+from django.views.decorators.http import require_POST
+
+def is_admin(user):
+    return user.is_authenticated and (user.is_superuser or user.user_roles == 'ADMIN')
 
 
-def register(request):
-    """
-    Handle user registration using UserRegForm and render templates/user/register.html
-    """
-    if request.user.is_authenticated:
-        return redirect('home')
 
-    if request.method == 'POST':
+class RegisterView(View):
+    def get():
+        form = UserRegForm()
+        return render(request, 'user/register.html', {'form': form})
+
+    def post():
         form = UserRegForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             messages.success(request, f"Welcome to CampusGrid, {user.username}! Your account has been registered.")
-            return redirect('home')
-        else:
-            for field, errors in form.errors.items():
-                if field != '__all__':
-                    for error in errors:
-                        messages.error(request, error)
-    else:
-        form = UserRegForm()
-
-    return render(request, 'user/register.html', {'form': form})
+            return redirect('login')
 
 
-def login_view(request):
-    """
-    Handle user login using AuthenticationForm and render templates/user/login.html
-    """
-    if request.user.is_authenticated:
-        return redirect('home')
+ 
+class LoginView(View):
+    def get(self, request):
+        form = Loginform()
+        return render(request, "login.html", {'form':form})
 
-    if request.method == 'POST':
-        form = LoginForm(request, data=request.POST)
+    def post(self, request):
+        form = Loginform(request=request,data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            messages.success(request, f"Welcome back, {user.username}!")
-            return redirect('home')
-        else:
-            messages.error(request, "Invalid username or password.")
-    else:
-        form = AuthenticationForm()
+            return redirect("home")
+            
+        return render(request, "login.html", {'form':form})
 
-    return render(request, 'user/login.html', {'form': form})
 
 
 def logout_view(request):
@@ -61,6 +52,98 @@ def logout_view(request):
     return redirect('home')
 
 
-# Aliases for convenience
-register_view = register
-user_register = register
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_dashboard(request):
+    total_users = User.objects.count()
+    active_users = User.objects.filter(is_active=True).count()
+    admin_users = User.objects.filter(user_roles='ADMIN').count()
+    recent_users = User.objects.order_by('-date_joined')[:10]
+    
+    # Users joined in last 7 days
+    week_ago = timezone.now() - timedelta(days=7)
+    new_users_week = User.objects.filter(date_joined__gte=week_ago).count()
+    
+    context = {
+        'total_users': total_users,
+        'active_users': active_users,
+        'admin_users': admin_users,
+        'new_users_week': new_users_week,
+        'recent_users': recent_users,
+    }
+    return render(request, 'admin/dashboard.html', context)
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_users(request):
+    query = request.GET.get('q', '')
+    role_filter = request.GET.get('role', '')
+    status_filter = request.GET.get('status', '')
+    
+    users = User.objects.all().order_by('-date_joined')
+    
+    if query:
+        users = users.filter(
+            Q(username__icontains=query) |
+            Q(email__icontains=query) |
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query) |
+            Q(institution__icontains=query)
+        )
+    
+    if role_filter:
+        users = users.filter(user_roles=role_filter)
+    
+    if status_filter == 'active':
+        users = users.filter(is_active=True)
+    elif status_filter == 'inactive':
+        users = users.filter(is_active=False)
+    
+    # Pagination
+    
+    paginator = Paginator(users, 25)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'page_obj': page_obj,
+        'query': query,
+        'role_filter': role_filter,
+        'status_filter': status_filter,
+        'total_count': users.count(),
+    }
+    return render(request, 'admin/users.html', context)
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_user_toggle_status(request, user_id):
+    if request.method == 'POST':
+        user = get_object_or_404(User, id=user_id)
+        if user == request.user:
+            messages.error(request, "You cannot change your own status.")
+        else:
+            user.is_active = not user.is_active
+            user.save()
+            status = "activated" if user.is_active else "deactivated"
+            messages.success(request, f"User {user.username} has been {status}.")
+    return redirect('admin_users')
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_user_change_role(request, user_id):
+    if request.method == 'POST':
+        user = get_object_or_404(User, id=user_id)
+        new_role = request.POST.get('role')
+        if new_role in ['USER', 'ADMIN'] and user != request.user:
+            user.user_roles = new_role
+            user.is_staff = (new_role == 'ADMIN')
+            user.save()
+            messages.success(request, f"User {user.username} role changed to {new_role}.")
+        else:
+            messages.error(request, "Invalid role or cannot change own role.")
+    return redirect('admin_users')
