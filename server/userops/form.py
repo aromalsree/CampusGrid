@@ -66,7 +66,7 @@ class LoginForm(AuthenticationForm):
 
 
     username = forms.CharField(widget=forms.TextInput(attrs={"name": "username", "id": "id_username", "class": "form-control",
-                                                            "required": true, "autofocus": true, "placeholder": "student@university.edu"}))
+                                                            "required": True, "autofocus": True, "placeholder": "student@university.edu"}))
     password = forms.CharField(widget=forms.TextInput(attrs={
                                                                 "name": "password",
                                                                 "id": "id_password",

@@ -7,4 +7,4 @@ def home(request):
 
 # for testing html pls use the test view
 def test(request):
-    return render(request, "home/index.html")
+    return render(request, "dashboard/wishlist.html")
