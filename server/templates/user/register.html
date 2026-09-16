@@ -28,6 +28,11 @@
             <div class="form-group">
                 <label for="id_username" class="form-label">Username</label>
                 <input type="text" name="username" id="id_username" class="form-control" required placeholder="alex_cs">
+                {% for error in form.username.errors %}
+                        <div class="error-message">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
             </div>
 
             <div class="form-group">

@@ -3,6 +3,22 @@ from django.contrib.auth import login, logout, authenticate
 from .form import LoginForm
 from django.contrib import messages
 from .form import UserRegForm
+from django.views import View
+
+
+class RegisterView(View):
+    def get():
+        form = UserRegForm()
+        return render(request, 'user/register.html', {'form': form})
+        
+
+    def post():
+        form = UserRegForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, f"Welcome to CampusGrid, {user.username}! Your account has been registered.")
+            return redirect('home')
 
 
 def register(request):
