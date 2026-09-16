@@ -1,0 +1,113 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Admin Dashboard | CampusGrid{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cg-container">
+    <div class="dashboard-wrapper">
+        {% include "components/admin_sidebar.html" with active_tab="admin_overview" %}
+
+        <main>
+            <div class="cg-flex-between" style="margin-bottom: 1.75rem;">
+                <div>
+                    <h1 style="font-size: 1.75rem;">Admin Dashboard</h1>
+                    <p class="text-sm text-muted">Platform administration and monitoring</p>
+                </div>
+            </div>
+
+            <!-- Key Metric Cards -->
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <span class="stat-number">{{ total_users }}</span>
+                    <span class="stat-label">Total Users</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">{{ active_users }}</span>
+                    <span class="stat-label">Active Users</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">{{ admin_users }}</span>
+                    <span class="stat-label">Admin Users</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">{{ new_users_week }}</span>
+                    <span class="stat-label">New This Week</span>
+                </div>
+            </div>
+
+            <!-- Admin Actions Section -->
+            <div style="background: #FFFFFF; border: 1px solid var(--cg-border); border-radius: var(--radius-lg); padding: 1.5rem; margin-top: 1.5rem;">
+                <h3 style="font-size: 1.15rem; margin-bottom: 1rem;">Quick Actions</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                    <a href="/admin/" class="btn btn-primary">Django Admin Panel</a>
+                    <a href="/user/admin/users/" class="btn btn-secondary">Manage Users</a>
+                    <a href="/admin/auth/user/add/" class="btn btn-secondary">Add User</a>
+                </div>
+            </div>
+
+            <!-- Recent Users Section -->
+            <div style="background: #FFFFFF; border: 1px solid var(--cg-border); border-radius: var(--radius-lg); padding: 1.5rem; margin-top: 1.5rem;">
+                <div class="cg-flex-between" style="margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                    <h3 style="font-size: 1.15rem;">Recent User Registrations</h3>
+                    <a href="/user/admin/users/" class="btn btn-sm btn-outline">View All Users</a>
+                </div>
+                
+                {% if recent_users %}
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--cg-slate-100);">
+                                <th style="padding: 0.75rem; text-align: left; font-weight: 600; color: var(--cg-slate-500); font-size: 0.8125rem; text-transform: uppercase;">User</th>
+                                <th style="padding: 0.75rem; text-align: left; font-weight: 600; color: var(--cg-slate-500); font-size: 0.8125rem; text-transform: uppercase;">Email</th>
+                                <th style="padding: 0.75rem; text-align: left; font-weight: 600; color: var(--cg-slate-500); font-size: 0.8125rem; text-transform: uppercase;">Role</th>
+                                <th style="padding: 0.75rem; text-align: left; font-weight: 600; color: var(--cg-slate-500); font-size: 0.8125rem; text-transform: uppercase;">Institution</th>
+                                <th style="padding: 0.75rem; text-align: left; font-weight: 600; color: var(--cg-slate-500); font-size: 0.8125rem; text-transform: uppercase;">Status</th>
+                                <th style="padding: 0.75rem; text-align: left; font-weight: 600; color: var(--cg-slate-500); font-size: 0.8125rem; text-transform: uppercase;">Joined</th>
+                                <th style="padding: 0.75rem; text-align: right; font-weight: 600; color: var(--cg-slate-500); font-size: 0.8125rem; text-transform: uppercase;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in recent_users %}
+                            <tr style="border-bottom: 1px solid var(--cg-slate-100);">
+                                <td style="padding: 0.75rem;">
+                                    <div style="font-weight: 500;">{{ user.username }}</div>
+                                    {% if user.first_name or user.last_name %}
+                                    <div class="text-xs text-muted">{{ user.first_name }} {{ user.last_name }}</div>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 0.75rem;">{{ user.email }}</td>
+                                <td style="padding: 0.75rem;">
+                                    <span style="display: inline-block; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 600;
+                                        {% if user.user_roles == 'ADMIN' %}background: var(--cg-primary-100); color: var(--cg-primary-700);
+                                        {% else %}background: var(--cg-slate-100); color: var(--cg-slate-700);{% endif %}">
+                                        {{ user.get_user_roles_display }}
+                                    </span>
+                                </td>
+                                <td style="padding: 0.75rem;">{{ user.institution|default:"—" }}</td>
+                                <td style="padding: 0.75rem;">
+                                    <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+                                        {% if user.is_active %}background: var(--cg-success);{% else %}background: var(--cg-error);{% endif %}"></span>
+                                    {% if user.is_active %}Active{% else %}Inactive{% endif %}
+                                </td>
+                                <td style="padding: 0.75rem;">{{ user.date_joined|date:"M d, Y" }}</td>
+                                <td style="padding: 0.75rem; text-align: right;">
+                                    <a href="/admin/auth/user/{{ user.id }}/change/" class="btn btn-sm btn-outline" style="padding: 0.375rem 0.75rem; font-size: 0.8125rem;">Edit</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted" style="text-align: center; padding: 2rem;">No users found.</p>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}
