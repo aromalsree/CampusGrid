@@ -40,6 +40,9 @@ class App_users(AbstractUser):
     # Custom Field Overrides & Additions
     email = models.EmailField(unique=True, null=False, blank=False)
     user_roles = models.CharField(max_length=10, choices=Roles.choices, default=Roles.USER)
-    institution = models.CharField(max_length=120)
+    institution = models.CharField(max_length=120, blank=True, null=True)
     phone = models.CharField(max_length=17,validators=[phone_regex_validator],blank=True)
     
+    @property
+    def what_role(self):
+        return self.user_roles
