@@ -21,6 +21,7 @@ class RegisterView(View):
             return redirect('home')
 
 
+
 def register(request):
     """
     Handle user registration using UserRegForm and render templates/user/register.html
@@ -63,7 +64,7 @@ def login_view(request):
         else:
             messages.error(request, "Invalid username or password.")
     else:
-        form = AuthenticationForm()
+        form = LoginForm()
 
     return render(request, 'user/login.html', {'form': form})
 
@@ -76,7 +77,3 @@ def logout_view(request):
     messages.info(request, "You have been logged out.")
     return redirect('home')
 
-
-# Aliases for convenience
-register_view = register
-user_register = register

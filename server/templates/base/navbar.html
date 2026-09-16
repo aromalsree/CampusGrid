@@ -10,9 +10,9 @@
 
             <!-- Primary Navigation Links -->
             <nav class="cg-nav-links" aria-label="Primary Navigation">
-                <a href="/" class="cg-nav-link">Home</a>
-                <a href="/products/" class="cg-nav-link">Marketplace</a>
-                <a href="/compare/" class="cg-nav-link">Compare</a>
+                <a href="{% url 'home' %}" class="cg-nav-link">Home</a>
+                <a href="{% url 'market:product_list' %}" class="cg-nav-link">Marketplace</a>
+                <a href="{% url 'market:products_compare' %}" class="cg-nav-link">Compare</a>
                 <a href="/requests/" class="cg-nav-link">Need Board</a>
             </nav>
 
@@ -62,8 +62,8 @@
                     </div>
                     <a href="/seller/products/add/" class="btn btn-sm btn-primary">+ Sell Item</a>
                 {% else %}
-                    <a href="/login/" class="btn btn-sm btn-outline">Log in</a>
-                    <a href="/register/" class="btn btn-sm btn-primary">Join CampusGrid</a>
+                    <a href="{% url 'login' %}" class="btn btn-sm btn-outline">Log in</a>
+                    <a href="{% url 'register' %}" class="btn btn-sm btn-primary">Join CampusGrid</a>
                 {% endif %}
 
                 <!-- Mobile Menu Hamburger Button -->
