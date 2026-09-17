@@ -4,25 +4,13 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from typing import List, Dict, Any, Optional
 from .forms import ListingForm, NeedRequestForm, NeedOfferForm
-
-from .models import NeedRequest, NeedOffer
+from django.views import View
+from .models import NeedRequest, NeedOffer, Listing
 from .psudodeta import SAMPLE_PRODUCTS, SAMPLE_CATEGORIES
+from django.views.generic import ListView, DetailView
 
+from django.db.models import Q
 
-
-def _get_active_products():
-    """
-    Returns active database listings together with the sample catalog so demo
-    products remain available alongside real student listings.
-    """
-    try:
-        from .models import Listing
-        qs = Listing.objects.filter(
-            status=Listing.ListingStatus.ACTIVE
-        ).select_related('seller', 'category').prefetch_related('images')
-        return list(qs) + SAMPLE_PRODUCTS
-    except Exception:
-        return list(SAMPLE_PRODUCTS)
 
 
 def _get_active_categories():
@@ -40,21 +28,13 @@ def _get_active_categories():
     return SAMPLE_CATEGORIES
 
 
+class MarketView(ListView):
+    model = Listing
+    template_name = 'marketplace/products.html'
+    context_object_name = 'products'
+    paginate_by = 6
 
-
-
-def product_list(request):
-    """
-    Renders the marketplace catalogue (templates/marketplace/products.html)
-    with support for category filtering, listing type filtering, search queries,
-    and pagination.
-    """
-    category_filter = request.GET.get('category', '').strip().lower()
-    type_filter = request.GET.get('type', '').strip().lower()
-    condition_filter = request.GET.get('condition', '').strip().lower()
-    search_query = request.GET.get('q', '').strip().lower()
-    page_number = request.GET.get('page', 1)
-
+    # Translation dictionaries mapping query params to DB choices
     type_aliases = {
         'sell': 'SALE',
         'sale': 'SALE',
@@ -63,6 +43,7 @@ def product_list(request):
         'service': 'SERVICE',
         'digital': 'DIGITAL',
     }
+    
     condition_aliases = {
         'brand_new': 'NEW',
         'new': 'NEW',
@@ -71,86 +52,70 @@ def product_list(request):
         'fair': 'FAIR',
         'poor': 'POOR',
     }
-    normalized_type = type_aliases.get(type_filter, '')
-    normalized_condition = condition_aliases.get(condition_filter, '')
 
-    raw_products = _get_active_products()
+    def get_queryset(self):
+        qs = Listing.objects.filter(status=Listing.ListingStatus.ACTIVE)
 
-    filtered_products = []
-    for product in raw_products:
-        if hasattr(product, 'category'):
-            product_category = product.category.slug
-            product_type = str(product.listing_type).lower()
-            product_condition = str(product.condition).lower()
-            title = product.title.lower()
-            desc = product.description.lower()
-            location = product.location.lower()
-        else:
-            product_category = product.get('category', '')
-            if isinstance(product_category, dict):
-                product_category = product_category.get('slug', '')
-            elif hasattr(product_category, 'slug'):
-                product_category = product_category.slug
-            product_type = str(product.get('listing_type', '')).lower()
-            product_condition = str(product.get('condition', '')).lower()
-            title = product.get('title', '').lower()
-            desc = product.get('description', '').lower()
-            location = product.get('campus', '').lower()
+        # 1. Extract query parameters
+        category_slug = self.request.GET.get('category', '').strip().lower()
+        type_filter = self.request.GET.get('type', '').strip().lower()
+        condition_filter = self.request.GET.get('condition', '').strip().lower()
+        search_query = self.request.GET.get('q', '').strip()
 
-        if category_filter and str(product_category).lower() != category_filter:
-            continue
-        if type_filter and product_type not in {type_filter, normalized_type.lower()}:
-            continue
-        if condition_filter and product_condition not in {condition_filter, normalized_condition.lower()}:
-            continue
-        if search_query and search_query not in title and search_query not in desc and search_query not in location:
-            continue
-        filtered_products.append(product)
+        # 2. Category filter
+        if category_slug:
+            qs = qs.filter(category__slug__iexact=category_slug)
 
-    paginator = Paginator(filtered_products, 6)
-    page_obj = paginator.get_page(page_number)
+        # 3. Listing Type filter using type_aliases
+        if type_filter:
+            target_type = self.type_aliases.get(type_filter, type_filter.upper())
+            qs = qs.filter(listing_type=target_type)
 
-    context = {
-        'products': page_obj.object_list,
-        'page_obj': page_obj,
-        'selected_category': category_filter,
-        'selected_type': type_filter,
-        'search_query': search_query,
-    }
-    return render(request, 'marketplace/products.html', context)
+        # 4. Condition filter using condition_aliases
+        if condition_filter:
+            target_condition = self.condition_aliases.get(condition_filter, condition_filter.upper())
+            qs = qs.filter(condition=target_condition)
+
+        # 5. Search query filter
+        if search_query:
+            qs = qs.filter(
+                Q(title__icontains=search_query) |
+                Q(description__icontains=search_query) |
+                Q(location__icontains=search_query)
+            )
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['selected_category'] = self.request.GET.get('category', '').strip().lower()
+        context['selected_type'] = self.request.GET.get('type', '').strip().lower()
+        context['selected_condition'] = self.request.GET.get('condition', '').strip().lower()
+        context['search_query'] = self.request.GET.get('q', '').strip()
+        return context
 
 
-def product_detail(request, slug_or_id=None, pk=None, slug=None):
-    """
-    Renders individual product details (templates/marketplace/product_detail.html).
-    Resolves product by primary key or slug.
-    """
-    identifier = str(pk or slug or slug_or_id or '').strip()
 
-    # Attempt to query database if model is present
-    try:
-        from .models import Product
-        if identifier.isdigit():
-            product = Product.objects.filter(pk=int(identifier)).first()
-        else:
-            product = Product.objects.filter(slug=identifier).first()
-        if product:
-            return render(request, 'marketplace/product_detail.html', {'product': product})
-    except Exception:
-        pass
+class ProductDetailView(DetailView):
+    model = Listing
+    template_name = 'marketplace/product_detail.html'
+    context_object_name = 'product'
 
-    # Search in sample products
-    product = None
-    for p in SAMPLE_PRODUCTS:
-        if str(p.get('id')) == identifier or str(p.get('slug')) == identifier:
-            product = p
-            break
+    def get_object(self, queryset=None):
+        # Extract identifier from URL parameters
+        identifier = self.kwargs.get('pk')
+            
+        # 1. Attempt Database Query
+        try:
+            if identifier:
+                product = Listing.objects.get(id=identifier)
+                return product
+            else:    
+                return get_object_or_404(Listing, id=None)
+        except Exception as e:
+            messages.error(f"Error:{e}")
+        
 
-    # Fallback to the first sample product if not found or identifier is empty
-    if not product and SAMPLE_PRODUCTS:
-        product = SAMPLE_PRODUCTS[0]
-
-    return render(request, 'marketplace/product_detail.html', {'product': product})
 
 
 def categories(request):
@@ -246,6 +211,94 @@ def create_listing(request):
         {"form": form}
     )
 
+class NeedBoardListView(ListView):
+    model = NeedRequest
+    template_name = 'need_board/index.html'
+    context_object_name = 'need_requests'
+    paginate_by = 6
+
+    def get_queryset(self):
+        # 1. Base query with eager loading for optimization
+        qs = NeedRequest.objects.select_related('requester', 'category').all()
+
+        # 2. Extract GET filter parameters
+        type_filter = self.request.GET.get('type', '').strip().upper()
+        urgency_filter = self.request.GET.get('urgency', '').strip().upper()
+        category_slug = self.request.GET.get('category', '').strip().lower()
+        status_filter = self.request.GET.get('status', 'OPEN').strip().upper()
+        search_query = self.request.GET.get('q', '').strip()
+
+        # 3. Apply Status Filter
+        if status_filter == 'ALL':
+            pass
+        elif status_filter == 'FULFILLED':
+            qs = qs.filter(status=NeedRequest.Status.FULFILLED)
+        elif status_filter == 'CLOSED':
+            qs = qs.filter(status=NeedRequest.Status.CLOSED)
+        else:
+            qs = qs.filter(status=NeedRequest.Status.OPEN)
+
+        # 4. Apply Type Filter
+        if type_filter in NeedRequest.RequestType.values:
+            qs = qs.filter(request_type=type_filter)
+
+        # 5. Apply Urgency Filter
+        if urgency_filter in NeedRequest.Urgency.values:
+            qs = qs.filter(urgency=urgency_filter)
+
+        # 6. Apply Category Filter
+        if category_slug:
+            qs = qs.filter(category__slug=category_slug)
+
+        # 7. Apply Search Query
+        if search_query:
+            qs = qs.filter(
+                Q(title__icontains=search_query) |
+                Q(description__icontains=search_query) |
+                Q(location__icontains=search_query) |
+                Q(requester__username__icontains=search_query)
+            )
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Live Campus Metrics
+        try:
+            total_open_count = NeedRequest.objects.filter(status=NeedRequest.Status.OPEN).count()
+            urgent_count = NeedRequest.objects.filter(
+                status=NeedRequest.Status.OPEN,
+                urgency=NeedRequest.Urgency.URGENT
+            ).count()
+            fulfilled_count = NeedRequest.objects.filter(status=NeedRequest.Status.FULFILLED).count()
+        except Exception:
+            total_open_count, urgent_count, fulfilled_count = 0, 0, 0
+
+        # Categories list
+        try:
+            categories_list = Category.objects.filter(is_active=True)
+        except Exception:
+            categories_list = []
+
+        # Extract normalized filter params for UI context
+        type_filter = self.request.GET.get('type', '').strip().upper()
+        urgency_filter = self.request.GET.get('urgency', '').strip().upper()
+        status_filter = self.request.GET.get('status', 'OPEN').strip().upper()
+
+        context.update({
+            'categories': categories_list,
+            'selected_type': type_filter if type_filter in NeedRequest.RequestType.values else '',
+            'selected_urgency': urgency_filter if urgency_filter in NeedRequest.Urgency.values else '',
+            'selected_category': self.request.GET.get('category', '').strip().lower(),
+            'selected_status': status_filter if status_filter in ['ALL', 'FULFILLED', 'CLOSED'] else 'OPEN',
+            'search_query': self.request.GET.get('q', '').strip(),
+            'total_open_count': total_open_count,
+            'urgent_count': urgent_count,
+            'fulfilled_count': fulfilled_count,
+            'active_tab': 'requests',
+        })
+        return context
 
 
 def need_board_view(request):
@@ -312,7 +365,7 @@ def need_board_view(request):
         urgent_count = 0
         fulfilled_count = 0
 
-    paginator = Paginator(qs, 9)
+    paginator = Paginator(qs, 6)
     page_obj = paginator.get_page(page_number)
 
     categories_list = []

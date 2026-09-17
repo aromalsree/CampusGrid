@@ -13,7 +13,7 @@
                 <a href="{% url 'home' %}" class="cg-nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
                 <a href="{% url 'market:product_list' %}" class="cg-nav-link {% if request.resolver_match.app_name == 'market' and 'request' not in request.resolver_match.url_name %}active{% endif %}">Marketplace</a>
                
-                <a href="/requests/" class="cg-nav-link {% if request.resolver_match.url_name == 'need_board' or 'request' in request.resolver_match.url_name %}active{% endif %}">Need Board</a>
+                <a href="{% url 'market:need_board' %}" class="cg-nav-link {% if request.resolver_match.url_name == 'need_board' or 'request' in request.resolver_match.url_name %}active{% endif %}">Need Board</a>
                 <a href="{% url 'about' %}" class="cg-nav-link {% if 'about' in request.resolver_match.url_name %}active{% endif %}">About</a>
             </nav>
 

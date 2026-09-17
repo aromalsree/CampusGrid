@@ -5,8 +5,8 @@ app_name = 'market'
 
 urlpatterns = [
     # Marketplace Catalogue / Product Listings
-    path('products/', views.product_list, name='product_list'),
-    path('products/', views.product_list, name='products'),
+    path('products/', views.MarketView.as_view(), name='product_list'),
+    path('products/', views.MarketView.as_view(), name='products'),
 
     # Create Product Listing
     path('create/', views.create_listing, name='create_listing'),
@@ -23,16 +23,13 @@ urlpatterns = [
 
     # Campus Need Board (Reverse Marketplace)
     path('requests/', views.need_board_view, name='requests'),
-    path('requests/board/', views.need_board_view, name='need_board'),
+    path('requests/board/', views.NeedBoardListView.as_view(), name='need_board'),
     path('requests/create/', views.create_need_request, name='create_need_request'),
     path('requests/<int:pk>/', views.need_request_detail, name='need_request_detail'),
     path('requests/<int:pk>/fulfill/', views.toggle_need_status, name='toggle_need_status'),
     path('requests/<int:pk>/offer/', views.create_need_offer, name='create_need_offer'),
 
     # Product Details (supports pk / integer id, slug, or generic string)
-    path('<int:pk>/', views.product_detail, name='product_detail_by_id'),
-    path('<slug:slug>/', views.product_detail, name='product_detail_by_slug'),
-    path('products/<int:pk>/', views.product_detail, name='products_detail_by_id'),
-    path('products/<slug:slug>/', views.product_detail, name='products_detail_by_slug'),
-    path('products/<str:slug_or_id>/', views.product_detail, name='product_detail'),
+    path('products/<int:pk>/', views.ProductDetailView.as_view(),name='product_id'),
+   
 ]
