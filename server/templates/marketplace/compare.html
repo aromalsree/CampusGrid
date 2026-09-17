@@ -1,125 +1,282 @@
 {% extends "base/base.html" %}
 {% load static %}
 
-{% block title %}Electronics Comparison Matrix | CampusGrid{% endblock %}
+{% block title %}Hardware Comparison Engine | CampusGrid{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/pages/marketplace.css' %}">
+<style>
+.compare-grid-cards {
+    display: grid;
+    grid-template-columns: 240px 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    align-items: start;
+}
+.compare-product-header-card {
+    background: var(--cg-surface);
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-xl);
+    padding: 1.25rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+.compare-spec-row {
+    display: grid;
+    grid-template-columns: 240px 1fr 1fr;
+    gap: 1.5rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--cg-border-light);
+    background: var(--cg-surface);
+}
+.compare-spec-row:nth-child(even) {
+    background: var(--cg-bg-subtle);
+}
+.compare-spec-label {
+    font-weight: 600;
+    color: var(--cg-text-heading);
+    font-size: 0.9375rem;
+    display: flex;
+    align-items: center;
+}
+.compare-spec-val {
+    font-size: 0.9375rem;
+    color: var(--cg-text-body);
+    display: flex;
+    align-items: center;
+    border-radius: var(--radius-md);
+    padding: 0.375rem 0.5rem;
+}
+@media (max-width: 768px) {
+    .compare-grid-cards,
+    .compare-spec-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+    .compare-spec-label {
+        grid-column: span 2;
+        padding-bottom: 0.25rem;
+        border-bottom: 1px dashed var(--cg-border-light);
+        font-size: 0.8125rem;
+        text-transform: uppercase;
+        color: var(--cg-text-muted);
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="cg-container" style="padding-top: 2rem; padding-bottom: 4rem;">
-    {% include "base/breadcrumbs.html" with breadcrumb_current="Electronics Comparison Matrix" %}
+<div class="cg-container" style="padding-top: 1rem; padding-bottom: 5rem;">
+    {% include "base/breadcrumbs.html" with breadcrumb_current="Hardware Comparison Engine" %}
 
     <div style="margin-bottom: 2rem;">
-        <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">Hardware Comparison Engine</h1>
-        <p class="text-sm text-muted">Objective side-by-side spec evaluator for campus laptops, tablets, and devices</p>
+        <h1 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--cg-text-heading);">Hardware Comparison Engine</h1>
+        <p class="text-sm text-muted">Direct side-by-side spec comparison for laptops, calculators, tablets, and course gear</p>
     </div>
 
-    <!-- Product Selection Form -->
-    <form method="get" action="." style="margin-bottom: 2rem; display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
-        <div style="flex: 1; min-width: 250px;">
-            <label for="item1" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Device A:</label>
-            <select name="item1" id="item1" class="cg-input" style="width: 100%;">
-                <option value="">-- Select Product 1 --</option>
-                {% for product in all_products %}
-                    <option value="{{ product.id }}" {% if item1 and item1.id == product.id %}selected{% endif %}>
-                        {{ product.title }}
-                    </option>
-                {% endfor %}
-            </select>
-        </div>
+    <!-- Product Selection Control -->
+    <div class="compare-selector-box">
+        <form method="get" action="." style="display: flex; gap: 1.25rem; align-items: flex-end; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 260px;">
+                <label for="item1" style="display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--cg-text-heading);">Primary Device (A):</label>
+                <select name="item1" id="item1" class="cg-input" style="width: 100%; border: 1px solid var(--cg-border); background: var(--cg-bg); color: var(--cg-text-heading); border-radius: var(--radius-md); padding: 0.625rem 0.875rem;">
+                    <option value="">-- Select First Device --</option>
+                    {% for product in all_products %}
+                        <option value="{{ product.id|default:product.pk }}" {% if item1 and item1.id == product.id %}selected{% endif %}>
+                            {{ product.title }} (&#8377;{{ product.price }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        <div style="flex: 1; min-width: 250px;">
-            <label for="item2" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Device B:</label>
-            <select name="item2" id="item2" class="cg-input" style="width: 100%;">
-                <option value="">-- Select Product 2 --</option>
-                {% for product in all_products %}
-                    <option value="{{ product.id }}" {% if item2 and item2.id == product.id %}selected{% endif %}>
-                        {{ product.title }}
-                    </option>
-                {% endfor %}
-            </select>
-        </div>
+            <div style="flex: 1; min-width: 260px;">
+                <label for="item2" style="display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--cg-text-heading);">Comparative Device (B):</label>
+                <select name="item2" id="item2" class="cg-input" style="width: 100%; border: 1px solid var(--cg-border); background: var(--cg-bg); color: var(--cg-text-heading); border-radius: var(--radius-md); padding: 0.625rem 0.875rem;">
+                    <option value="">-- Select Second Device --</option>
+                    {% for product in all_products %}
+                        <option value="{{ product.id|default:product.pk }}" {% if item2 and item2.id == product.id %}selected{% endif %}>
+                            {{ product.title }} (&#8377;{{ product.price }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        <button type="submit" class="cg-btn cg-btn-primary">Compare Devices</button>
-    </form>
+            <button type="submit" class="btn btn-primary" style="padding: 0.625rem 1.5rem;">Compare Devices</button>
+        </form>
+    </div>
 
-    <!-- Matrix Table -->
+    <!-- Matrix Side-by-Side Comparison -->
     {% if item1 or item2 %}
-    <table class="compare-matrix-table">
-        <thead>
-            <tr>
-                <th style="width: 25%;">Specification</th>
-                <th style="width: 37.5%;">
-                    {% if item1 %}{{ item1.title }}{% else %}<em>Select Device A</em>{% endif %}
-                </th>
-                <th style="width: 37.5%;">
-                    {% if item2 %}{{ item2.title }}{% else %}<em>Select Device B</em>{% endif %}
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>Price</strong></td>
-                <td>
-                    {% if item1 %}
-                        <span style="font-weight: 700; color: var(--cg-emerald-600);">&#8377;{{ item1.price }}</span>
-                    {% else %}&mdash;{% endif %}
-                </td>
-                <td>
-                    {% if item2 %}
-                        <span style="font-weight: 700; color: var(--cg-emerald-600);">&#8377;{{ item2.price }}</span>
-                    {% else %}&mdash;{% endif %}
-                </td>
-            </tr>
-            <tr>
-                <td><strong>Processor</strong></td>
-                <td>{{ item1.processor|default:"&mdash;" }}</td>
-                <td>{{ item2.processor|default:"&mdash;" }}</td>
-            </tr>
-            <tr>
-                <td><strong>RAM</strong></td>
-                <td>{{ item1.ram|default:"&mdash;" }}</td>
-                <td>{{ item2.ram|default:"&mdash;" }}</td>
-            </tr>
-            <tr>
-                <td><strong>Storage</strong></td>
-                <td>{{ item1.storage|default:"&mdash;" }}</td>
-                <td>{{ item2.storage|default:"&mdash;" }}</td>
-            </tr>
-            <tr>
-                <td><strong>Battery Health</strong></td>
-                <td>
-                    {% if item1.battery_health %}
-                        {{ item1.battery_health }}%
-                    {% else %}&mdash;{% endif %}
-                </td>
-                <td>
-                    {% if item2.battery_health %}
-                        {{ item2.battery_health }}%
-                    {% else %}&mdash;{% endif %}
-                </td>
-            </tr>
-            <tr>
-                <td><strong>Condition</strong></td>
-                <td>
-                    {% if item1.condition %}
-                        <span class="cg-badge cg-badge-slate">{{ item1.condition }}</span>
-                    {% else %}&mdash;{% endif %}
-                </td>
-                <td>
-                    {% if item2.condition %}
-                        <span class="cg-badge cg-badge-slate">{{ item2.condition }}</span>
-                    {% else %}&mdash;{% endif %}
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div style="border: 1px solid var(--cg-border); border-radius: var(--radius-2xl); overflow: hidden; background: var(--cg-surface); box-shadow: var(--shadow-sm);">
+        <!-- Header Row with Product Visuals -->
+        <div class="compare-grid-cards" style="padding: 1.5rem; border-bottom: 1px solid var(--cg-border); background: var(--cg-bg-subtle);">
+            <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                <span class="text-xs text-muted" style="text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Comparative Metric</span>
+            </div>
+
+            <!-- Card Device 1 -->
+            <div class="compare-product-header-card">
+                {% if item1 %}
+                    <div style="height: 140px; border-radius: var(--radius-lg); background: var(--cg-bg); display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 1rem; border: 1px solid var(--cg-border-light);">
+                        {% if item1.primary_image %}
+                            <img src="{{ item1.primary_image.url }}" alt="{{ item1.title }}" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                        {% elif item1.image %}
+                            <img src="{{ item1.image.url|default:item1.image }}" alt="{{ item1.title }}" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                        {% else %}
+                            <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--cg-text-muted);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        {% endif %}
+                    </div>
+                    <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--cg-text-heading); margin-bottom: 0.5rem;">{{ item1.title }}</h3>
+                    <div style="font-size: 1.35rem; font-weight: 800; color: var(--cg-emerald-500); font-variant-numeric: tabular-nums; margin-bottom: 0.75rem;">&#8377;{{ item1.price }}</div>
+                    <a href="/products/{{ item1.slug|default:item1.pk }}/" class="btn btn-sm btn-outline btn-full">View Details</a>
+                {% else %}
+                    <div style="padding: 2rem 1rem; color: var(--cg-text-muted);">
+                        <p class="text-sm">Device A not selected</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Card Device 2 -->
+            <div class="compare-product-header-card">
+                {% if item2 %}
+                    <div style="height: 140px; border-radius: var(--radius-lg); background: var(--cg-bg); display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 1rem; border: 1px solid var(--cg-border-light);">
+                        {% if item2.primary_image %}
+                            <img src="{{ item2.primary_image.url }}" alt="{{ item2.title }}" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                        {% elif item2.image %}
+                            <img src="{{ item2.image.url|default:item2.image }}" alt="{{ item2.title }}" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                        {% else %}
+                            <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--cg-text-muted);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        {% endif %}
+                    </div>
+                    <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--cg-text-heading); margin-bottom: 0.5rem;">{{ item2.title }}</h3>
+                    <div style="font-size: 1.35rem; font-weight: 800; color: var(--cg-emerald-500); font-variant-numeric: tabular-nums; margin-bottom: 0.75rem;">&#8377;{{ item2.price }}</div>
+                    <a href="/products/{{ item2.slug|default:item2.pk }}/" class="btn btn-sm btn-outline btn-full">View Details</a>
+                {% else %}
+                    <div style="padding: 2rem 1rem; color: var(--cg-text-muted);">
+                        <p class="text-sm">Device B not selected</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Spec Comparison Rows -->
+        <div class="compare-spec-row">
+            <div class="compare-spec-label">Price Comparison</div>
+            <div class="compare-spec-val {% if item1 and item2 and item1.price < item2.price %}spec-winner{% endif %}">
+                {% if item1 %}<strong>&#8377;{{ item1.price }}</strong>{% else %}&mdash;{% endif %}
+            </div>
+            <div class="compare-spec-val {% if item1 and item2 and item2.price < item1.price %}spec-winner{% endif %}">
+                {% if item2 %}<strong>&#8377;{{ item2.price }}</strong>{% else %}&mdash;{% endif %}
+            </div>
+        </div>
+
+        <div class="compare-spec-row">
+            <div class="compare-spec-label">Category</div>
+            <div class="compare-spec-val">
+                {{ item1.category.name|default:item1.category|default:"&mdash;" }}
+            </div>
+            <div class="compare-spec-val">
+                {{ item2.category.name|default:item2.category|default:"&mdash;" }}
+            </div>
+        </div>
+
+        <div class="compare-spec-row">
+            <div class="compare-spec-label">Condition Rating</div>
+            <div class="compare-spec-val">
+                {% if item1 %}
+                    <span class="cg-badge cg-badge-slate">{{ item1.get_condition_display|default:item1.condition|default:"Good Condition" }}</span>
+                {% else %}&mdash;{% endif %}
+            </div>
+            <div class="compare-spec-val">
+                {% if item2 %}
+                    <span class="cg-badge cg-badge-slate">{{ item2.get_condition_display|default:item2.condition|default:"Good Condition" }}</span>
+                {% else %}&mdash;{% endif %}
+            </div>
+        </div>
+
+        <div class="compare-spec-row">
+            <div class="compare-spec-label">Listing Modality</div>
+            <div class="compare-spec-val">
+                {% if item1 %}
+                    {% if item1.listing_type == "RENT" %}
+                        <span class="cg-badge cg-badge-indigo">Rental</span>
+                    {% elif item1.listing_type == "SERVICE" %}
+                        <span class="cg-badge cg-badge-amber">Service</span>
+                    {% else %}
+                        <span class="cg-badge cg-badge-blue">Direct Sale</span>
+                    {% endif %}
+                {% else %}&mdash;{% endif %}
+            </div>
+            <div class="compare-spec-val">
+                {% if item2 %}
+                    {% if item2.listing_type == "RENT" %}
+                        <span class="cg-badge cg-badge-indigo">Rental</span>
+                    {% elif item2.listing_type == "SERVICE" %}
+                        <span class="cg-badge cg-badge-amber">Service</span>
+                    {% else %}
+                        <span class="cg-badge cg-badge-blue">Direct Sale</span>
+                    {% endif %}
+                {% else %}&mdash;{% endif %}
+            </div>
+        </div>
+
+        <div class="compare-spec-row">
+            <div class="compare-spec-label">Handover Spot</div>
+            <div class="compare-spec-val">
+                {{ item1.location|default:"Campus Quad" }}
+            </div>
+            <div class="compare-spec-val">
+                {{ item2.location|default:"Campus Quad" }}
+            </div>
+        </div>
+
+        <div class="compare-spec-row">
+            <div class="compare-spec-label">Seller Status</div>
+            <div class="compare-spec-val">
+                {% if item1.seller %}
+                    <span style="display: inline-flex; align-items: center; gap: 0.375rem;">
+                        {{ item1.seller.username }}
+                        {% if item1.seller.is_verified %}<span class="cg-badge cg-badge-emerald">Verified</span>{% endif %}
+                    </span>
+                {% else %}&mdash;{% endif %}
+            </div>
+            <div class="compare-spec-val">
+                {% if item2.seller %}
+                    <span style="display: inline-flex; align-items: center; gap: 0.375rem;">
+                        {{ item2.seller.username }}
+                        {% if item2.seller.is_verified %}<span class="cg-badge cg-badge-emerald">Verified</span>{% endif %}
+                    </span>
+                {% else %}&mdash;{% endif %}
+            </div>
+        </div>
+
+        <div class="compare-spec-row">
+            <div class="compare-spec-label">Price Negotiation</div>
+            <div class="compare-spec-val">
+                {% if item1.is_negotiable %}
+                    <span class="cg-badge cg-badge-emerald">Open to Offers</span>
+                {% else %}
+                    <span class="text-xs text-muted">Fixed Price</span>
+                {% endif %}
+            </div>
+            <div class="compare-spec-val">
+                {% if item2.is_negotiable %}
+                    <span class="cg-badge cg-badge-emerald">Open to Offers</span>
+                {% else %}
+                    <span class="text-xs text-muted">Fixed Price</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
     {% else %}
-    <div style="text-align: center; padding: 3rem; background: var(--cg-surface-muted, #f8fafc); border-radius: 8px;">
-        <p class="text-muted">Select two products above to view their side-by-side comparison.</p>
+    <div style="text-align: center; padding: 4rem 2rem; background: var(--cg-surface); border: 1px solid var(--cg-border); border-radius: var(--radius-2xl);">
+        <div style="width: 56px; height: 56px; border-radius: var(--radius-full); background: var(--cg-bg-subtle); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; color: var(--cg-text-muted);">
+            <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        </div>
+        <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: var(--cg-text-heading);">Select Two Devices to Compare</h3>
+        <p class="text-sm text-muted" style="max-width: 440px; margin: 0 auto 1.5rem;">Choose any two laptops, kits, or academic hardware items above to analyze side-by-side specs, price advantages, and condition.</p>
+        <a href="/products/" class="btn btn-outline btn-sm">Explore Catalogue</a>
     </div>
     {% endif %}
 </div>
-{% endblock %}1
+{% endblock %}

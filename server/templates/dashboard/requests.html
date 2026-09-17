@@ -1,7 +1,7 @@
 {% extends "base/base.html" %}
 {% load static %}
 
-{% block title %}Student Need Board | CampusGrid{% endblock %}
+{% block title %}My Need Requests | CampusGrid{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/pages/dashboard.css' %}">
@@ -13,28 +13,85 @@
         {% include "components/dashboard_sidebar.html" with active_tab="requests" %}
 
         <main>
-            <div class="cg-flex-between" style="margin-bottom: 1.75rem;">
+            <div class="cg-flex-between" style="margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;">
                 <div>
-                    <h1 style="font-size: 1.75rem;">Student Need Requests</h1>
-                    <p class="text-sm text-muted">Post items you urgently need or fulfill requests posted by campus peers</p>
+                    <h1 style="font-size: 1.75rem;">My Broadcast Needs</h1>
+                    <p class="text-sm text-muted">Items, books, hardware, and services you have requested from campus peers</p>
                 </div>
-                <button type="button" class="btn btn-primary btn-sm">+ Post a Request</button>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <a href="{% url 'market:requests' %}" class="btn btn-outline btn-sm">Explore All Needs</a>
+                    <a href="{% url 'market:create_need_request' %}" class="btn btn-primary btn-sm">+ Broadcast a Need</a>
+                </div>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
-                <div style="background: #FFFFFF; border: 1px solid var(--cg-border); border-radius: var(--radius-lg); padding: 1.5rem;">
-                    <div class="cg-flex-between" style="margin-bottom: 0.5rem;">
-                        <span class="cg-badge cg-badge-amber">Wanted to Buy / Borrow</span>
-                        <span style="font-weight: 700; color: var(--cg-emerald-600);">Budget: Up to &#8377;1,200</span>
-                    </div>
-                    <h3 style="font-size: 1.15rem; margin-bottom: 0.35rem;">Scientific Calculator (Casio fx-991EX Classwiz)</h3>
-                    <p class="text-sm text-muted" style="margin-bottom: 1rem;">Needed for Mid-semester exam next week. Can meet anywhere on academic quad.</p>
-                    <div class="cg-flex-between" style="font-size: 0.8125rem; color: var(--cg-slate-500); padding-top: 0.75rem; border-top: 1px solid var(--cg-slate-100);">
-                        <span>Posted by <strong>priya_ee</strong> &bull; IIT Bombay</span>
-                        <a href="#" class="btn btn-sm btn-outline">Offer Item</a>
-                    </div>
+            {% if user_requests %}
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    {% for need in user_requests %}
+                        <div style="background: var(--cg-surface); border: 1px solid var(--cg-border); border-radius: var(--radius-lg); padding: 1.5rem; {% if need.urgency == 'URGENT' and need.status == 'OPEN' %}border-left: 4px solid var(--cg-rose-500);{% endif %}">
+                            <div class="cg-flex-between" style="margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                                <div style="display: flex; gap: 0.375rem; align-items: center;">
+                                    {% if need.status == 'FULFILLED' %}
+                                        <span class="cg-badge cg-badge-slate">✓ Fulfilled</span>
+                                    {% elif need.urgency == 'URGENT' %}
+                                        <span class="cg-badge cg-badge-rose">🔥 Needed in 24h</span>
+                                    {% elif need.urgency == 'MODERATE' %}
+                                        <span class="cg-badge cg-badge-amber">This Week</span>
+                                    {% else %}
+                                        <span class="cg-badge cg-badge-slate">Flexible</span>
+                                    {% endif %}
+
+                                    {% if need.request_type == 'BUY' %}
+                                        <span class="cg-badge cg-badge-emerald">Buy</span>
+                                    {% elif need.request_type == 'BORROW' %}
+                                        <span class="cg-badge cg-badge-indigo">Borrow</span>
+                                    {% elif need.request_type == 'SERVICE' %}
+                                        <span class="cg-badge cg-badge-amber">Service</span>
+                                    {% endif %}
+                                </div>
+
+                                <div style="font-weight: 700; color: var(--cg-emerald-500); font-variant-numeric: tabular-nums;">
+                                    {% if need.max_budget %}
+                                        Budget: Up to &#8377;{{ need.max_budget }}
+                                    {% else %}
+                                        Budget: Flexible
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <h3 style="font-size: 1.15rem; margin-bottom: 0.35rem; color: var(--cg-text-heading);">
+                                <a href="{% url 'market:need_request_detail' need.pk %}" style="color: inherit; text-decoration: none;">
+                                    {{ need.title }}
+                                </a>
+                            </h3>
+
+                            <p class="text-sm text-muted" style="margin-bottom: 1rem; line-height: 1.6;">
+                                {{ need.description }}
+                            </p>
+
+                            <div class="cg-flex-between" style="font-size: 0.8125rem; color: var(--cg-text-muted); padding-top: 0.75rem; border-top: 1px solid var(--cg-border-light); flex-wrap: wrap; gap: 0.5rem;">
+                                <span>
+                                    Posted {{ need.created_at|date:"M d, Y" }} &bull; {{ need.offers.count }} peer offer(s)
+                                    {% if need.location %}&bull; 📍 {{ need.location }}{% endif %}
+                                </span>
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <form method="POST" action="{% url 'market:toggle_need_status' need.pk %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        {% if need.status == 'OPEN' %}
+                                            <button type="submit" class="btn btn-sm btn-outline" style="font-size: 0.75rem;">Mark Fulfilled</button>
+                                        {% else %}
+                                            <input type="hidden" name="action" value="reopen">
+                                            <button type="submit" class="btn btn-sm btn-outline" style="font-size: 0.75rem;">Reopen</button>
+                                        {% endif %}
+                                    </form>
+                                    <a href="{% url 'market:need_request_detail' need.pk %}" class="btn btn-sm btn-primary" style="font-size: 0.75rem;">View &amp; Responses</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-            </div>
+            {% else %}
+                {% include "components/empty_state.html" with title="No active need requests" description="You have not broadcast any urgent hardware or course requests. Need something for an upcoming test or lab? Post it now!" action_url="/requests/create/" action_text="+ Broadcast First Need" icon_type="clipboard" %}
+            {% endif %}
         </main>
     </div>
 </div>

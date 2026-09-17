@@ -197,3 +197,125 @@ class Wishlist(models.Model):
 
 # Backward-compatibility / semantic alias
 Product = Listing
+
+
+class NeedRequest(models.Model):
+    """
+    Student Need Request: campus peer broadcast for urgently required hardware,
+    books, notes, tutoring, or semester essentials.
+    """
+    class RequestType(models.TextChoices):
+        BUY = "BUY", "Wanted to Buy"
+        BORROW = "BORROW", "Wanted to Borrow / Rent"
+        SERVICE = "SERVICE", "Seeking Tutoring / Academic Service"
+
+    class Urgency(models.TextChoices):
+        URGENT = "URGENT", "Needed ASAP (Within 24-48 Hours)"
+        MODERATE = "MODERATE", "Needed This Week"
+        FLEXIBLE = "FLEXIBLE", "Flexible / Anytime This Semester"
+
+    class Status(models.TextChoices):
+        OPEN = "OPEN", "Active / Seeking"
+        FULFILLED = "FULFILLED", "Fulfilled by Peer"
+        CLOSED = "CLOSED", "Closed / Expired"
+
+    requester = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="need_requests"
+    )
+    title = models.CharField(max_length=200)
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="need_requests"
+    )
+    request_type = models.CharField(
+        max_length=20,
+        choices=RequestType.choices,
+        default=RequestType.BUY,
+        db_index=True
+    )
+    max_budget = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(Decimal("0.00"))],
+        help_text="Maximum budget in INR (leave blank if flexible or wanting to borrow)"
+    )
+    is_budget_negotiable = models.BooleanField(default=True)
+    urgency = models.CharField(
+        max_length=20,
+        choices=Urgency.choices,
+        default=Urgency.URGENT,
+        db_index=True
+    )
+    location = models.CharField(
+        max_length=150,
+        blank=True,
+        help_text="Campus meeting spot (e.g., Central Library, Tech Quad, Mess 2)"
+    )
+    description = models.TextField(
+        help_text="Explain course context, exam deadline, required specs, or return timeline"
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.OPEN,
+        db_index=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        app_label = "market"
+        verbose_name = "Need Request"
+        verbose_name_plural = "Need Requests"
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["status", "urgency"]),
+            models.Index(fields=["request_type", "status"]),
+        ]
+
+    def __str__(self):
+        return f"[{self.get_request_type_display()}] {self.title} ({self.get_status_display()})"
+
+
+class NeedOffer(models.Model):
+    """
+    Direct response or fulfillment offer from a campus peer for a NeedRequest.
+    """
+    need_request = models.ForeignKey(
+        NeedRequest,
+        on_delete=models.CASCADE,
+        related_name="offers"
+    )
+    responder = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="need_offers"
+    )
+    message = models.TextField(
+        help_text="Describe what you have, item condition, or availability"
+    )
+    offered_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(Decimal("0.00"))]
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        app_label = "market"
+        verbose_name = "Need Offer"
+        verbose_name_plural = "Need Offers"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Offer from {self.responder.username} for {self.need_request.title}"
+

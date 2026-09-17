@@ -1,0 +1,271 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}{{ need_request.title }} | Student Need Board{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/marketplace.css' %}">
+<style>
+.need-detail-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 4rem;
+    align-items: start;
+}
+@media (max-width: 900px) {
+    .need-detail-layout {
+        grid-template-columns: 1fr;
+    }
+}
+.need-detail-card {
+    background: var(--cg-surface);
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-2xl);
+    padding: 2.25rem;
+    box-shadow: var(--shadow-sm);
+}
+.need-detail-sidebar {
+    position: sticky;
+    top: 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.offer-box {
+    background: var(--cg-bg-subtle);
+    border: 1px solid var(--cg-border-light);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="cg-container" style="padding-top: 1rem; padding-bottom: 5rem;">
+    {% include "base/breadcrumbs.html" with breadcrumb_current=need_request.title %}
+
+    <div class="need-detail-layout">
+        <!-- Main Content Column -->
+        <div>
+            <div class="need-detail-card">
+                <!-- Badges Strip -->
+                <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
+                    {% if need_request.status == 'FULFILLED' %}
+                        <span class="cg-badge cg-badge-slate" style="font-size: 0.8125rem;">✓ Fulfilled</span>
+                    {% elif need_request.urgency == 'URGENT' %}
+                        <span class="cg-badge cg-badge-rose" style="font-size: 0.8125rem;">🔥 Needed in 24h</span>
+                    {% elif need_request.urgency == 'MODERATE' %}
+                        <span class="cg-badge cg-badge-amber" style="font-size: 0.8125rem;">Needed This Week</span>
+                    {% else %}
+                        <span class="cg-badge cg-badge-slate" style="font-size: 0.8125rem;">Flexible Urgency</span>
+                    {% endif %}
+
+                    {% if need_request.request_type == 'BUY' %}
+                        <span class="cg-badge cg-badge-emerald" style="font-size: 0.8125rem;">Wanted to Buy</span>
+                    {% elif need_request.request_type == 'BORROW' %}
+                        <span class="cg-badge cg-badge-indigo" style="font-size: 0.8125rem;">Wanted to Borrow</span>
+                    {% elif need_request.request_type == 'SERVICE' %}
+                        <span class="cg-badge cg-badge-amber" style="font-size: 0.8125rem;">Tutoring / Academic Service</span>
+                    {% endif %}
+
+                    {% if need_request.category %}
+                        <span class="cg-badge cg-badge-blue" style="font-size: 0.8125rem;">{{ need_request.category.name }}</span>
+                    {% endif %}
+                </div>
+
+                <!-- Title -->
+                <h1 style="font-size: 2.15rem; color: var(--cg-text-heading); margin-bottom: 0.5rem; line-height: 1.25;">
+                    {{ need_request.title }}
+                </h1>
+
+                <!-- Meta Strip -->
+                <div class="text-sm text-muted" style="margin-bottom: 1.75rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                    <span>Posted by <strong style="color: var(--cg-text-heading);">{{ need_request.requester.username }}</strong></span>
+                    <span>&bull;</span>
+                    <span>{{ need_request.created_at|timesince }} ago ({{ need_request.created_at|date:"M d, Y" }})</span>
+                </div>
+
+                <!-- Budget Callout -->
+                <div style="background: var(--cg-bg-subtle); border: 1px solid var(--cg-border); border-radius: var(--radius-xl); padding: 1.25rem 1.5rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <span class="text-xs text-muted" style="text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">Proposed Budget</span>
+                        {% if need_request.max_budget %}
+                            <div style="font-size: 1.75rem; font-weight: 800; color: var(--cg-emerald-500); font-variant-numeric: tabular-nums;">
+                                Up to &#8377;{{ need_request.max_budget }}
+                            </div>
+                        {% else %}
+                            <div style="font-size: 1.25rem; font-weight: 700; color: var(--cg-text-heading);">
+                                Open to Peer Negotiation / Free Lending
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% if need_request.is_budget_negotiable %}
+                        <span class="cg-badge cg-badge-emerald">Price Flexible</span>
+                    {% endif %}
+                </div>
+
+                <!-- Description -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="font-size: 1.1rem; color: var(--cg-text-heading); margin-bottom: 0.75rem;">Requirements & Context</h3>
+                    <div style="font-size: 0.95rem; color: var(--cg-text-body); line-height: 1.8; white-space: pre-line;">
+                        {{ need_request.description }}
+                    </div>
+                </div>
+
+                <!-- Preferred Campus Handover Location -->
+                {% if need_request.location %}
+                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: var(--cg-bg-subtle); border: 1px solid var(--cg-border-light); border-radius: var(--radius-lg); margin-bottom: 2rem;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--cg-blue-500); flex-shrink: 0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <div style="font-size: 0.875rem; color: var(--cg-text-body);">
+                        Preferred Handover Spot: <strong style="color: var(--cg-text-heading);">{{ need_request.location }}</strong>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Owner Controls -->
+                {% if request.user == need_request.requester %}
+                    <div style="padding: 1.25rem; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: var(--radius-lg); margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <strong style="color: var(--cg-text-heading); display: block;">You are the author of this request</strong>
+                            <span class="text-xs text-muted">Did a classmate fulfill this? Update status to keep the campus board clean.</span>
+                        </div>
+                        <form method="POST" action="{% url 'market:toggle_need_status' need_request.pk %}">
+                            {% csrf_token %}
+                            {% if need_request.status == 'OPEN' %}
+                                <button type="submit" class="btn btn-primary btn-sm">✓ Mark as Fulfilled</button>
+                            {% else %}
+                                <input type="hidden" name="action" value="reopen">
+                                <button type="submit" class="btn btn-outline btn-sm">Reopen Request</button>
+                            {% endif %}
+                        </form>
+                    </div>
+                {% endif %}
+
+                <!-- Peer Responses & Offers Section -->
+                <div>
+                    <h3 style="font-size: 1.2rem; color: var(--cg-text-heading); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>Peer Offers & Responses</span>
+                        <span class="cg-badge cg-badge-slate">{{ offers|length }}</span>
+                    </h3>
+
+                    {% if offers %}
+                        {% for offer in offers %}
+                            <div class="offer-box">
+                                <div class="cg-flex-between" style="margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <div style="width: 28px; height: 28px; border-radius: var(--radius-full); background: var(--cg-blue-600); color: #fff; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center;">
+                                            {{ offer.responder.username|slice:":2"|upper }}
+                                        </div>
+                                        <span style="font-weight: 600; color: var(--cg-text-heading);">{{ offer.responder.username }}</span>
+                                        {% if offer.responder.is_verified %}
+                                            <svg width="13" height="13" fill="none" stroke="var(--cg-emerald-500)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        {% endif %}
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        {% if offer.offered_price %}
+                                            <span style="font-weight: 700; color: var(--cg-emerald-500); font-variant-numeric: tabular-nums;">
+                                                Offered: &#8377;{{ offer.offered_price }}
+                                            </span>
+                                        {% endif %}
+                                        <span class="text-xs text-muted">{{ offer.created_at|timesince }} ago</span>
+                                    </div>
+                                </div>
+                                <p style="font-size: 0.875rem; color: var(--cg-text-body); margin: 0; line-height: 1.6;">
+                                    {{ offer.message }}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-sm text-muted" style="padding: 1rem 0;">No offers yet. Be the first to help this student!</p>
+                    {% endif %}
+
+                    <!-- Submit Offer Form (Only for other logged-in students when request is OPEN) -->
+                    {% if need_request.status == 'OPEN' and request.user != need_request.requester %}
+                        <div style="margin-top: 2rem; background: var(--cg-surface); border: 1px solid var(--cg-border); border-radius: var(--radius-xl); padding: 1.5rem;">
+                            <h4 style="font-size: 1rem; color: var(--cg-text-heading); margin-bottom: 0.5rem;">
+                                Have this item or can help? Leave a note
+                            </h4>
+                            <p class="text-xs text-muted" style="margin-bottom: 1rem;">
+                                The student will see your message and can contact you directly for campus handover.
+                            </p>
+
+                            {% if request.user.is_authenticated %}
+                                <form method="POST" action="{% url 'market:create_need_offer' need_request.pk %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        {{ offer_form.message }}
+                                    </div>
+                                    <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                                        <div style="width: 220px;">
+                                            {{ offer_form.offered_price }}
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-sm">Submit Offer Note</button>
+                                    </div>
+                                </form>
+                            {% else %}
+                                <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-outline btn-sm">Log in to offer help</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar: Requester & Fast Contact -->
+        <aside class="need-detail-sidebar">
+            <div style="background: var(--cg-surface); border: 1px solid var(--cg-border); border-radius: var(--radius-xl); padding: 1.75rem; box-shadow: var(--shadow-sm);">
+                <h4 style="font-size: 0.8125rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; color: var(--cg-text-muted); margin-bottom: 1.25rem;">
+                    Requester Information
+                </h4>
+
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem;">
+                    <div style="width: 48px; height: 48px; border-radius: var(--radius-full); background: var(--cg-blue-600); color: #fff; font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; justify-content: center;">
+                        {{ need_request.requester.username|slice:":2"|upper }}
+                    </div>
+                    <div>
+                        <div style="font-size: 1.05rem; font-weight: 700; color: var(--cg-text-heading); display: flex; align-items: center; gap: 0.35rem;">
+                            {{ need_request.requester.username }}
+                            {% if need_request.requester.is_verified %}
+                                <svg width="15" height="15" fill="none" stroke="var(--cg-emerald-500)" viewBox="0 0 24 24" title="Verified Campus Student"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            {% endif %}
+                        </div>
+                        <div class="text-xs text-muted">{{ need_request.requester.institution|default:"Campus Student" }}</div>
+                    </div>
+                </div>
+
+                {% if need_request.status == 'OPEN' %}
+                    {% if need_request.requester.phone %}
+                        <a href="https://wa.me/{{ need_request.requester.phone }}?text=Hi%20{{ need_request.requester.username }},%20I%20saw%20your%20need%20request%20for%20'{{ need_request.title|urlencode }}'%20on%20CampusGrid.%20I%20have%20this%20and%20can%20help!"
+                           target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-full btn-lg" style="margin-bottom: 0.75rem;">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                            <span>Chat on WhatsApp</span>
+                        </a>
+                    {% endif %}
+
+                    {% if need_request.requester.email %}
+                        <a href="mailto:{{ need_request.requester.email }}?subject=Offer%20for%20{{ need_request.title|urlencode }}%20(CampusGrid)"
+                           class="btn btn-outline btn-full btn-sm">
+                            Email Requester
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <div style="text-align: center; padding: 1rem; background: var(--cg-bg-subtle); border-radius: var(--radius-md); color: var(--cg-text-muted); font-size: 0.875rem;">
+                        This request is resolved / fulfilled.
+                    </div>
+                {% endif %}
+
+                <p class="text-xs text-muted" style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px dashed var(--cg-border-light); line-height: 1.5;">
+                    🔒 <strong>Campus Safety:</strong> Never pay advance deposits. Inspect items during daylight hours at campus spots.
+                </p>
+            </div>
+
+            <a href="{% url 'market:requests' %}" class="btn btn-ghost btn-sm" style="align-self: center;">
+                &larr; Back to Need Board
+            </a>
+        </aside>
+    </div>
+</div>
+{% endblock %}

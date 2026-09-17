@@ -47,3 +47,7 @@ class App_users(AbstractUser):
     def what_role(self):
         return self.user_roles
 
+    @property
+    def is_verified(self):
+        return bool(self.email and (self.email.endswith('.edu') or self.email.endswith('.ac.in') or self.email.endswith('.edu.in')))
+

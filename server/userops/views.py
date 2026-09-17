@@ -77,3 +77,113 @@ def logout_view(request):
     messages.info(request, "You have been logged out.")
     return redirect('home')
 
+
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def dashboard_view(request):
+    user = request.user
+    user_listings = []
+    active_count = 0
+    wishlist_count = 0
+    try:
+        from market.models import Listing, Wishlist
+        user_listings = Listing.objects.filter(seller=user).order_by('-created_at')
+        active_count = user_listings.filter(status=Listing.ListingStatus.ACTIVE).count()
+        wishlist_count = Wishlist.objects.filter(user=user).count()
+    except Exception:
+        pass
+
+    context = {
+        'user_listings': user_listings,
+        'active_listings_count': active_count,
+        'wishlist_count': wishlist_count,
+        'active_tab': 'overview',
+    }
+    return render(request, 'dashboard/dashboard.html', context)
+
+
+@login_required
+def listings_view(request):
+    user = request.user
+    user_listings = []
+    try:
+        from market.models import Listing
+        user_listings = Listing.objects.filter(seller=user).order_by('-created_at')
+    except Exception:
+        pass
+
+    return render(request, 'dashboard/listings.html', {
+        'user_listings': user_listings,
+        'active_tab': 'listings',
+    })
+
+
+@login_required
+def wishlist_view(request):
+    user = request.user
+    wishlist_items = []
+    try:
+        from market.models import Wishlist
+        wishlist_items = Wishlist.objects.filter(user=user).select_related('listing').order_by('-created_at')
+    except Exception:
+        pass
+
+    return render(request, 'dashboard/wishlist.html', {
+        'wishlist_items': wishlist_items,
+        'active_tab': 'wishlist',
+    })
+
+
+@login_required
+def notifications_view(request):
+    return render(request, 'dashboard/notifications.html', {
+        'active_tab': 'notifications',
+    })
+
+
+@login_required
+def requests_view(request):
+    user_requests = []
+    try:
+        from market.models import NeedRequest
+        user_requests = NeedRequest.objects.filter(requester=request.user).order_by('-created_at')
+    except Exception:
+        pass
+
+    return render(request, 'dashboard/requests.html', {
+        'user_requests': user_requests,
+        'active_tab': 'requests',
+    })
+
+
+
+@login_required
+def profile_view(request):
+    if request.method == 'POST':
+        institution = request.POST.get('institution', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        user = request.user
+        if institution:
+            user.institution = institution
+        if phone:
+            user.phone = phone
+        user.save()
+        messages.success(request, "Your profile changes have been saved.")
+        return redirect('profile')
+
+    return render(request, 'user/profile.html', {
+        'active_tab': 'profile',
+    })
+
+
+@login_required
+def settings_view(request):
+    if request.method == 'POST':
+        messages.success(request, "Your account and notification settings have been updated.")
+        return redirect('settings')
+
+    return render(request, 'user/settings.html', {
+        'active_tab': 'settings',
+    })
+

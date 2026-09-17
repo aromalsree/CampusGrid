@@ -20,13 +20,13 @@
 
   .listing-page-header h1 {
     font-size: 2.15rem;
-    color: var(--cg-navy-900);
+    color: var(--cg-text-heading);
     margin-bottom: 0.35rem;
   }
 
   .listing-page-header p {
     font-size: 1rem;
-    color: var(--cg-slate-500);
+    color: var(--cg-text-muted);
   }
 
   .listing-grid-layout {
@@ -43,7 +43,7 @@
   }
 
   .listing-form-card {
-    background: #FFFFFF;
+    background: var(--cg-surface);
     border: 1px solid var(--cg-border);
     border-radius: var(--radius-xl);
     padding: 2.25rem;
@@ -53,7 +53,7 @@
   .form-section {
     margin-bottom: 2.25rem;
     padding-bottom: 2rem;
-    border-bottom: 1px solid var(--cg-slate-100);
+    border-bottom: 1px solid var(--cg-border-light);
   }
 
   .form-section:last-of-type {
@@ -73,8 +73,8 @@
     width: 28px;
     height: 28px;
     border-radius: var(--radius-full);
-    background: var(--cg-emerald-50);
-    color: var(--cg-emerald-600);
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--cg-emerald-500);
     font-size: 0.8125rem;
     font-weight: 700;
     display: flex;
@@ -85,24 +85,24 @@
   .section-title {
     font-size: 1.15rem;
     font-weight: 700;
-    color: var(--cg-navy-900);
+    color: var(--cg-text-heading);
   }
 
   .section-subtitle {
     font-size: 0.8125rem;
-    color: var(--cg-slate-500);
+    color: var(--cg-text-muted);
   }
 
   .form-help-text {
     font-size: 0.775rem;
-    color: var(--cg-slate-500);
+    color: var(--cg-text-muted);
     margin-top: 0.35rem;
     display: block;
   }
 
   .form-error-msg {
     font-size: 0.8125rem;
-    color: var(--cg-rose-600);
+    color: var(--cg-rose-500);
     font-weight: 500;
     margin-top: 0.375rem;
     display: flex;
@@ -120,7 +120,7 @@
     position: absolute;
     left: 1rem;
     font-weight: 700;
-    color: var(--cg-navy-800);
+    color: var(--cg-text-heading);
     font-size: 1rem;
     pointer-events: none;
   }
@@ -134,7 +134,7 @@
     align-items: flex-start;
     gap: 0.75rem;
     padding: 0.875rem 1rem;
-    background: var(--cg-slate-50);
+    background: var(--cg-bg-subtle);
     border: 1px solid var(--cg-border);
     border-radius: var(--radius-md);
     cursor: pointer;
@@ -142,8 +142,8 @@
   }
 
   .checkbox-card:hover {
-    border-color: var(--cg-slate-400);
-    background: #FFFFFF;
+    border-color: var(--cg-blue-500);
+    background: var(--cg-surface);
   }
 
   .checkbox-card input[type="checkbox"] {
@@ -157,22 +157,22 @@
   .checkbox-label-title {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--cg-navy-900);
+    color: var(--cg-text-heading);
     display: block;
   }
 
   .checkbox-label-desc {
     font-size: 0.775rem;
-    color: var(--cg-slate-500);
+    color: var(--cg-text-muted);
     display: block;
     margin-top: 0.15rem;
   }
 
   /* Photo Upload Dropzone */
   .upload-dropzone {
-    border: 2px dashed var(--cg-slate-300);
+    border: 2px dashed var(--cg-border);
     border-radius: var(--radius-lg);
-    background: var(--cg-slate-50);
+    background: var(--cg-bg-subtle);
     padding: 2rem 1.5rem;
     text-align: center;
     cursor: pointer;
@@ -182,7 +182,7 @@
 
   .upload-dropzone:hover {
     border-color: var(--cg-emerald-500);
-    background: var(--cg-emerald-50);
+    background: rgba(16, 185, 129, 0.05);
   }
 
   .upload-dropzone input[type="file"] {
@@ -199,12 +199,12 @@
     height: 44px;
     margin: 0 auto 0.75rem auto;
     border-radius: var(--radius-full);
-    background: #FFFFFF;
+    background: var(--cg-surface);
     box-shadow: var(--shadow-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--cg-emerald-600);
+    color: var(--cg-emerald-500);
   }
 
   .preview-strip {
@@ -220,12 +220,12 @@
     border-radius: var(--radius-md);
     border: 1px solid var(--cg-border);
     object-fit: cover;
-    background: var(--cg-slate-100);
+    background: var(--cg-bg-subtle);
   }
 
   /* Sidebar Info Card */
   .tips-card {
-    background: #FFFFFF;
+    background: var(--cg-surface);
     border: 1px solid var(--cg-border);
     border-radius: var(--radius-xl);
     padding: 1.75rem;
@@ -236,7 +236,7 @@
 
   .tips-card h3 {
     font-size: 1.05rem;
-    color: var(--cg-navy-900);
+    color: var(--cg-text-heading);
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
@@ -250,7 +250,7 @@
     margin-bottom: 1rem;
     font-size: 0.85rem;
     line-height: 1.5;
-    color: var(--cg-slate-600);
+    color: var(--cg-text-body);
   }
 
   .tip-item:last-child {
@@ -258,7 +258,7 @@
   }
 
   .tip-check {
-    color: var(--cg-emerald-600);
+    color: var(--cg-emerald-500);
     flex-shrink: 0;
     margin-top: 0.15rem;
   }
@@ -266,11 +266,11 @@
   .trust-guarantee-box {
     margin-top: 1.5rem;
     padding: 1rem;
-    background: var(--cg-slate-50);
+    background: var(--cg-bg-subtle);
     border-radius: var(--radius-md);
-    border: 1px solid var(--cg-slate-200);
+    border: 1px solid var(--cg-border);
     font-size: 0.8rem;
-    color: var(--cg-slate-600);
+    color: var(--cg-text-body);
   }
 </style>
 {% endblock %}
@@ -480,7 +480,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
                         </div>
-                        <div style="font-weight: 600; color: var(--cg-navy-900); margin-bottom: 0.25rem;">
+                        <div style="font-weight: 600; color: var(--cg-text-heading); margin-bottom: 0.25rem;">
                             Click to upload or drag photos here
                         </div>
                         <p class="text-xs text-muted">
@@ -536,7 +536,7 @@
                 </div>
 
                 <div class="trust-guarantee-box">
-                    <strong style="color: var(--cg-navy-900); display: block; margin-bottom: 0.25rem;">CampusGrid Anti-Scam Shield</strong>
+                    <strong style="color: var(--cg-text-heading); display: block; margin-bottom: 0.25rem;">CampusGrid Anti-Scam Shield</strong>
                     No online gateway payments &mdash; inspect the physical item in person before completing the exchange.
                 </div>
             </div>

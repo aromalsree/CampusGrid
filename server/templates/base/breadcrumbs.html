@@ -1,18 +1,20 @@
-<nav aria-label="Breadcrumb" style="padding: 1rem 0; font-size: 0.875rem; color: var(--cg-slate-500);">
-    <div class="cg-container" style="display: flex; align-items: center; gap: 0.5rem;">
-        <a href="/" style="color: var(--cg-slate-500); display: inline-flex; align-items: center; gap: 0.25rem;">Home</a>
-        <span>/</span>
+<nav aria-label="Breadcrumb" class="cg-breadcrumb">
+    <div class="cg-container" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.875rem 1.25rem;">
+        <a href="/" class="cg-breadcrumb-link cg-breadcrumb-home" aria-label="Home">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        </a>
+        <svg class="cg-breadcrumb-sep" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         {% if breadcrumbs %}
             {% for item in breadcrumbs %}
                 {% if forloop.last %}
-                    <span style="color: var(--cg-navy-900); font-weight: 600;">{{ item.title }}</span>
+                    <span class="cg-breadcrumb-current" aria-current="page">{{ item.title }}</span>
                 {% else %}
-                    <a href="{{ item.url }}" style="color: var(--cg-slate-500);">{{ item.title }}</a>
-                    <span>/</span>
+                    <a href="{{ item.url }}" class="cg-breadcrumb-link">{{ item.title }}</a>
+                    <svg class="cg-breadcrumb-sep" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 {% endif %}
             {% endfor %}
         {% else %}
-            <span style="color: var(--cg-navy-900); font-weight: 600;">{% block breadcrumb_current %}Page{% endblock %}</span>
+            <span class="cg-breadcrumb-current" aria-current="page">{% block breadcrumb_current %}Page{% endblock %}</span>
         {% endif %}
     </div>
 </nav>
