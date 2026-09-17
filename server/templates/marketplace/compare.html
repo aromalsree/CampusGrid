@@ -82,7 +82,7 @@
                 <select name="item1" id="item1" class="cg-input" style="width: 100%; border: 1px solid var(--cg-border); background: var(--cg-bg); color: var(--cg-text-heading); border-radius: var(--radius-md); padding: 0.625rem 0.875rem;">
                     <option value="">-- Select First Device --</option>
                     {% for product in all_products %}
-                        <option value="{{ product.id|default:product.pk }}" {% if item1 and item1.id == product.id %}selected{% endif %}>
+                        <option value="{{ product.id }}" {% if item1 and item1.id == product.id %}selected{% endif %}>
                             {{ product.title }} (&#8377;{{ product.price }})
                         </option>
                     {% endfor %}
@@ -94,7 +94,7 @@
                 <select name="item2" id="item2" class="cg-input" style="width: 100%; border: 1px solid var(--cg-border); background: var(--cg-bg); color: var(--cg-text-heading); border-radius: var(--radius-md); padding: 0.625rem 0.875rem;">
                     <option value="">-- Select Second Device --</option>
                     {% for product in all_products %}
-                        <option value="{{ product.id|default:product.pk }}" {% if item2 and item2.id == product.id %}selected{% endif %}>
+                        <option value="{{ product.id }}" {% if item2 and item2.id == product.id %}selected{% endif %}>
                             {{ product.title }} (&#8377;{{ product.price }})
                         </option>
                     {% endfor %}
@@ -128,7 +128,7 @@
                     </div>
                     <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--cg-text-heading); margin-bottom: 0.5rem;">{{ item1.title }}</h3>
                     <div style="font-size: 1.35rem; font-weight: 800; color: var(--cg-emerald-500); font-variant-numeric: tabular-nums; margin-bottom: 0.75rem;">&#8377;{{ item1.price }}</div>
-                    <a href="/products/{{ item1.slug|default:item1.pk }}/" class="btn btn-sm btn-outline btn-full">View Details</a>
+                    <a href="/products/{{ item1.slug }}/" class="btn btn-sm btn-outline btn-full">View Details</a>
                 {% else %}
                     <div style="padding: 2rem 1rem; color: var(--cg-text-muted);">
                         <p class="text-sm">Device A not selected</p>
@@ -150,7 +150,7 @@
                     </div>
                     <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--cg-text-heading); margin-bottom: 0.5rem;">{{ item2.title }}</h3>
                     <div style="font-size: 1.35rem; font-weight: 800; color: var(--cg-emerald-500); font-variant-numeric: tabular-nums; margin-bottom: 0.75rem;">&#8377;{{ item2.price }}</div>
-                    <a href="/products/{{ item2.slug|default:item2.pk }}/" class="btn btn-sm btn-outline btn-full">View Details</a>
+                    <a href="/products/{{ item2.slug }}/" class="btn btn-sm btn-outline btn-full">View Details</a>
                 {% else %}
                     <div style="padding: 2rem 1rem; color: var(--cg-text-muted);">
                         <p class="text-sm">Device B not selected</p>

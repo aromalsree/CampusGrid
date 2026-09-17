@@ -133,3 +133,7 @@ def admin_user_change_role(request, user_id):
 # for testing html pls use the test view
 def test(request):
     return render(request, "dashboard/wishlist.html")
+
+
+def about(request):
+    return render(request, 'home/about.html')

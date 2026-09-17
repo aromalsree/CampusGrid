@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from typing import List, Dict, Any, Optional
 from .forms import ListingForm
+from .psudodeta import SAMPLE_PRODUCTS, SAMPLE_CATEGORIES
 
 
 

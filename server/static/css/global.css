@@ -5,6 +5,8 @@
   --cg-navy-800: #1E293B;
   --cg-navy-700: #334155;
   --cg-slate-500: #64748B;
+  --cg-slate-600: #475569;
+  --cg-slate-700: #334155;
   --cg-slate-400: #94A3B8;
   --cg-slate-300: #CBD5E1;
   --cg-slate-200: #E2E8F0;
@@ -19,18 +21,39 @@
 
   --cg-amber-600: #D97706;
   --cg-amber-500: #F59E0B;
+  --cg-amber-400: #FBBF24;
   --cg-amber-100: #FEF3C7;
   --cg-amber-50:  #FFFBEB;
 
   --cg-rose-600: #E11D48;
   --cg-rose-500: #F43F5E;
+  --cg-rose-400: #FB7185;
+  --cg-rose-100: #FFE4E6;
+  --cg-rose-200: #FECDD3;
+  --cg-rose-700: #BE123C;
   --cg-rose-50:  #FFF1F2;
 
   --cg-bg-page: var(--cg-slate-50);
   --cg-bg-card: #FFFFFF;
+  --cg-surface: #FFFFFF;
+  --cg-bg: var(--cg-bg-page);
+  --cg-bg-subtle: var(--cg-slate-50);
   --cg-border: var(--cg-slate-200);
+  --cg-border-light: #EDF2F7;
+  --cg-border-focus: var(--cg-emerald-500);
   --cg-text-main: var(--cg-navy-900);
+  --cg-text-heading: var(--cg-navy-900);
+  --cg-text-body: var(--cg-navy-800);
   --cg-text-muted: var(--cg-slate-500);
+  --cg-blue-100: #DBEAFE;
+  --cg-blue-500: #3B82F6;
+  --cg-blue-600: #2563EB;
+  --cg-primary-100: #DBEAFE;
+  --cg-primary-700: #1D4ED8;
+  --cg-success: var(--cg-emerald-600);
+  --cg-error: var(--cg-rose-600);
+  --speed-fast: 0.15s;
+  --speed-normal: 0.25s;
 
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-heading: 'Plus Jakarta Sans', var(--font-sans);
@@ -47,28 +70,6 @@
   --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
 
   --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Dark Mode Theme Variables */
-[data-theme="dark"] {
-  --cg-bg-page: #090D16;
-  --cg-bg-card: #0F172A;
-  --cg-border: #334155;
-  --cg-text-main: #F8FAFC;
-  --cg-text-muted: #94A3B8;
-  --cg-slate-100: #1E293B;
-  --cg-slate-200: #334155;
-  --cg-slate-300: #475569;
-  --cg-navy-900: #F8FAFC;
-  --cg-navy-800: #E2E8F0;
-  --cg-navy-700: #CBD5E1;
-  --cg-emerald-50: #064E3B;
-  --cg-amber-50: #451A03;
-  --cg-rose-50: #4C0519;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
 }
 
 *, *::before, *::after {
@@ -163,9 +164,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-outline {
-  background-color: #FFFFFF;
+  background-color: var(--cg-bg-card);
   border-color: var(--cg-slate-300);
-  color: var(--cg-navy-800);
+  color: var(--cg-text-body);
 }
 .btn-outline:hover {
   background-color: var(--cg-slate-100);

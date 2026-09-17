@@ -4,6 +4,8 @@ plan/
 
 # Django #
 migrations/
+!server/market/migrations/
+!server/market/migrations/*.py
 *.log
 *.pot
 *.pyc

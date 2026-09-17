@@ -1,3 +1,6 @@
+from typing import Any, Dict, List
+
+
 # Default sample catalog for campus marketplace when database models are not yet populated
 SAMPLE_PRODUCTS: List[Dict[str, Any]] = [
     {

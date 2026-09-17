@@ -1,30 +1,7 @@
 // CampusGrid — Global Client Experience Engine
 (() => {
-  // 1. Initialize Theme before DOM render to prevent theme flashing
-  const savedTheme = localStorage.getItem('cg-theme') ||
-    (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  document.documentElement.setAttribute('data-theme', savedTheme);
-
   document.addEventListener('DOMContentLoaded', () => {
-    // Sync Theme Toggle Buttons & SVGs
-    const themeToggles = document.querySelectorAll('.cg-theme-toggle');
-    const updateThemeIcons = (theme) => {
-      document.querySelectorAll('.theme-icon-moon').forEach(el => el.style.display = theme === 'dark' ? 'none' : 'block');
-      document.querySelectorAll('.theme-icon-sun').forEach(el => el.style.display = theme === 'dark' ? 'block' : 'none');
-    };
-    updateThemeIcons(savedTheme);
-
-    themeToggles.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('cg-theme', next);
-        updateThemeIcons(next);
-      });
-    });
-
-    // 2. Toast Notification Manager
+    // 1. Toast Notification Manager
     const setupAlertDismiss = (el) => {
       const closeBtn = el.querySelector('.cg-toast-close, .cg-alert-close');
       const dismiss = () => {
