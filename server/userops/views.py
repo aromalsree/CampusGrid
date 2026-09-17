@@ -31,11 +31,11 @@ def is_admin(user):
 
 
 class RegisterView(View):
-    def get():
+    def get(self, request):
         form = UserRegForm()
         return render(request, 'user/register.html', {'form': form})
 
-    def post():
+    def post(self, request):
         form = UserRegForm(request.POST)
         if form.is_valid():
             user = form.save()

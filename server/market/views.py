@@ -38,6 +38,7 @@ def _get_active_categories():
     return SAMPLE_CATEGORIES
 
 
+
 def product_list(request):
     """
     Renders the marketplace catalogue (templates/marketplace/products.html)

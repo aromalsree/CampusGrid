@@ -38,8 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
+<<<<<<< HEAD
     'userops.apps.UseropsConfig',
     'market.apps.MarketConfig',
+=======
+    'market.apps.MarketConfig',
+    'userops.apps.UseropsConfig'
+>>>>>>> 3bce4b4 (going to mull from main)
 ]
 
 MIDDLEWARE = [
