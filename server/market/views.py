@@ -5,126 +5,6 @@ from django.core.paginator import Paginator
 from typing import List, Dict, Any, Optional
 from .forms import ListingForm
 
-# Default sample catalog for campus marketplace when database models are not yet populated
-SAMPLE_PRODUCTS: List[Dict[str, Any]] = [
-    {
-        'id': 1,
-        'slug': 'macbook-pro-m1',
-        'title': 'MacBook Pro M1 (16GB, 512GB)',
-        'price': '58,000',
-        'condition': 'Excellent Condition',
-        'campus': 'North Quad / Tech Block',
-        'category': 'laptops',
-        'listing_type': 'SELL',
-        'in_wishlist': False,
-        'description': 'Gently used for 2 semesters of coursework. Battery health is at 91%. Comes with original 67W charger and box. Perfect for CS/IT students needing a fast build machine.',
-        'seller': {
-            'username': 'alex_cs',
-            'institution': 'Department of Computer Science',
-            'is_verified': True,
-            'phone': '+919876543210'
-        }
-    },
-    {
-        'id': 2,
-        'slug': 'calculus-early-transcendentals',
-        'title': 'Calculus: Early Transcendentals (8th Ed.)',
-        'price': '450',
-        'condition': 'Good Condition',
-        'campus': 'Central Library',
-        'category': 'books',
-        'listing_type': 'SELL',
-        'in_wishlist': False,
-        'description': 'Standard Stewart Calculus textbook. Minor pencil annotations in chapters 3 and 4, all problem sets and formula inserts intact.',
-        'seller': {
-            'username': 'sarah_m',
-            'institution': 'School of Mathematics',
-            'is_verified': True,
-            'phone': '+919876543211'
-        }
-    },
-    {
-        'id': 3,
-        'slug': 'dsa-handwritten-notes',
-        'title': 'Data Structures & Algorithms Handwritten Notes',
-        'price': '150',
-        'condition': 'Like New',
-        'campus': 'Academic Block B',
-        'category': 'notes',
-        'listing_type': 'SELL',
-        'in_wishlist': False,
-        'description': 'Comprehensive revision sheets covering Trees, Graphs, DP, and Greedy algorithms with clean color-coded diagrams and Big-O derivations.',
-        'seller': {
-            'username': 'rahul_k',
-            'institution': 'Dept of Information Technology',
-            'is_verified': True,
-            'phone': '+919876543212'
-        }
-    },
-    {
-        'id': 4,
-        'slug': 'casio-fx-991ex',
-        'title': 'Casio FX-991EX ClassWiz Scientific Calculator',
-        'price': '80',
-        'condition': 'Good Condition',
-        'campus': 'Engineering Quad',
-        'category': 'laptops',
-        'listing_type': 'RENTAL',
-        'in_wishlist': False,
-        'description': 'Permitted in university examinations. Solar cell and battery functional. Available for exam week or full semester rental.',
-        'seller': {
-            'username': 'priya_ee',
-            'institution': 'Dept of Electrical Engineering',
-            'is_verified': True,
-            'phone': '+919876543213'
-        }
-    },
-    {
-        'id': 5,
-        'slug': 'ipad-air-5th-gen',
-        'title': 'iPad Air 5th Gen (64GB, Wi-Fi, Space Gray)',
-        'price': '38,500',
-        'condition': 'Like New',
-        'campus': 'Main Campus Hostels',
-        'category': 'laptops',
-        'listing_type': 'SELL',
-        'in_wishlist': False,
-        'description': 'M1 chip with Apple Pencil 2 support. Always kept in tempered glass screen protector and magnetic case. Ideal for paperless notes.',
-        'seller': {
-            'username': 'david_bio',
-            'institution': 'Biomedical Engineering',
-            'is_verified': False,
-            'phone': '+919876543214'
-        }
-    },
-    {
-        'id': 6,
-        'slug': 'organic-chemistry-mechanisms',
-        'title': 'Organic Chemistry: Principles & Mechanisms',
-        'price': '520',
-        'condition': 'Good Condition',
-        'campus': 'Science Block A',
-        'category': 'books',
-        'listing_type': 'SELL',
-        'in_wishlist': False,
-        'description': 'Karthekeyan & Mehta edition. Detailed reaction mechanisms and spectrometry problem sheets included.',
-        'seller': {
-            'username': 'ananya_chem',
-            'institution': 'Faculty of Chemistry',
-            'is_verified': True,
-            'phone': '+919876543215'
-        }
-    },
-]
-
-SAMPLE_CATEGORIES: List[Dict[str, Any]] = [
-    {'name': 'Laptops & Electronics', 'slug': 'laptops', 'count': 18},
-    {'name': 'Textbooks & Study Guides', 'slug': 'books', 'count': 42},
-    {'name': 'Academic Notes & PDFs', 'slug': 'notes', 'count': 29},
-    {'name': 'Lab Gear & Instruments', 'slug': 'lab-gear', 'count': 15},
-    {'name': 'Hostel & Room Essentials', 'slug': 'hostel', 'count': 21},
-    {'name': 'Bicycles & Mobility', 'slug': 'mobility', 'count': 8},
-]
 
 
 def _get_active_products():
@@ -264,9 +144,29 @@ def compare(request):
     """
     item1_id = request.GET.get('item1')
     item2_id = request.GET.get('item2')
+    item1 = None
+    item2 = None
+    all_products = []
+
+    try:
+        from .models import Listing
+        all_products = list(Listing.objects.filter(status=Listing.ListingStatus.ACTIVE).order_by('title'))
+        if item1_id:
+            item1 = Listing.objects.filter(pk=int(item1_id)).first() if str(item1_id).isdigit() else Listing.objects.filter(slug=item1_id).first()
+        if item2_id:
+            item2 = Listing.objects.filter(pk=int(item2_id)).first() if str(item2_id).isdigit() else Listing.objects.filter(slug=item2_id).first()
+    except Exception:
+        pass
+
+    if not all_products:
+        all_products = _get_active_products()
+
     context = {
+        'all_products': all_products,
         'item1_id': item1_id,
         'item2_id': item2_id,
+        'item1': item1,
+        'item2': item2,
     }
     return render(request, 'marketplace/compare.html', context)
 
@@ -332,4 +232,189 @@ category_list = categories
 compare_view = compare
 add_listing = create_listing
 post_listing = create_listing
+
+
+from .models import NeedRequest, NeedOffer
+from .forms import NeedRequestForm, NeedOfferForm
+
+
+def need_board_view(request):
+    """
+    Publicly browsable Campus Need Board (Reverse Marketplace).
+    Displays student requests to buy, borrow, or find tutoring/gear.
+    """
+    type_filter = request.GET.get('type', '').strip().upper()
+    urgency_filter = request.GET.get('urgency', '').strip().upper()
+    category_slug = request.GET.get('category', '').strip().lower()
+    status_filter = request.GET.get('status', 'OPEN').strip().upper()
+    search_query = request.GET.get('q', '').strip()
+    page_number = request.GET.get('page', 1)
+
+    qs = NeedRequest.objects.select_related('requester', 'category').all()
+
+    # Status filter (defaults to open needs unless user explicitly asks for all or fulfilled)
+    if status_filter == 'ALL':
+        pass
+    elif status_filter == 'FULFILLED':
+        qs = qs.filter(status=NeedRequest.Status.FULFILLED)
+    elif status_filter == 'CLOSED':
+        qs = qs.filter(status=NeedRequest.Status.CLOSED)
+    else:
+        status_filter = 'OPEN'
+        qs = qs.filter(status=NeedRequest.Status.OPEN)
+
+    # Type filter (BUY, BORROW, SERVICE)
+    if type_filter in NeedRequest.RequestType.values:
+        qs = qs.filter(request_type=type_filter)
+    else:
+        type_filter = ''
+
+    # Urgency filter (URGENT, MODERATE, FLEXIBLE)
+    if urgency_filter in NeedRequest.Urgency.values:
+        qs = qs.filter(urgency=urgency_filter)
+    else:
+        urgency_filter = ''
+
+    # Category filter
+    if category_slug:
+        qs = qs.filter(category__slug=category_slug)
+
+    # Search keyword
+    if search_query:
+        from django.db.models import Q
+        qs = qs.filter(
+            Q(title__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(location__icontains=search_query) |
+            Q(requester__username__icontains=search_query)
+        )
+
+    # Live Campus Metrics
+    try:
+        total_open_count = NeedRequest.objects.filter(status=NeedRequest.Status.OPEN).count()
+        urgent_count = NeedRequest.objects.filter(
+            status=NeedRequest.Status.OPEN,
+            urgency=NeedRequest.Urgency.URGENT
+        ).count()
+        fulfilled_count = NeedRequest.objects.filter(status=NeedRequest.Status.FULFILLED).count()
+    except Exception:
+        total_open_count = 0
+        urgent_count = 0
+        fulfilled_count = 0
+
+    paginator = Paginator(qs, 9)
+    page_obj = paginator.get_page(page_number)
+
+    categories_list = []
+    try:
+        categories_list = Category.objects.filter(is_active=True)
+    except Exception:
+        pass
+
+    context = {
+        'need_requests': page_obj.object_list,
+        'page_obj': page_obj,
+        'categories': categories_list,
+        'selected_type': type_filter,
+        'selected_urgency': urgency_filter,
+        'selected_category': category_slug,
+        'selected_status': status_filter,
+        'search_query': search_query,
+        'total_open_count': total_open_count,
+        'urgent_count': urgent_count,
+        'fulfilled_count': fulfilled_count,
+        'active_tab': 'requests',
+    }
+    return render(request, 'need_board/index.html', context)
+
+
+@login_required
+def create_need_request(request):
+    """
+    Allows authenticated students to post a new item or service request.
+    """
+    if request.method == 'POST':
+        form = NeedRequestForm(request.POST)
+        if form.is_valid():
+            need_request = form.save(commit=False)
+            need_request.requester = request.user
+            need_request.save()
+            messages.success(
+                request,
+                f"Your request '{need_request.title}' is now live on the Campus Need Board!"
+            )
+            return redirect('market:need_request_detail', pk=need_request.pk)
+        else:
+            messages.error(request, "Please correct the errors in the form below.")
+    else:
+        form = NeedRequestForm()
+
+    return render(request, 'need_board/create.html', {
+        'form': form,
+        'active_tab': 'requests',
+    })
+
+
+def need_request_detail(request, pk):
+    """
+    Detailed view of a single student need request with peer offers and contact methods.
+    """
+    need_request = get_object_or_404(
+        NeedRequest.objects.select_related('requester', 'category'),
+        pk=pk
+    )
+    offers = need_request.offers.select_related('responder').order_by('-created_at')
+    offer_form = NeedOfferForm()
+
+    return render(request, 'need_board/detail.html', {
+        'need_request': need_request,
+        'offers': offers,
+        'offer_form': offer_form,
+        'active_tab': 'requests',
+    })
+
+
+@login_required
+def toggle_need_status(request, pk):
+    """
+    Allows the request owner to mark their request as FULFILLED or reopen as OPEN.
+    """
+    need_request = get_object_or_404(NeedRequest, pk=pk, requester=request.user)
+
+    if request.method == 'POST':
+        action = request.POST.get('action', '')
+        if action == 'reopen':
+            need_request.status = NeedRequest.Status.OPEN
+            messages.info(request, f"Request '{need_request.title}' has been reopened.")
+        else:
+            need_request.status = NeedRequest.Status.FULFILLED
+            messages.success(request, f"Awesome! '{need_request.title}' marked as fulfilled.")
+        need_request.save()
+
+    return redirect('market:need_request_detail', pk=need_request.pk)
+
+
+@login_required
+def create_need_offer(request, pk):
+    """
+    Allows campus peers to submit an offer or note to the requester.
+    """
+    need_request = get_object_or_404(NeedRequest, pk=pk)
+
+    if request.method == 'POST':
+        form = NeedOfferForm(request.POST)
+        if form.is_valid():
+            offer = form.save(commit=False)
+            offer.need_request = need_request
+            offer.responder = request.user
+            offer.save()
+            messages.success(
+                request,
+                f"Your response has been sent to {need_request.requester.username}! They can now reach out to you."
+            )
+        else:
+            messages.error(request, "Please provide a valid message for your offer.")
+
+    return redirect('market:need_request_detail', pk=need_request.pk)
+
 

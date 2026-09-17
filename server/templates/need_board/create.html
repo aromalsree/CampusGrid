@@ -1,0 +1,338 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Broadcast a Need Request | CampusGrid{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/marketplace.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/user.css' %}">
+<style>
+  .need-create-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding-top: 1.5rem;
+    padding-bottom: 5rem;
+  }
+  .need-grid-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .need-grid-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+  .need-form-card {
+    background: var(--cg-surface);
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-2xl);
+    padding: 2.25rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .form-section {
+    margin-bottom: 2.25rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--cg-border-light);
+  }
+  .form-section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .section-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-full);
+    background: rgba(37, 99, 235, 0.12);
+    color: var(--cg-blue-600);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .section-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--cg-text-heading);
+  }
+  .section-subtitle {
+    font-size: 0.8125rem;
+    color: var(--cg-text-muted);
+  }
+  .form-help-text {
+    font-size: 0.775rem;
+    color: var(--cg-text-muted);
+    margin-top: 0.35rem;
+    display: block;
+  }
+  .form-error-msg {
+    font-size: 0.8125rem;
+    color: var(--cg-rose-500);
+    font-weight: 500;
+    margin-top: 0.375rem;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+  .checkbox-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    background: var(--cg-bg-subtle);
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .checkbox-card:hover {
+    border-color: var(--cg-blue-500);
+    background: var(--cg-surface);
+  }
+  .checkbox-card input[type="checkbox"] {
+    margin-top: 0.2rem;
+    accent-color: var(--cg-blue-600);
+    width: 1.125rem;
+    height: 1.125rem;
+    cursor: pointer;
+  }
+  .tips-card {
+    background: var(--cg-surface);
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-xl);
+    padding: 1.75rem;
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 96px;
+  }
+  .tips-card h3 {
+    font-size: 1.05rem;
+    color: var(--cg-text-heading);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .tip-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--cg-text-body);
+  }
+  .tip-item:last-child {
+    margin-bottom: 0;
+  }
+  .tip-check {
+    color: var(--cg-emerald-500);
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="need-create-container">
+    {% include "base/breadcrumbs.html" with breadcrumb_current="Broadcast a Need" %}
+
+    <div style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.15rem; color: var(--cg-text-heading); margin-bottom: 0.35rem;">Broadcast a Campus Need</h1>
+        <p class="text-muted" style="font-size: 1rem;">Ask fellow students for course hardware, books, calculators, project components, or tutoring help.</p>
+    </div>
+
+    <div class="need-grid-layout">
+        <!-- Main Form Card -->
+        <div class="need-form-card">
+            <form method="POST" action="" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="cg-alert cg-alert-error" style="background: rgba(244, 63, 94, 0.1); color: var(--cg-rose-500); border: 1px solid rgba(244, 63, 94, 0.3); margin-bottom: 1.5rem; border-radius: var(--radius-md); padding: 0.75rem 1rem;">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <!-- SECTION 1: What do you need? -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-badge">1</span>
+                        <div>
+                            <div class="section-title">Item or Service Details</div>
+                            <div class="section-subtitle">What specifically are you looking for?</div>
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <div class="form-group">
+                        <label for="{{ form.title.id_for_label }}" class="form-label" style="color: var(--cg-text-heading);">
+                            {{ form.title.label }} <span style="color: var(--cg-rose-500);">*</span>
+                        </label>
+                        {{ form.title }}
+                        <span class="form-help-text">Mention brand, edition, or exact model (e.g. "Casio fx-991EX Classwiz", "Campbell Biology 11th Ed").</span>
+                        {% if form.title.errors %}
+                            <div class="form-error-msg">&bull; {{ form.title.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Category & Type -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="{{ form.category.id_for_label }}" class="form-label" style="color: var(--cg-text-heading);">
+                                {{ form.category.label }}
+                            </label>
+                            {{ form.category }}
+                            <span class="form-help-text">{{ form.category.help_text }}</span>
+                            {% if form.category.errors %}
+                                <div class="form-error-msg">&bull; {{ form.category.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.request_type.id_for_label }}" class="form-label" style="color: var(--cg-text-heading);">
+                                {{ form.request_type.label }} <span style="color: var(--cg-rose-500);">*</span>
+                            </label>
+                            {{ form.request_type }}
+                            <span class="form-help-text">Wanting to buy, temporarily borrow, or seeking a tutor?</span>
+                            {% if form.request_type.errors %}
+                                <div class="form-error-msg">&bull; {{ form.request_type.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: Urgency & Budget -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-badge">2</span>
+                        <div>
+                            <div class="section-title">Urgency & Budget</div>
+                            <div class="section-subtitle">How urgently is this needed and what can you pay?</div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                        <!-- Urgency -->
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="{{ form.urgency.id_for_label }}" class="form-label" style="color: var(--cg-text-heading);">
+                                {{ form.urgency.label }} <span style="color: var(--cg-rose-500);">*</span>
+                            </label>
+                            {{ form.urgency }}
+                            <span class="form-help-text">Select "Needed ASAP" for exam or same-day emergencies.</span>
+                            {% if form.urgency.errors %}
+                                <div class="form-error-msg">&bull; {{ form.urgency.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Max Budget -->
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="{{ form.max_budget.id_for_label }}" class="form-label" style="color: var(--cg-text-heading);">
+                                {{ form.max_budget.label }}
+                            </label>
+                            {{ form.max_budget }}
+                            <span class="form-help-text">Optional. Leave empty if open to offers or borrowing for free.</span>
+                            {% if form.max_budget.errors %}
+                                <div class="form-error-msg">&bull; {{ form.max_budget.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Negotiable Checkbox -->
+                    <label class="checkbox-card" for="{{ form.is_budget_negotiable.id_for_label }}">
+                        {{ form.is_budget_negotiable }}
+                        <div>
+                            <span style="font-size: 0.875rem; font-weight: 600; color: var(--cg-text-heading); display: block;">Open to budget negotiation</span>
+                            <span class="text-xs text-muted" style="display: block; margin-top: 0.15rem;">Allow students to offer different prices depending on condition or rental length.</span>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- SECTION 3: Context & Logistics -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-badge">3</span>
+                        <div>
+                            <div class="section-title">Context & Campus Handover</div>
+                            <div class="section-subtitle">Where can peers meet you and what else should they know?</div>
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="form-group">
+                        <label for="{{ form.location.id_for_label }}" class="form-label" style="color: var(--cg-text-heading);">
+                            {{ form.location.label }}
+                        </label>
+                        {{ form.location }}
+                        <span class="form-help-text">Preferred campus spot (e.g. Central Library, Cafeteria, Science Block).</span>
+                        {% if form.location.errors %}
+                            <div class="form-error-msg">&bull; {{ form.location.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="{{ form.description.id_for_label }}" class="form-label" style="color: var(--cg-text-heading);">
+                            {{ form.description.label }} <span style="color: var(--cg-rose-500);">*</span>
+                        </label>
+                        {{ form.description }}
+                        <span class="form-help-text">Mention if needed for a specific exam, date of return if borrowing, or specific chapters needed.</span>
+                        {% if form.description.errors %}
+                            <div class="form-error-msg">&bull; {{ form.description.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 2rem; gap: 1rem; flex-wrap: wrap;">
+                    <a href="{% url 'market:requests' %}" class="btn btn-outline" style="min-width: 120px;">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary btn-lg" style="min-width: 220px; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);">
+                        Broadcast Request &rarr;
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Sidebar: Campus Guidelines -->
+        <aside>
+            <div class="tips-card">
+                <h3>
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--cg-blue-500);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Need Board Guidelines
+                </h3>
+
+                <div class="tip-item">
+                    <span class="tip-check">&check;</span>
+                    <span><strong>Accurate Deadlines:</strong> If you need an item for tomorrow's 9 AM lab, select "Needed ASAP" so peers get notified.</span>
+                </div>
+
+                <div class="tip-item">
+                    <span class="tip-check">&check;</span>
+                    <span><strong>Borrowing Etiquette:</strong> Clearly specify your return date and promise of safe care.</span>
+                </div>
+
+                <div class="tip-item">
+                    <span class="tip-check">&check;</span>
+                    <span><strong>Public Handover:</strong> Always conduct item exchange and testing in daylight campus locations.</span>
+                </div>
+
+                <div class="tip-item">
+                    <span class="tip-check">&check;</span>
+                    <span><strong>Mark Fulfilled:</strong> Once a classmate helps you, click "Mark Fulfilled" so others know you are all set!</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}

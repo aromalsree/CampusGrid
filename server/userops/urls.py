@@ -2,13 +2,14 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-
-    path('register/', views.register, name='register'),
+    path('register/', views.RegisterView.as_view(), name='register'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    path('admin/', views.admin_dashboard, name='admin_dashboard'),
-    path('admin/users/', views.admin_users, name='admin_users'),
-    path('admin/users/<int:user_id>/toggle-status/', views.admin_user_toggle_status, name='admin_user_toggle_status'),
-    path('admin/users/<int:user_id>/change-role/', views.admin_user_change_role, name='admin_user_change_role'),
-    #path('profile/', views.profile, name='profile'),
+    path('dashboard/', views.dashboard_view, name='dashboard'),
+    path('dashboard/listings/', views.listings_view, name='dashboard_listings'),
+    path('dashboard/wishlist/', views.wishlist_view, name='dashboard_wishlist'),
+    path('dashboard/notifications/', views.notifications_view, name='dashboard_notifications'),
+    path('dashboard/requests/', views.requests_view, name='dashboard_requests'),
+    path('profile/', views.profile_view, name='profile'),
+    path('settings/', views.settings_view, name='settings'),
 ]

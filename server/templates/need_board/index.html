@@ -1,0 +1,361 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Student Need Board | CampusGrid{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/marketplace.css' %}">
+<style>
+.need-board-hero {
+    background: var(--cg-surface);
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-2xl);
+    padding: 2.25rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+.need-board-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 320px;
+    height: 100%;
+    background: radial-gradient(circle at right, rgba(59, 130, 246, 0.08), transparent 70%);
+    pointer-events: none;
+}
+.need-stats-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+.need-stat-pill {
+    background: var(--cg-bg-subtle);
+    border: 1px solid var(--cg-border-light);
+    border-radius: var(--radius-lg);
+    padding: 0.625rem 1.125rem;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+}
+.need-stat-val {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--cg-text-heading);
+    font-variant-numeric: tabular-nums;
+}
+.need-stat-lbl {
+    font-size: 0.8125rem;
+    color: var(--cg-text-muted);
+}
+.need-filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+    flex-wrap: wrap;
+}
+.need-tabs-strip {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.need-tab-btn {
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    background: var(--cg-surface);
+    border: 1px solid var(--cg-border);
+    color: var(--cg-text-body);
+    transition: all var(--speed-fast) ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+.need-tab-btn:hover {
+    border-color: var(--cg-blue-500);
+    color: var(--cg-blue-600);
+}
+.need-tab-btn.active {
+    background: var(--cg-text-heading);
+    color: var(--cg-surface);
+    border-color: var(--cg-text-heading);
+}
+.need-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+@media (max-width: 640px) {
+    .need-card-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.need-card {
+    background: var(--cg-surface);
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform var(--speed-normal) ease, box-shadow var(--speed-normal) ease, border-color var(--speed-normal) ease;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+}
+.need-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--cg-border-focus);
+}
+.need-card.urgent-card {
+    border-left: 4px solid var(--cg-rose-500);
+}
+.need-card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0.75rem 0 0.35rem;
+    color: var(--cg-text-heading);
+    line-height: 1.35;
+}
+.need-card-title a {
+    color: inherit;
+    text-decoration: none;
+}
+.need-card-title a:hover {
+    color: var(--cg-blue-600);
+}
+.need-card-desc {
+    font-size: 0.875rem;
+    color: var(--cg-text-body);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.need-card-footer {
+    padding-top: 1rem;
+    border-top: 1px solid var(--cg-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="cg-container" style="padding-top: 1rem; padding-bottom: 4rem;">
+    {% include "base/breadcrumbs.html" with breadcrumb_current="Student Need Board" %}
+
+    <!-- Hero Banner -->
+    <div class="need-board-hero">
+        <div class="cg-flex-between" style="flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <span class="cg-badge cg-badge-emerald" style="font-size: 0.75rem;">Campus Reverse Marketplace</span>
+                    <span class="text-xs text-muted">&bull; Direct Peer-to-Peer</span>
+                </div>
+                <h1 style="font-size: 2.15rem; margin-bottom: 0.5rem; color: var(--cg-text-heading);">Student Need Board</h1>
+                <p class="text-muted" style="max-width: 620px; font-size: 0.95rem; line-height: 1.6;">
+                    Need a scientific calculator for tomorrow's midterm? Seeking a textbook, lab coat, or exam notes? Broadcast your request to campus peers and fulfill it in hours.
+                </p>
+            </div>
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <a href="{% url 'market:create_need_request' %}" class="btn btn-primary btn-lg" style="box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);">
+                    + Broadcast a Need
+                </a>
+            </div>
+        </div>
+
+        <!-- Live Metrics Strip -->
+        <div class="need-stats-row">
+            <div class="need-stat-pill">
+                <span style="font-size: 1.15rem;">📋</span>
+                <div>
+                    <div class="need-stat-val">{{ total_open_count }}</div>
+                    <div class="need-stat-lbl">Active Seeking Needs</div>
+                </div>
+            </div>
+            <div class="need-stat-pill" style="border-color: rgba(244, 63, 94, 0.25);">
+                <span style="font-size: 1.15rem;">🔥</span>
+                <div>
+                    <div class="need-stat-val" style="color: var(--cg-rose-500);">{{ urgent_count }}</div>
+                    <div class="need-stat-lbl">Urgent (Needed in 24h)</div>
+                </div>
+            </div>
+            <div class="need-stat-pill">
+                <span style="font-size: 1.15rem;">🤝</span>
+                <div>
+                    <div class="need-stat-val" style="color: var(--cg-emerald-500);">{{ fulfilled_count }}</div>
+                    <div class="need-stat-lbl">Peer Fulfillments</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter & Search Controls -->
+    <div class="need-filter-bar">
+        <!-- Quick Tab Buttons -->
+        <div class="need-tabs-strip">
+            <a href="?{% if search_query %}q={{ search_query }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}"
+               class="need-tab-btn {% if not selected_type and not selected_urgency and selected_status == 'OPEN' %}active{% endif %}">
+                All Needs
+            </a>
+            <a href="?urgency=URGENT{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
+               class="need-tab-btn {% if selected_urgency == 'URGENT' %}active{% endif %}">
+                🔥 Urgent (24h)
+            </a>
+            <a href="?type=BUY{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
+               class="need-tab-btn {% if selected_type == 'BUY' %}active{% endif %}">
+                Wanted to Buy
+            </a>
+            <a href="?type=BORROW{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
+               class="need-tab-btn {% if selected_type == 'BORROW' %}active{% endif %}">
+                Wanted to Borrow
+            </a>
+            <a href="?type=SERVICE{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
+               class="need-tab-btn {% if selected_type == 'SERVICE' %}active{% endif %}">
+                Tutoring / Services
+            </a>
+            <a href="?status=FULFILLED{% if search_query %}&q={{ search_query }}{% endif %}"
+               class="need-tab-btn {% if selected_status == 'FULFILLED' %}active{% endif %}">
+                ✓ Fulfilled
+            </a>
+        </div>
+
+        <!-- Search & Category Filters -->
+        <form method="GET" action="" style="display: flex; gap: 0.5rem; align-items: center;">
+            {% if selected_type %}<input type="hidden" name="type" value="{{ selected_type }}">{% endif %}
+            {% if selected_urgency %}<input type="hidden" name="urgency" value="{{ selected_urgency }}">{% endif %}
+            
+            {% if categories %}
+            <select name="category" onchange="this.form.submit()" class="cg-input" style="padding: 0.45rem 0.75rem; font-size: 0.875rem; border-radius: var(--radius-md); background: var(--cg-surface); color: var(--cg-text-heading); border: 1px solid var(--cg-border);">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                    <option value="{{ cat.slug }}" {% if selected_category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+
+            <div style="position: relative; display: flex; align-items: center;">
+                <input type="text" name="q" value="{{ search_query }}" placeholder="Search needs..." class="cg-input" style="padding: 0.45rem 0.75rem 0.45rem 2rem; font-size: 0.875rem; border-radius: var(--radius-md); background: var(--cg-surface); color: var(--cg-text-heading); border: 1px solid var(--cg-border); width: 180px;">
+                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="position: absolute; left: 0.65rem; color: var(--cg-text-muted); pointer-events: none;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+            <button type="submit" class="btn btn-outline btn-sm">Find</button>
+            {% if search_query or selected_type or selected_urgency or selected_category or selected_status != 'OPEN' %}
+                <a href="{% url 'market:requests' %}" class="btn btn-ghost btn-sm" title="Clear filters">✕</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Need Requests Grid -->
+    {% if need_requests %}
+        <div class="need-card-grid">
+            {% for need in need_requests %}
+                <div class="need-card {% if need.urgency == 'URGENT' and need.status == 'OPEN' %}urgent-card{% endif %}">
+                    <div>
+                        <!-- Top Badges & Budget -->
+                        <div class="cg-flex-between" style="align-items: flex-start; gap: 0.5rem; margin-bottom: 0.75rem;">
+                            <div style="display: flex; gap: 0.375rem; flex-wrap: wrap; align-items: center;">
+                                {% if need.status == 'FULFILLED' %}
+                                    <span class="cg-badge cg-badge-slate">✓ Fulfilled</span>
+                                {% elif need.urgency == 'URGENT' %}
+                                    <span class="cg-badge cg-badge-rose">🔥 Needed in 24h</span>
+                                {% elif need.urgency == 'MODERATE' %}
+                                    <span class="cg-badge cg-badge-amber">This Week</span>
+                                {% endif %}
+
+                                {% if need.request_type == 'BUY' %}
+                                    <span class="cg-badge cg-badge-emerald">Buy</span>
+                                {% elif need.request_type == 'BORROW' %}
+                                    <span class="cg-badge cg-badge-indigo">Borrow</span>
+                                {% elif need.request_type == 'SERVICE' %}
+                                    <span class="cg-badge cg-badge-amber">Service</span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Budget -->
+                            <div style="text-align: right; flex-shrink: 0;">
+                                {% if need.max_budget %}
+                                    <span style="font-weight: 800; color: var(--cg-emerald-500); font-size: 0.95rem; font-variant-numeric: tabular-nums;">
+                                        Up to &#8377;{{ need.max_budget }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-xs text-muted">Budget: Flexible</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Title -->
+                        <h3 class="need-card-title">
+                            <a href="{% url 'market:need_request_detail' need.pk %}">{{ need.title }}</a>
+                        </h3>
+
+                        <!-- Meta Info -->
+                        <div class="text-xs text-muted" style="margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.375rem; flex-wrap: wrap;">
+                            <span>{{ need.category.name|default:"Campus Need" }}</span>
+                            <span>&bull;</span>
+                            <span>{{ need.created_at|timesince }} ago</span>
+                            {% if need.location %}
+                                <span>&bull;</span>
+                                <span title="Preferred Handover Spot">📍 {{ need.location }}</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Description -->
+                        <p class="need-card-desc">
+                            {{ need.description }}
+                        </p>
+                    </div>
+
+                    <!-- Footer: Requester & Quick Contact -->
+                    <div class="need-card-footer">
+                        <div style="display: flex; align-items: center; gap: 0.625rem;">
+                            <div style="width: 32px; height: 32px; border-radius: var(--radius-full); background: var(--cg-blue-600); color: #FFFFFF; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center;">
+                                {{ need.requester.username|slice:":2"|upper }}
+                            </div>
+                            <div>
+                                <div style="font-size: 0.8125rem; font-weight: 600; color: var(--cg-text-heading); display: flex; align-items: center; gap: 0.25rem;">
+                                    {{ need.requester.username }}
+                                    {% if need.requester.is_verified %}
+                                        <svg width="13" height="13" fill="none" stroke="var(--cg-emerald-500)" viewBox="0 0 24 24" title="Verified Campus Student"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    {% endif %}
+                                </div>
+                                <div class="text-xs text-muted">{{ need.requester.institution|default:"Campus Peer"|truncatechars:20 }}</div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 0.375rem; align-items: center;">
+                            {% if need.requester.phone and need.status == 'OPEN' %}
+                                <a href="https://wa.me/{{ need.requester.phone }}?text=Hi%20{{ need.requester.username }},%20I%20saw%20your%20need%20request%20for%20'{{ need.title|urlencode }}'%20on%20CampusGrid.%20I%20can%20help!"
+                                   target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-whatsapp" style="padding: 0.35rem 0.625rem; font-size: 0.775rem;" title="Chat directly on WhatsApp">
+                                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                                    <span>Help</span>
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'market:need_request_detail' need.pk %}" class="btn btn-sm btn-outline" style="padding: 0.35rem 0.625rem; font-size: 0.775rem;">
+                                View
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% include "components/pagination.html" with page_obj=page_obj %}
+    {% else %}
+        {% include "components/empty_state.html" with title="No active requests match your filter" description="No students currently have broadcast needs matching this filter. Have something you urgently need for your classes? Post it now!" action_url="/requests/create/" action_text="+ Broadcast a Need Request" icon_type="clipboard" %}
+    {% endif %}
+</div>
+{% endblock %}

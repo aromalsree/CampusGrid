@@ -13,7 +13,7 @@
         {% include "components/dashboard_sidebar.html" with active_tab="listings" %}
 
         <main>
-            <div class="cg-flex-between" style="margin-bottom: 1.75rem;">
+            <div class="cg-flex-between" style="margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;">
                 <div>
                     <h1 style="font-size: 1.75rem;">My Active Listings</h1>
                     <p class="text-sm text-muted">Manage the items, hardware, and study kits you have posted</p>
@@ -21,39 +21,81 @@
                 <a href="/seller/products/add/" class="btn btn-primary btn-sm">+ Add Listing</a>
             </div>
 
-            <div style="background: #FFFFFF; border: 1px solid var(--cg-border); border-radius: var(--radius-lg); overflow: hidden;">
-                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9375rem;">
+            {% if user_listings %}
+            <div style="background: var(--cg-surface); border: 1px solid var(--cg-border); border-radius: var(--radius-lg); overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9375rem; min-width: 600px;">
                     <thead>
-                        <tr style="background: var(--cg-slate-50); border-bottom: 1px solid var(--cg-border);">
-                            <th style="padding: 1rem 1.25rem;">Item</th>
-                            <th style="padding: 1rem 1.25rem;">Type</th>
-                            <th style="padding: 1rem 1.25rem;">Price</th>
-                            <th style="padding: 1rem 1.25rem;">Status</th>
-                            <th style="padding: 1rem 1.25rem; text-align: right;">Actions</th>
+                        <tr style="background: var(--cg-bg-subtle); border-bottom: 1px solid var(--cg-border);">
+                            <th style="padding: 1rem 1.25rem; font-weight: 600; color: var(--cg-text-heading);">Item</th>
+                            <th style="padding: 1rem 1.25rem; font-weight: 600; color: var(--cg-text-heading);">Type</th>
+                            <th style="padding: 1rem 1.25rem; font-weight: 600; color: var(--cg-text-heading);">Price</th>
+                            <th style="padding: 1rem 1.25rem; font-weight: 600; color: var(--cg-text-heading);">Status</th>
+                            <th style="padding: 1rem 1.25rem; font-weight: 600; color: var(--cg-text-heading); text-align: right;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr style="border-bottom: 1px solid var(--cg-slate-100);">
-                            <td style="padding: 1rem 1.25rem; font-weight: 600;">MacBook Pro M1 (16GB, 512GB)</td>
-                            <td style="padding: 1rem 1.25rem;"><span class="cg-badge cg-badge-slate">Physical</span></td>
-                            <td style="padding: 1rem 1.25rem; font-weight: 700;">&#8377;58,000</td>
-                            <td style="padding: 1rem 1.25rem;"><span class="cg-badge cg-badge-emerald">Active</span></td>
+                        {% for listing in user_listings %}
+                        <tr style="border-bottom: 1px solid var(--cg-border-light);">
+                            <td style="padding: 1rem 1.25rem;">
+                                <div style="display: flex; align-items: center; gap: 0.875rem;">
+                                    <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--cg-bg-subtle); border: 1px solid var(--cg-border); overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        {% if listing.primary_image %}
+                                            <img src="{{ listing.primary_image.url }}" alt="{{ listing.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                        {% else %}
+                                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--cg-text-muted);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <a href="/products/{{ listing.slug|default:listing.pk }}/" style="font-weight: 600; color: var(--cg-text-heading); text-decoration: none; display: block;">
+                                            {{ listing.title }}
+                                        </a>
+                                        <span class="text-xs text-muted">{{ listing.category.name }} &bull; {{ listing.created_at|date:"M d, Y" }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="padding: 1rem 1.25rem;">
+                                {% if listing.listing_type == "RENT" %}
+                                    <span class="cg-badge cg-badge-indigo">Rent</span>
+                                {% elif listing.listing_type == "SERVICE" %}
+                                    <span class="cg-badge cg-badge-amber">Service</span>
+                                {% elif listing.listing_type == "DIGITAL" %}
+                                    <span class="cg-badge cg-badge-slate">Digital</span>
+                                {% else %}
+                                    <span class="cg-badge cg-badge-blue">Sale</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 1rem 1.25rem; font-weight: 700; color: var(--cg-text-heading); font-variant-numeric: tabular-nums;">
+                                &#8377;{{ listing.price }}
+                                {% if listing.listing_type == "RENT" and listing.rental_period %}
+                                    <span style="font-size: 0.75rem; font-weight: 400; color: var(--cg-text-muted);">/{{ listing.get_rental_period_display|lower|default:listing.rental_period }}</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 1rem 1.25rem;">
+                                {% if listing.status == "ACTIVE" %}
+                                    <span class="cg-badge cg-badge-emerald">Active</span>
+                                {% elif listing.status == "SOLD" %}
+                                    <span class="cg-badge cg-badge-slate">Sold</span>
+                                {% elif listing.status == "RENTED" %}
+                                    <span class="cg-badge cg-badge-indigo">Rented</span>
+                                {% elif listing.status == "RESERVED" %}
+                                    <span class="cg-badge cg-badge-amber">Reserved</span>
+                                {% else %}
+                                    <span class="cg-badge cg-badge-slate">{{ listing.get_status_display|default:listing.status }}</span>
+                                {% endif %}
+                            </td>
                             <td style="padding: 1rem 1.25rem; text-align: right;">
-                                <a href="#" class="btn btn-sm btn-outline">Edit</a>
+                                <div style="display: inline-flex; gap: 0.5rem; justify-content: flex-end;">
+                                    <a href="/products/{{ listing.slug|default:listing.pk }}/" class="btn btn-sm btn-outline">View</a>
+                                </div>
                             </td>
                         </tr>
-                        <tr style="border-bottom: 1px solid var(--cg-slate-100);">
-                            <td style="padding: 1rem 1.25rem; font-weight: 600;">Data Structures & Algorithms Handwritten Notes</td>
-                            <td style="padding: 1rem 1.25rem;"><span class="cg-badge cg-badge-slate">Digital PDF</span></td>
-                            <td style="padding: 1rem 1.25rem; font-weight: 700;">&#8377;120</td>
-                            <td style="padding: 1rem 1.25rem;"><span class="cg-badge cg-badge-emerald">Active</span></td>
-                            <td style="padding: 1rem 1.25rem; text-align: right;">
-                                <a href="#" class="btn btn-sm btn-outline">Edit</a>
-                            </td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
+            {% else %}
+                {% include "components/empty_state.html" with title="No active listings yet" description="You have not listed any textbooks, calculators, hardware, or notes. Start selling to students on campus!" action_url="/seller/products/add/" action_text="Create First Listing" icon_type="package" %}
+            {% endif %}
         </main>
     </div>
 </div>

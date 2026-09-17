@@ -1,15 +1,19 @@
 {% if page_obj and page_obj.paginator.num_pages > 1 %}
-<nav aria-label="Pagination Navigation" style="display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-top: 3rem;">
+<nav aria-label="Pagination Navigation" class="cg-pagination">
     {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-sm btn-outline">&larr; Previous</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="cg-page-btn" aria-label="Previous Page">&larr; Prev</a>
     {% endif %}
 
-    <span style="font-size: 0.875rem; color: var(--cg-slate-500); padding: 0 0.5rem;">
-        Page <strong>{{ page_obj.number }}</strong> of <strong>{{ page_obj.paginator.num_pages }}</strong>
-    </span>
+    {% for num in page_obj.paginator.page_range %}
+        {% if num == page_obj.number %}
+            <span class="cg-page-btn cg-page-btn--active" aria-current="page">{{ num }}</span>
+        {% elif num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
+            <a href="?page={{ num }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="cg-page-btn">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
 
     {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-sm btn-outline">Next &rarr;</a>
+        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="cg-page-btn" aria-label="Next Page">Next &rarr;</a>
     {% endif %}
 </nav>
 {% endif %}

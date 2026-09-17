@@ -4,8 +4,22 @@ from .form import LoginForm
 from django.contrib import messages
 from .form import UserRegForm
 from django.views import View
-from django.core.paginator import Paginator
-from django.views.decorators.http import require_POST
+
+
+class RegisterView(View):
+    def get(self,request):
+        form = UserRegForm()
+        return render(request, 'user/register.html', {'form': form})
+        
+
+    def post(self, request):
+        form = UserRegForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, f"Welcome to CampusGrid, {user.username}! Your account has been registered.")
+            return redirect('home')
+
 
 def is_admin(user):
     return user.is_authenticated and (user.is_superuser or user.user_roles == 'ADMIN')

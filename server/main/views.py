@@ -10,7 +10,25 @@ User = get_user_model()
 
 
 def home(request):
-    return render(request, 'home/index.html')
+    featured_products = []
+    categories = []
+    listing_count = 0
+    try:
+        from market.models import Listing, Category
+        featured_products = Listing.objects.filter(
+            status=Listing.ListingStatus.ACTIVE
+        ).select_related('seller', 'category').prefetch_related('images').order_by('-created_at')[:6]
+        categories = Category.objects.filter(is_active=True)
+        listing_count = Listing.objects.filter(status=Listing.ListingStatus.ACTIVE).count()
+    except Exception:
+        pass
+
+    context = {
+        'featured_products': featured_products,
+        'categories': categories,
+        'listing_count': listing_count,
+    }
+    return render(request, 'home/index.html', context)
 
 
 # for testing html pls use the test view

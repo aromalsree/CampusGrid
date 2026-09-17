@@ -8,68 +8,127 @@
 {% endblock %}
 
 {% block content %}
-<div class="auth-page-container">
-    <div class="auth-card" style="max-width: 520px;">
-        <div class="auth-header">
-            <div class="cg-brand-icon" style="margin: 0 auto 1rem; width: 44px; height: 44px;">CG</div>
-            <h1>Create Student Account</h1>
-            <p class="text-muted text-sm">Join your campus peer network for buying, selling & notes</p>
+<div class="auth-split">
+    <!-- Left: Brand panel (OLED dark, desktop) -->
+    <div class="auth-brand-panel">
+        <div class="hero-grid-bg" aria-hidden="true"></div>
+        <div class="auth-brand-content">
+            <a href="/" class="cg-brand" style="color: #F8FAFC; margin-bottom: 2rem;">
+                <svg width="42" height="42" viewBox="0 0 28 28" fill="none" class="cg-logo-mark" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="28" height="28" rx="7" fill="#1E293B"/>
+                    <rect x="4" y="4" width="9" height="9" rx="2" fill="#334155"/>
+                    <rect x="15" y="4" width="9" height="9" rx="2" fill="#10B981"/>
+                    <rect x="4" y="15" width="9" height="9" rx="2" fill="#0F172A"/>
+                    <rect x="15" y="15" width="9" height="9" rx="2" fill="#334155"/>
+                </svg>
+                <span style="font-size: 1.65rem;">CampusGrid</span>
+            </a>
+            
+            <h2 class="auth-brand-headline">
+                Join 1,200+ verified<br><span>campus peers.</span>
+            </h2>
+            <p class="auth-brand-sub">
+                Buy, sell, rent hardware, and exchange engineering notes safely with verified students in your university network.
+            </p>
+
+            <div class="auth-brand-stats">
+                <div>
+                    <strong>1,200+</strong>
+                    <span>Peer Listings</span>
+                </div>
+                <div>
+                    <strong>&#8377;0</strong>
+                    <span>Platform Fees</span>
+                </div>
+                <div>
+                    <strong>8</strong>
+                    <span>Universities</span>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <form method="POST" action="">
-            {% csrf_token %}
-
-            {% if form.non_field_errors %}
-                <div class="cg-alert cg-alert-error" style="margin-bottom: 1.25rem;">
-                    {{ form.non_field_errors }}
-                </div>
-            {% endif %}
-
-            <div class="form-group">
-                <label for="id_username" class="form-label">Username</label>
-                <input type="text" name="username" id="id_username" class="form-control" required placeholder="alex_cs">
+    <!-- Right: Form panel -->
+    <div class="auth-form-panel">
+        <div class="auth-form-inner" style="max-width: 480px;">
+            <div class="auth-header">
+                <h1>Create Account</h1>
+                <p class="text-muted text-sm">Join your campus peer network in 30 seconds</p>
             </div>
 
-            <div class="form-group">
-                <label for="id_email" class="form-label">University / Academic Email</label>
-                <input type="email" name="email" id="id_email" class="form-control" required placeholder="alex@campus.edu">
-                <div id="edu-detected-badge" class="edu-badge-hint" style="display: none;">
-                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span>Academic domain recognized &mdash; automatic student verification eligible!</span>
-                </div>
-            </div>
+            <form method="POST" action="" id="register-form">
+                {% csrf_token %}
 
-            <div class="form-group">
-                <label for="id_institution" class="form-label">College / University Name</label>
-                <input type="text" name="institution" id="id_institution" class="form-control" required placeholder="e.g. IIT Bombay, BITS Pilani, NIT">
-            </div>
+                {% if form.non_field_errors %}
+                    <div class="cg-alert cg-alert-error" style="margin-bottom: 1.25rem;">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
 
-            <div class="form-group">
-                <label for="id_phone" class="form-label">WhatsApp Contact Number (For Handover)</label>
-                <input type="tel" name="phone" id="id_phone" class="form-control" placeholder="+91 98765 43210">
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                 <div class="form-group">
-                    <label for="id_password" class="form-label">Password</label>
-                    <input type="password" name="password" id="id_password" class="form-control" required placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
+                    <label for="id_username" class="form-label">Desired Username</label>
+                    <input type="text" name="username" id="id_username" class="form-control" required placeholder="alex_cs">
+                    {% for error in form.username.errors %}
+                        <div class="text-xs" style="color: var(--cg-rose-600); margin-top: 0.25rem;">{{ error }}</div>
+                    {% endfor %}
                 </div>
+
                 <div class="form-group">
-                    <label for="id_password_confirm" class="form-label">Confirm Password</label>
-                    <input type="password" name="password_confirm" id="id_password_confirm" class="form-control" required placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
+                    <label for="id_email" class="form-label">University / Academic Email</label>
+                    <input type="email" name="email" id="id_email" class="form-control" required placeholder="alex@university.edu">
+                    <div id="edu-detected-badge" class="edu-badge-hint" style="display: none;">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Academic domain recognized &mdash; automatic verified student badge eligible!</span>
+                    </div>
+                    {% for error in form.email.errors %}
+                        <div class="text-xs" style="color: var(--cg-rose-600); margin-top: 0.25rem;">{{ error }}</div>
+                    {% endfor %}
                 </div>
+
+                <div class="form-group">
+                    <label for="id_institution" class="form-label">College / University Campus</label>
+                    <input type="text" name="institution" id="id_institution" class="form-control" required placeholder="e.g. IIT Bombay, BITS Pilani, NIT Trichy">
+                </div>
+
+                <div class="form-group">
+                    <label for="id_phone" class="form-label">WhatsApp Contact Number (For Handover Meetup)</label>
+                    <input type="tel" name="phone" id="id_phone" class="form-control" placeholder="+91 98765 43210">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="id_password" class="form-label">Password</label>
+                        <div class="input-with-toggle">
+                            <input type="password" name="password" id="id_password" class="form-control" required placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
+                            <button type="button" class="pwd-toggle-btn" aria-label="Toggle password visibility">
+                                <svg class="pwd-icon-show" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                <svg class="pwd-icon-hide" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_password_confirm" class="form-label">Confirm</label>
+                        <div class="input-with-toggle">
+                            <input type="password" name="password_confirm" id="id_password_confirm" class="form-control" required placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
+                            <button type="button" class="pwd-toggle-btn" aria-label="Toggle password visibility">
+                                <svg class="pwd-icon-show" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                <svg class="pwd-icon-hide" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full btn-lg" style="margin-top: 0.5rem;" id="register-submit">
+                    Create Student Account
+                </button>
+            </form>
+
+            <div class="auth-switch-link">
+                <span class="text-muted">Already registered?</span>
+                <a href="{% url 'login' %}" style="color: var(--cg-emerald-600); font-weight: 600; margin-left: 0.25rem;">Log In</a>
             </div>
-
-            <button type="submit" class="btn btn-primary btn-full" style="margin-top: 1rem;">
-                Register & Verify Account
-            </button>
-        </form>
-
-        <div style="text-align: center; margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--cg-slate-100); font-size: 0.875rem;">
-            <span class="text-muted">Already registered?</span>
-            <a href="/login/" style="color: var(--cg-emerald-600); font-weight: 600; margin-left: 0.25rem;">Log In</a>
         </div>
     </div>
 </div>

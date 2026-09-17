@@ -22,11 +22,15 @@
             {% if wishlist_items %}
                 <div class="product-grid">
                     {% for item in wishlist_items %}
-                        {% include "components/product_card.html" with product=item.product in_wishlist=True %}
+                        {% if item.listing %}
+                            {% include "components/product_card.html" with product=item.listing in_wishlist=True %}
+                        {% elif item.product %}
+                            {% include "components/product_card.html" with product=item.product in_wishlist=True %}
+                        {% endif %}
                     {% endfor %}
                 </div>
             {% else %}
-                {% include "components/empty_state.html" with title="Your wishlist is empty" description="Browse the campus marketplace and save items you want to keep an eye on." action_url="/products/" action_text="Explore Marketplace" %}
+                {% include "components/empty_state.html" with title="Your wishlist is empty" description="Browse the campus marketplace and save items you want to keep an eye on." action_url="/products/" action_text="Explore Marketplace" icon_type="heart" %}
             {% endif %}
         </main>
     </div>

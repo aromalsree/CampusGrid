@@ -152,3 +152,141 @@ class ListingForm(forms.ModelForm):
             listing.save()
             self.save_m2m()
         return listing
+
+
+from .models import NeedRequest, NeedOffer
+
+
+class NeedRequestForm(forms.ModelForm):
+    """
+    Form for students to broadcast a new urgent need request to campus peers.
+    """
+    category = forms.ModelChoiceField(
+        queryset=Category.objects.none(),
+        empty_label="Select relevant category (optional)",
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'form-control form-select',
+            'id': 'id_need_category',
+        }),
+        help_text="Helps peers browsing specific subjects or gear find your request."
+    )
+
+    class Meta:
+        model = NeedRequest
+        fields = [
+            'title',
+            'category',
+            'request_type',
+            'urgency',
+            'max_budget',
+            'is_budget_negotiable',
+            'location',
+            'description',
+        ]
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g., Casio fx-991EX Calculator for Midterms, Stewart Calculus 8th Ed',
+                'id': 'id_need_title',
+                'autocomplete': 'off',
+            }),
+            'request_type': forms.Select(attrs={
+                'class': 'form-control form-select',
+                'id': 'id_need_request_type',
+            }),
+            'urgency': forms.Select(attrs={
+                'class': 'form-control form-select',
+                'id': 'id_need_urgency',
+            }),
+            'max_budget': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': '0.00 (Optional)',
+                'min': '0',
+                'step': '0.01',
+                'id': 'id_need_max_budget',
+            }),
+            'is_budget_negotiable': forms.CheckboxInput(attrs={
+                'class': 'form-checkbox',
+                'id': 'id_need_negotiable',
+            }),
+            'location': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g., Central Library 2nd Floor, Academic Block 3, Tech Quad',
+                'id': 'id_need_location',
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Detail your need: course code, exam deadline, return date if borrowing, required specifications...',
+                'rows': 4,
+                'id': 'id_need_description',
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            from django.db import connection
+            if "market_category" in connection.introspection.table_names():
+                self.fields['category'].queryset = Category.objects.filter(is_active=True)
+            else:
+                self.fields['category'].queryset = Category.objects.none()
+        except Exception:
+            self.fields['category'].queryset = Category.objects.none()
+
+        self.fields['title'].label = "What do you urgently need?"
+        self.fields['category'].label = "Category"
+        self.fields['request_type'].label = "Request Type"
+        self.fields['urgency'].label = "Urgency Level"
+        self.fields['max_budget'].label = "Maximum Budget (₹)"
+        self.fields['is_budget_negotiable'].label = "Budget is flexible / open to negotiation"
+        self.fields['location'].label = "Preferred Campus Handover Spot"
+        self.fields['description'].label = "Context & Detailed Requirements"
+
+    def clean_title(self):
+        title = self.cleaned_data.get('title', '').strip()
+        if len(title) < 3:
+            raise forms.ValidationError("Please provide a specific title (at least 3 characters).")
+        return title
+
+    def clean_description(self):
+        desc = self.cleaned_data.get('description', '').strip()
+        if len(desc) < 10:
+            raise forms.ValidationError("Please provide some helpful context for peers (at least 10 characters).")
+        return desc
+
+    def clean_max_budget(self):
+        budget = self.cleaned_data.get('max_budget')
+        if budget is not None and budget < Decimal('0.00'):
+            raise forms.ValidationError("Budget cannot be negative.")
+        return budget
+
+
+class NeedOfferForm(forms.ModelForm):
+    """
+    Form for peers to submit an offer or response to a NeedRequest.
+    """
+    class Meta:
+        model = NeedOffer
+        fields = ['message', 'offered_price']
+        widgets = {
+            'message': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Explain what you have, item condition, when you can meet on campus...',
+                'id': 'id_offer_message',
+            }),
+            'offered_price': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Offer price in ₹ (optional if lending)',
+                'min': '0',
+                'step': '0.01',
+                'id': 'id_offer_price',
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['message'].label = "Your Response / Offer Note"
+        self.fields['offered_price'].label = "Your Proposed Price (₹, optional)"
+
