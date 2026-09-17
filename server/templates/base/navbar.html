@@ -4,22 +4,16 @@
         <div class="cg-nav-inner">
             <!-- Brand Logo -->
             <a href="/" class="cg-brand" aria-label="CampusGrid Home">
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" class="cg-logo-mark" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="28" height="28" rx="6" fill="#0F172A"/>
-                    <rect x="4" y="4" width="9" height="9" rx="2" fill="#334155"/>
-                    <rect x="15" y="4" width="9" height="9" rx="2" fill="#10B981"/>
-                    <rect x="4" y="15" width="9" height="9" rx="2" fill="#1E293B"/>
-                    <rect x="15" y="15" width="9" height="9" rx="2" fill="#334155"/>
-                </svg>
+                <img src="{% static 'images/icon.png' %}" class="cg-nav-logo" alt="">
                 <span>CampusGrid</span>
             </a>
 
             <!-- Primary Navigation Links -->
             <nav class="cg-nav-links" aria-label="Primary Navigation">
                 <a href="{% url 'home' %}" class="cg-nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
-                <a href="{% url 'market:product_list' %}" class="cg-nav-link {% if 'market' in request.resolver_match.app_names or 'product' in request.resolver_match.url_name %}active{% endif %}">Marketplace</a>
+                <a href="{% url 'market:product_list' %}" class="cg-nav-link {% if request.resolver_match.app_name == 'market' and 'request' not in request.resolver_match.url_name %}active{% endif %}">Marketplace</a>
                
-                <a href="/requests/" class="cg-nav-link {% if 'requests' in request.resolver_match.url_name %}active{% endif %}">Need Board</a>
+                <a href="/requests/" class="cg-nav-link {% if request.resolver_match.url_name == 'need_board' or 'request' in request.resolver_match.url_name %}active{% endif %}">Need Board</a>
                 <a href="{% url 'about' %}" class="cg-nav-link {% if 'about' in request.resolver_match.url_name %}active{% endif %}">About</a>
             </nav>
 

@@ -38,7 +38,7 @@ class UserRegForm(forms.ModelForm):
         )
         
         if password and confirm_password and password != confirm_password:
-            raise ValidationError("Password not maching")
+            raise ValidationError("Passwords do not match")
         if password and not confirm_password:
             raise ValidationError("Please confirm your password")
 

@@ -1,10 +1,10 @@
-/* CampusGrid Cinematic Homepage Styles */
+/* CampusGrid Homepage Styles */
 .hero-section {
-  background: #090D16;
+  background: #F7FBF8;
   position: relative;
   overflow: hidden;
   padding: 6rem 0 5.5rem;
-  border-bottom: 1px solid #1E293B;
+  border-bottom: 1px solid var(--cg-border);
 }
 
 /* Animated CSS Grid Background */
@@ -12,8 +12,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(16, 185, 129, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(16, 185, 129, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(5, 150, 105, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(5, 150, 105, 0.07) 1px, transparent 1px);
   background-size: 52px 52px;
   animation: gridDrift 25s linear infinite;
   pointer-events: none;
@@ -24,7 +24,7 @@
   100% { transform: translateY(52px); }
 }
 
-/* Radial Emerald Glow */
+/* Soft color wash behind the content */
 .hero-section::before {
   content: '';
   position: absolute;
@@ -33,7 +33,7 @@
   transform: translateX(-50%);
   width: 700px;
   height: 480px;
-  background: radial-gradient(ellipse, rgba(16, 185, 129, 0.16) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(167, 243, 208, 0.42) 0%, transparent 70%);
   pointer-events: none;
   z-index: 1;
 }
@@ -57,7 +57,7 @@
   gap: 0.5rem;
   background: rgba(16, 185, 129, 0.12);
   border: 1px solid rgba(16, 185, 129, 0.3);
-  color: var(--cg-emerald-400);
+  color: var(--cg-emerald-600);
   font-size: 0.8125rem;
   font-weight: 700;
   padding: 0.35rem 0.875rem;
@@ -74,22 +74,22 @@
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1.1;
-  color: #F8FAFC;
+  color: var(--cg-navy-900);
   margin-bottom: 1.25rem;
   animation: revealUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: 0.2s;
 }
 
 .hero-title span {
-  color: var(--cg-emerald-400);
-  background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+  color: var(--cg-emerald-600);
+  background: linear-gradient(135deg, var(--cg-emerald-600) 0%, var(--cg-emerald-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .hero-subtitle {
   font-size: 1.125rem;
-  color: #94A3B8;
+  color: var(--cg-slate-600);
   line-height: 1.6;
   margin-bottom: 2rem;
   max-width: 580px;
@@ -105,17 +105,17 @@
 }
 
 .hero-search-wrap .cg-search-bar {
-  background: rgba(15, 23, 42, 0.75);
-  border-color: #334155;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.92);
+  border-color: var(--cg-slate-300);
+  box-shadow: var(--shadow-md);
 }
 
 .hero-search-wrap .cg-search-input {
-  color: #F8FAFC;
+  color: var(--cg-text-main);
 }
 
 .hero-search-wrap .cg-search-input::placeholder {
-  color: #64748B;
+  color: var(--cg-slate-500);
 }
 
 .hero-cta-row {
@@ -133,7 +133,7 @@
   gap: 0.875rem;
   margin-top: 2rem;
   font-size: 0.875rem;
-  color: rgba(148, 163, 184, 0.85);
+  color: var(--cg-slate-600);
   font-weight: 500;
 }
 
@@ -151,11 +151,11 @@
 
 .hero-float-card {
   width: 320px;
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(51, 65, 85, 0.8);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--cg-border);
   border-radius: var(--radius-xl);
   padding: 1.25rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(16, 185, 129, 0.2);
+  box-shadow: var(--shadow-xl), 0 0 0 1px rgba(16, 185, 129, 0.12);
   backdrop-filter: blur(16px);
   animation: floatCard 4.5s ease-in-out infinite;
 }
@@ -168,13 +168,20 @@
 .float-img-placeholder {
   width: 100%;
   height: 180px;
-  background: linear-gradient(135deg, #1E293B, #0F172A);
+  background: var(--cg-emerald-50);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
   color: var(--cg-emerald-400);
+  overflow: hidden;
+}
+
+.float-img-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .float-meta-row {
@@ -194,10 +201,21 @@
 }
 
 .float-title {
-  color: #F8FAFC;
+  color: var(--cg-text-main);
   font-size: 1.15rem;
   font-weight: 700;
   margin-bottom: 0.35rem;
+}
+
+.hero-cta-row .btn-outline {
+  background: var(--cg-bg-card);
+  border-color: var(--cg-slate-300);
+  color: var(--cg-text-main);
+}
+
+.hero-cta-row .btn-outline:hover {
+  background: var(--cg-slate-100);
+  border-color: var(--cg-slate-400);
 }
 
 .float-price {

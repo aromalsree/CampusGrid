@@ -1,0 +1,59 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Add User | Admin | CampusGrid{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cg-container">
+    <div class="dashboard-wrapper">
+        {% include "components/admin_sidebar.html" with active_tab="admin_users" %}
+
+        <main>
+            <div style="margin-bottom: 1.75rem;">
+                <h1 style="font-size: 1.75rem;">Add User</h1>
+                <p class="text-sm text-muted">Create a CampusGrid account from the admin dashboard.</p>
+            </div>
+
+            <div style="max-width: 680px; background: var(--cg-surface); border: 1px solid var(--cg-border); border-radius: var(--radius-lg); padding: 1.5rem;">
+                {% if form.non_field_errors %}
+                    <div class="cg-alert cg-alert-error" style="margin-bottom: 1.25rem;">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}<span class="form-help-text">{{ field.help_text }}</span>{% endif %}
+                            {% for error in field.errors %}
+                                <div class="form-error-msg">&bull; {{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                    <div class="form-group">
+                        <label for="id_user_roles" class="form-label">Role</label>
+                        <select name="user_roles" id="id_user_roles" class="form-control">
+                            <option value="USER" {% if request.POST.user_roles != 'ADMIN' %}selected{% endif %}>User</option>
+                            <option value="ADMIN" {% if request.POST.user_roles == 'ADMIN' %}selected{% endif %}>Admin</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                        <button type="submit" class="btn btn-primary">Create User</button>
+                        <a href="{% url 'admin_users' %}" class="btn btn-outline">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

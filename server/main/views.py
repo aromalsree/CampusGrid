@@ -5,6 +5,7 @@ from django.db.models import Count, Q
 from django.utils import timezone
 from django.contrib import messages
 from datetime import timedelta
+from userops.form import UserRegForm
 
 User = get_user_model()
 
@@ -97,6 +98,25 @@ def admin_users(request):
         'total_count': users.count(),
     }
     return render(request, 'admin/users.html', context)
+
+
+@login_required
+@user_passes_test(is_admin)
+def admin_user_add(request):
+    if request.method == 'POST':
+        form = UserRegForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.user_roles = request.POST.get('user_roles', 'USER')
+            user.is_staff = user.user_roles == 'ADMIN'
+            user.save()
+            messages.success(request, f"User {user.username} was created successfully.")
+            return redirect('admin_users')
+        messages.error(request, "Please correct the errors below to create the user.")
+    else:
+        form = UserRegForm()
+
+    return render(request, 'admin/add_user.html', {'form': form})
 
 
 @login_required

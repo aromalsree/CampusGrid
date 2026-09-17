@@ -4,6 +4,7 @@ from .form import LoginForm
 from django.contrib import messages
 from .form import UserRegForm
 from django.views import View
+from django.utils.http import url_has_allowed_host_and_scheme
 
 
 class RegisterView(View):
@@ -19,6 +20,9 @@ class RegisterView(View):
             login(request, user)
             messages.success(request, f"Welcome to CampusGrid, {user.username}! Your account has been registered.")
             return redirect('home')
+
+        messages.error(request, "Please correct the errors below to create your account.")
+        return render(request, 'user/register.html', {'form': form})
 
 
 
@@ -52,6 +56,8 @@ def login_view(request):
     Handle user login using AuthenticationForm and render templates/user/login.html
     """
     if request.user.is_authenticated:
+        if request.user.is_superuser or request.user.user_roles == 'ADMIN':
+            return redirect('admin_dashboard')
         return redirect('home')
 
     if request.method == 'POST':
@@ -60,6 +66,15 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
             messages.success(request, f"Welcome back, {user.username}!")
+            if user.is_superuser or user.user_roles == 'ADMIN':
+                return redirect('admin_dashboard')
+            next_url = request.POST.get('next') or request.GET.get('next')
+            if next_url and url_has_allowed_host_and_scheme(
+                next_url,
+                allowed_hosts={request.get_host()},
+                require_https=request.is_secure(),
+            ):
+                return redirect(next_url)
             return redirect('home')
         else:
             messages.error(request, "Invalid username or password.")

@@ -43,7 +43,33 @@
   transition: transform 0.2s ease;
 }
 
+.cg-nav-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.cg-footer-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
 .cg-brand:hover .cg-logo-mark {
+  transform: scale(1.05);
+}
+
+.cg-brand:hover .cg-nav-logo {
+  transform: scale(1.05);
+}
+
+.cg-brand:hover .cg-footer-logo {
   transform: scale(1.05);
 }
 
