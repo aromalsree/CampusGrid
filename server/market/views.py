@@ -3,7 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
 from typing import List, Dict, Any, Optional
-from .forms import ListingForm
+from .forms import ListingForm, NeedRequestForm, NeedOfferForm
+
+from .models import NeedRequest, NeedOffer
 from .psudodeta import SAMPLE_PRODUCTS, SAMPLE_CATEGORIES
 
 
@@ -36,6 +38,8 @@ def _get_active_categories():
     except Exception:
         pass
     return SAMPLE_CATEGORIES
+
+
 
 
 
@@ -242,19 +246,6 @@ def create_listing(request):
         {"form": form}
     )
 
-
-# Aliases for convenience and flexible routing
-products = product_list
-catalogue = product_list
-product_detail_view = product_detail
-category_list = categories
-compare_view = compare
-add_listing = create_listing
-post_listing = create_listing
-
-
-from .models import NeedRequest, NeedOffer
-from .forms import NeedRequestForm, NeedOfferForm
 
 
 def need_board_view(request):

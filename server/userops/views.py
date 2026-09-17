@@ -1,16 +1,20 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required, user_passes_test
 from .form import LoginForm
 from django.contrib import messages
-from .form import UserRegForm
+from .form import UserRegForm, LoginForm
 from django.views import View
 from django.utils.http import url_has_allowed_host_and_scheme
 
+# html path to var
+register_template = 'user/register.html'
+login_template = 'user/login.html'
 
 class RegisterView(View):
     def get(self,request):
         form = UserRegForm()
-        return render(request, 'user/register.html', {'form': form})
+        return render(request, register_template, {'form': form})
         
 
     def post(self, request):
@@ -30,34 +34,21 @@ def is_admin(user):
 
 
 
-class RegisterView(View):
-    def get(self, request):
-        form = UserRegForm()
-        return render(request, 'user/register.html', {'form': form})
-
-    def post(self, request):
-        form = UserRegForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, f"Welcome to CampusGrid, {user.username}! Your account has been registered.")
-            return redirect('login')
-
 
  
 class LoginView(View):
     def get(self, request):
-        form = Loginform()
-        return render(request, "login.html", {'form':form})
+        form = LoginForm()
+        return render(request, login_template, {'form':form})
 
     def post(self, request):
-        form = Loginform(request=request,data=request.POST)
+        form = LoginForm(request=request,data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
             return redirect("home")
             
-        return render(request, "login.html", {'form':form})
+        return render(request, login_template, {'form':form})
 
 
 
