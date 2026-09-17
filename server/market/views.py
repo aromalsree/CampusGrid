@@ -4,22 +4,23 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from typing import List, Dict, Any, Optional
 from .forms import ListingForm
+from .psudodeta import SAMPLE_PRODUCTS, SAMPLE_CATEGORIES
 
 
 
 def _get_active_products():
     """
-    Attempts to query the Product model if defined in market.models,
-    otherwise falls back gracefully to SAMPLE_PRODUCTS.
+    Returns active database listings together with the sample catalog so demo
+    products remain available alongside real student listings.
     """
     try:
-        from .models import Product
-        qs = Product.objects.all()
-        if qs.exists():
-            return qs
+        from .models import Listing
+        qs = Listing.objects.filter(
+            status=Listing.ListingStatus.ACTIVE
+        ).select_related('seller', 'category').prefetch_related('images')
+        return list(qs) + SAMPLE_PRODUCTS
     except Exception:
-        pass
-    return SAMPLE_PRODUCTS
+        return list(SAMPLE_PRODUCTS)
 
 
 def _get_active_categories():
@@ -29,7 +30,7 @@ def _get_active_categories():
     """
     try:
         from .models import Category
-        qs = Category.objects.all()
+        qs = Category.objects.filter(is_active=True)
         if qs.exists():
             return qs
     except Exception:
@@ -45,44 +46,61 @@ def product_list(request):
     """
     category_filter = request.GET.get('category', '').strip().lower()
     type_filter = request.GET.get('type', '').strip().lower()
+    condition_filter = request.GET.get('condition', '').strip().lower()
     search_query = request.GET.get('q', '').strip().lower()
     page_number = request.GET.get('page', 1)
 
+    type_aliases = {
+        'sell': 'SALE',
+        'sale': 'SALE',
+        'rental': 'RENT',
+        'rent': 'RENT',
+        'service': 'SERVICE',
+        'digital': 'DIGITAL',
+    }
+    condition_aliases = {
+        'brand_new': 'NEW',
+        'new': 'NEW',
+        'like_new': 'LIKE_NEW',
+        'good': 'GOOD',
+        'fair': 'FAIR',
+        'poor': 'POOR',
+    }
+    normalized_type = type_aliases.get(type_filter, '')
+    normalized_condition = condition_aliases.get(condition_filter, '')
+
     raw_products = _get_active_products()
 
-    # If raw_products is a Django QuerySet
-    if hasattr(raw_products, 'filter'):
-        qs = raw_products
-        if category_filter:
-            qs = qs.filter(category__iexact=category_filter)
-        if type_filter:
-            qs = qs.filter(listing_type__iexact=type_filter)
-        if search_query:
-            from django.db.models import Q
-            qs = qs.filter(
-                Q(title__icontains=search_query) |
-                Q(description__icontains=search_query) |
-                Q(campus__icontains=search_query)
-            )
-        filtered_products = list(qs)
-    else:
-        # Working with dictionary items
-        filtered_products = []
-        for p in raw_products:
-            # Category filter
-            if category_filter and p.get('category', '').lower() != category_filter:
-                continue
-            # Listing type filter (e.g. 'sell', 'rental')
-            if type_filter and p.get('listing_type', '').lower() != type_filter:
-                continue
-            # Search filter
-            if search_query:
-                title = p.get('title', '').lower()
-                desc = p.get('description', '').lower()
-                campus = p.get('campus', '').lower()
-                if search_query not in title and search_query not in desc and search_query not in campus:
-                    continue
-            filtered_products.append(p)
+    filtered_products = []
+    for product in raw_products:
+        if hasattr(product, 'category'):
+            product_category = product.category.slug
+            product_type = str(product.listing_type).lower()
+            product_condition = str(product.condition).lower()
+            title = product.title.lower()
+            desc = product.description.lower()
+            location = product.location.lower()
+        else:
+            product_category = product.get('category', '')
+            if isinstance(product_category, dict):
+                product_category = product_category.get('slug', '')
+            elif hasattr(product_category, 'slug'):
+                product_category = product_category.slug
+            product_type = str(product.get('listing_type', '')).lower()
+            product_condition = str(product.get('condition', '')).lower()
+            title = product.get('title', '').lower()
+            desc = product.get('description', '').lower()
+            location = product.get('campus', '').lower()
+
+        if category_filter and str(product_category).lower() != category_filter:
+            continue
+        if type_filter and product_type not in {type_filter, normalized_type.lower()}:
+            continue
+        if condition_filter and product_condition not in {condition_filter, normalized_condition.lower()}:
+            continue
+        if search_query and search_query not in title and search_query not in desc and search_query not in location:
+            continue
+        filtered_products.append(product)
 
     paginator = Paginator(filtered_products, 6)
     page_obj = paginator.get_page(page_number)

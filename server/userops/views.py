@@ -4,6 +4,7 @@ from .form import LoginForm
 from django.contrib import messages
 from .form import UserRegForm
 from django.views import View
+from django.utils.http import url_has_allowed_host_and_scheme
 
 
 class RegisterView(View):
@@ -19,6 +20,9 @@ class RegisterView(View):
             login(request, user)
             messages.success(request, f"Welcome to CampusGrid, {user.username}! Your account has been registered.")
             return redirect('home')
+
+        messages.error(request, "Please correct the errors below to create your account.")
+        return render(request, 'user/register.html', {'form': form})
 
 
 def is_admin(user):

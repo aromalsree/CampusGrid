@@ -85,15 +85,7 @@ class ListingForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Dynamically load active categories from database when table is present
-        try:
-            from django.db import connection
-            if "market_category" in connection.introspection.table_names():
-                self.fields['category'].queryset = Category.objects.filter(is_active=True)
-            else:
-                self.fields['category'].queryset = Category.objects.none()
-        except Exception:
-            self.fields['category'].queryset = Category.objects.none()
+        self.fields['category'].queryset = Category.objects.filter(is_active=True)
 
         # Human-friendly field labels
         self.fields['title'].label = "Listing Title"

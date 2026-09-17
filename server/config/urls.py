@@ -18,8 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import RedirectView
 
 urlpatterns = [
+    path(
+        'admin/auth/user/add/',
+        RedirectView.as_view(url='/admin/userops/app_users/add/', permanent=False),
+    ),
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
     path('user/', include('userops.urls')),

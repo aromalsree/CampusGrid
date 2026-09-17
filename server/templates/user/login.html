@@ -1,110 +1,861 @@
-{% extends "base/base.html" %}
+{% extends "base/auth_base.html" %}
 {% load static %}
 
 {% block title %}Log In | CampusGrid{% endblock %}
 
+{% block meta_description %}
+Log in to your verified CampusGrid student account to access the marketplace, need board, and academic resources.
+{% endblock %}
+
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/pages/user.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/auth.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="auth-split">
-    <!-- Left: Brand panel (OLED dark, desktop) -->
-    <div class="auth-brand-panel">
-        <div class="hero-grid-bg" aria-hidden="true"></div>
-        <div class="auth-brand-content">
-            <a href="/" class="cg-brand" style="color: #F8FAFC; margin-bottom: 2rem;">
-                <svg width="42" height="42" viewBox="0 0 28 28" fill="none" class="cg-logo-mark" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="28" height="28" rx="7" fill="#1E293B"/>
-                    <rect x="4" y="4" width="9" height="9" rx="2" fill="#334155"/>
-                    <rect x="15" y="4" width="9" height="9" rx="2" fill="#10B981"/>
-                    <rect x="4" y="15" width="9" height="9" rx="2" fill="#0F172A"/>
-                    <rect x="15" y="15" width="9" height="9" rx="2" fill="#334155"/>
-                </svg>
-                <span style="font-size: 1.65rem;">CampusGrid</span>
-            </a>
-            
-            <h2 class="auth-brand-headline">
-                Your campus ecosystem,<br><span>in one grid.</span>
-            </h2>
-            <p class="auth-brand-sub">
-                Connect with verified student peers to buy, sell, rent hardware, and exchange semester study resources without fees.
-            </p>
 
-            <div class="auth-brand-stats">
-                <div>
-                    <strong>1,200+</strong>
-                    <span>Listings</span>
-                </div>
-                <div>
-                    <strong>&#8377;0</strong>
-                    <span>Platform Fees</span>
-                </div>
-                <div>
-                    <strong>8</strong>
-                    <span>Campuses</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Right: Form panel -->
-    <div class="auth-form-panel">
-        <div class="auth-form-inner">
-            <div class="auth-header">
-                <h1>Welcome Back</h1>
-                <p class="text-muted text-sm">Log in to your verified campus account</p>
-            </div>
-
-            <form method="POST" action="" id="login-form">
-                {% csrf_token %}
-
-                {% if form.non_field_errors %}
-                    <div class="cg-alert cg-alert-error" style="margin-bottom: 1.25rem;">
-                        {{ form.non_field_errors }}
-                    </div>
-                {% endif %}
-
-                <div class="form-group">
-                    <label for="id_username" class="form-label">Username or Academic Email</label>
-                    <input type="text" name="username" id="id_username" class="form-control" required autofocus placeholder="student@university.edu">
-                    {% if form.username.errors %}<span class="text-xs" style="color: var(--cg-rose-600);">{{ form.username.errors.0 }}</span>{% endif %}
-                </div>
-
-                <div class="form-group">
-                    <div class="cg-flex-between" style="margin-bottom: 0.375rem;">
-                        <label for="id_password" class="form-label" style="margin-bottom: 0;">Password</label>
-                        <a href="#" class="auth-forgot-link">Forgot password?</a>
-                    </div>
-                    <div class="input-with-toggle">
-                        <input type="password" name="password" id="id_password" class="form-control" required placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
-                        <button type="button" class="pwd-toggle-btn" aria-label="Toggle password visibility">
-                            <svg class="pwd-icon-show" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                            <svg class="pwd-icon-hide" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
-                        </button>
-                    </div>
-                    {% if form.password.errors %}<span class="text-xs" style="color: var(--cg-rose-600);">{{ form.password.errors.0 }}</span>{% endif %}
-                </div>
-
-                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; font-size: 0.875rem; color: var(--cg-text-muted); cursor: pointer;">
-                    <input type="checkbox" name="remember" style="accent-color: var(--cg-emerald-600); width: 16px; height: 16px;">
-                    <span>Keep me logged in on this device</span>
-                </label>
-
-                <button type="submit" class="btn btn-primary btn-full btn-lg" id="login-submit">
-                    Log In to CampusGrid
-                </button>
-            </form>
-
-            <div class="auth-switch-link">
-                <span class="text-muted">New to campus?</span>
-                <a href="{% url 'register' %}" style="color: var(--cg-emerald-600); font-weight: 600; margin-left: 0.25rem;">Create an Account</a>
-            </div>
-        </div>
-    </div>
+<!-- Page transition overlay -->
+<div class="auth-page-transition" aria-hidden="true">
+    <div class="auth-transition-line"></div>
 </div>
+
+<div class="auth-page">
+
+    <!-- =========================================================
+         Top Navigation
+         ========================================================= -->
+    <header class="auth-topbar">
+
+        <a
+            href="{% url 'home' %}"
+            class="auth-back-link"
+            data-nav-link
+        >
+            <svg
+                width="17"
+                height="17"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+            >
+                <path d="M19 12H5"></path>
+                <path d="M12 19l-7-7 7-7"></path>
+            </svg>
+
+            <span>Back to home</span>
+        </a>
+
+    </header>
+
+
+    <!-- =========================================================
+         Main Authentication Layout
+         ========================================================= -->
+    <main class="auth-main">
+
+        <div class="auth-layout">
+
+            <!-- =================================================
+                 Left Brand Section
+                 ================================================= -->
+            <section class="auth-brand-panel">
+
+                <div class="auth-brand-panel-inner">
+
+                    <div class="auth-brand-intro">
+
+                        <div class="auth-eyebrow">
+                            <span class="auth-eyebrow-dot"></span>
+                            Verified campus marketplace
+                        </div>
+
+                        <h2 class="auth-brand-headline">
+                            Everything your
+                            <br>
+                            campus needs.
+                        </h2>
+
+                        <p class="auth-brand-description">
+                            Buy, sell, rent, and exchange resources with
+                            verified students from your campus community.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Product principles -->
+                    <div class="auth-feature-list">
+
+                        <div class="auth-feature">
+
+                            <div class="auth-feature-icon">
+                                <svg
+                                    width="19"
+                                    height="19"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M20 7l-8-4-8 4"></path>
+                                    <path d="M4 7l8 4 8-4"></path>
+                                    <path d="M4 7v10l8 4 8-4V7"></path>
+                                    <path d="M12 11v10"></path>
+                                </svg>
+                            </div>
+
+                            <div>
+                                <strong>Buy & sell locally</strong>
+                                <span>Find useful things from students around you.</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="auth-feature">
+
+                            <div class="auth-feature-icon">
+                                <svg
+                                    width="19"
+                                    height="19"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M12 1v22"></path>
+                                    <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H7"></path>
+                                </svg>
+                            </div>
+
+                            <div>
+                                <strong>No platform fees</strong>
+                                <span>Keep the value of your student-to-student exchange.</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="auth-feature">
+
+                            <div class="auth-feature-icon">
+                                <svg
+                                    width="19"
+                                    height="19"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                            </div>
+
+                            <div>
+                                <strong>Student-only community</strong>
+                                <span>Connect through verified campus accounts.</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Left panel footer -->
+                <div class="auth-brand-footer">
+
+                    <div class="auth-campus-status">
+                        <span class="status-indicator"></span>
+                        <span>Built for campus communities</span>
+                    </div>
+
+                    
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 Right Form Section
+                 ================================================= -->
+            <section class="auth-form-panel">
+
+                <div class="auth-form-inner">
+
+                    <!-- Form header -->
+                    <header class="auth-header">
+
+                       
+
+                        <p class="auth-form-kicker">
+                            Student account
+                        </p>
+
+                        <h1>Welcome back</h1>
+
+                        <p class="auth-header-description">
+                            Sign in to continue to your CampusGrid account.
+                        </p>
+
+                    </header>
+
+
+                    <!-- =================================================
+                         Login Form
+                         ================================================= -->
+                    <form
+                        method="POST"
+                        action=""
+                        id="login-form"
+                        class="auth-form"
+                        novalidate
+                    >
+
+                        {% csrf_token %}
+
+                        <input
+                            type="hidden"
+                            name="next"
+                            value="{{ request.GET.next|default:'' }}"
+                        >
+
+
+                        <!-- Server-side errors -->
+                        {% if form.non_field_errors %}
+
+                            <div
+                                class="auth-alert auth-alert-error"
+                                role="alert"
+                            >
+
+                                <span class="auth-alert-icon">
+                                    <svg
+                                        width="17"
+                                        height="17"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        aria-hidden="true"
+                                    >
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                    </svg>
+                                </span>
+
+                                <div>
+                                    {{ form.non_field_errors }}
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- =================================================
+                             Username / Academic Email
+                             ================================================= -->
+                        <div class="form-group">
+
+                            <label
+                                for="id_username"
+                                class="form-label"
+                            >
+                                Username or Academic Email
+                            </label>
+
+                            <div class="input-wrapper">
+
+                                <span class="input-icon" aria-hidden="true">
+                                    <svg
+                                        width="18"
+                                        height="18"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path d="M20 21a8 8 0 00-16 0"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                </span>
+
+                                <input
+                                    type="text"
+                                    name="username"
+                                    id="id_username"
+                                    class="form-control"
+                                    required
+                                    autofocus
+                                    placeholder="student@university.edu"
+                                    autocomplete="username"
+                                >
+
+                            </div>
+
+                            {% if form.username.errors %}
+                                <span class="form-error">
+                                    {{ form.username.errors.0 }}
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- =================================================
+                             Password
+                             ================================================= -->
+                        <div class="form-group">
+
+                            <div class="form-label-row">
+
+                                <label
+                                    for="id_password"
+                                    class="form-label"
+                                >
+                                    Password
+                                </label>
+
+                                <a
+                                    href="{% url 'password_reset' %}"
+                                    class="auth-forgot-link"
+                                    data-nav-link
+                                >
+                                    Forgot password?
+                                </a>
+
+                            </div>
+
+
+                            <div class="input-wrapper">
+
+                                <span class="input-icon" aria-hidden="true">
+                                    <svg
+                                        width="18"
+                                        height="18"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <rect
+                                            x="4"
+                                            y="10"
+                                            width="16"
+                                            height="11"
+                                            rx="2"
+                                        ></rect>
+
+                                        <path d="M8 10V7a4 4 0 018 0v3"></path>
+                                    </svg>
+                                </span>
+
+
+                                <input
+                                    type="password"
+                                    name="password"
+                                    id="id_password"
+                                    class="form-control password-input"
+                                    required
+                                    placeholder="••••••••"
+                                    autocomplete="current-password"
+                                >
+
+
+                                <button
+                                    type="button"
+                                    class="pwd-toggle-btn"
+                                    id="password-toggle"
+                                    aria-label="Show password"
+                                    aria-pressed="false"
+                                >
+
+                                    <svg
+                                        class="pwd-icon-show"
+                                        width="18"
+                                        height="18"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        aria-hidden="true"
+                                    >
+                                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+
+
+                                    <svg
+                                        class="pwd-icon-hide"
+                                        width="18"
+                                        height="18"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="1.7"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        aria-hidden="true"
+                                    >
+                                        <path d="M3 3l18 18"></path>
+                                        <path d="M10.6 10.6a2 2 0 002.8 2.8"></path>
+                                        <path d="M9.9 4.3A10.8 10.8 0 0112 4c6.5 0 10 8 10 8a17.2 17.2 0 01-3.2 4.5"></path>
+                                        <path d="M6.2 6.2C3.5 8.2 2 12 2 12s3.5 8 10 8c1.6 0 3-.4 4.2-1"></path>
+                                    </svg>
+
+                                </button>
+
+                            </div>
+
+
+                            {% if form.password.errors %}
+                                <span class="form-error">
+                                    {{ form.password.errors.0 }}
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- =================================================
+                             Remember Me
+                             ================================================= -->
+                        <label class="auth-checkbox">
+
+                            <input
+                                type="checkbox"
+                                name="remember"
+                            >
+
+                            <span class="auth-checkbox-box">
+                                <svg
+                                    width="12"
+                                    height="12"
+                                    viewBox="0 0 12 12"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M2.5 6l2.2 2.2L9.5 3.5"></path>
+                                </svg>
+                            </span>
+
+                            <span class="auth-checkbox-label">
+                                Keep me logged in on this device
+                            </span>
+
+                        </label>
+
+
+                        <!-- =================================================
+                             Submit
+                             ================================================= -->
+                        <button
+                            type="submit"
+                            class="auth-submit-btn"
+                            id="login-submit"
+                        >
+
+                            <span class="btn-text">
+                                Sign in to CampusGrid
+                            </span>
+
+                            <span
+                                class="btn-loading"
+                                aria-hidden="true"
+                            >
+                                <span class="btn-spinner"></span>
+                                Signing in...
+                            </span>
+
+                            <svg
+                                class="submit-arrow"
+                                width="17"
+                                height="17"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                <path d="M5 12h14"></path>
+                                <path d="M13 6l6 6-6 6"></path>
+                            </svg>
+
+                        </button>
+
+                    </form>
+
+
+                    <!-- =================================================
+                         Social Login
+                         ================================================= -->
+                    <div class="auth-social-section">
+
+                        <div class="auth-divider">
+                            <span>or continue with</span>
+                        </div>
+
+
+                        <div class="auth-social-buttons">
+
+                            <button
+                                type="button"
+                                class="auth-social-btn"
+                                aria-label="Sign in with Google"
+                            >
+
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        fill="#4285F4"
+                                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                                    />
+                                    <path
+                                        fill="#34A853"
+                                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                                    />
+                                    <path
+                                        fill="#FBBC05"
+                                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                                    />
+                                    <path
+                                        fill="#EA4335"
+                                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                                    />
+                                </svg>
+
+                                <span>Google</span>
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="auth-social-btn"
+                                aria-label="Sign in with GitHub"
+                            >
+
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.579v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                                </svg>
+
+                                <span>GitHub</span>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         Register
+                         ================================================= -->
+                    <div class="auth-switch-link">
+
+                        <span>New to CampusGrid?</span>
+
+                        <a
+                            href="{% url 'register' %}"
+                            class="auth-switch-btn"
+                            data-nav-link
+                        >
+                            Create an account
+                            <svg
+                                width="15"
+                                height="15"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                <path d="M5 12h14"></path>
+                                <path d="M13 6l6 6-6 6"></path>
+                            </svg>
+                        </a>
+
+                    </div>
+
+
+                    <!-- Security note -->
+                    <p class="auth-security-note">
+
+                        <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.7"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <rect
+                                x="3"
+                                y="11"
+                                width="18"
+                                height="10"
+                                rx="2"
+                            ></rect>
+                            <path d="M7 11V7a5 5 0 0110 0v4"></path>
+                        </svg>
+
+                        Your account information is securely protected.
+
+                    </p>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
 {% endblock %}
 
+
 {% block extra_js %}
+
 <script src="{% static 'js/user.js' %}"></script>
+
+<script>
+(function () {
+    'use strict';
+
+    /* ============================================================
+       Password visibility
+       ============================================================ */
+
+    const passwordInput = document.getElementById('id_password');
+    const passwordToggle = document.getElementById('password-toggle');
+
+    if (passwordInput && passwordToggle) {
+
+        const showIcon = passwordToggle.querySelector('.pwd-icon-show');
+        const hideIcon = passwordToggle.querySelector('.pwd-icon-hide');
+
+        passwordToggle.addEventListener('click', function () {
+
+            const isPassword = passwordInput.type === 'password';
+
+            passwordInput.type = isPassword ? 'text' : 'password';
+
+            passwordToggle.setAttribute(
+                'aria-label',
+                isPassword ? 'Hide password' : 'Show password'
+            );
+
+            passwordToggle.setAttribute(
+                'aria-pressed',
+                String(isPassword)
+            );
+
+            if (showIcon) {
+                showIcon.style.display = isPassword ? 'none' : 'block';
+            }
+
+            if (hideIcon) {
+                hideIcon.style.display = isPassword ? 'block' : 'none';
+            }
+
+            passwordInput.focus();
+        });
+    }
+
+
+    /* ============================================================
+       Input focus states
+       ============================================================ */
+
+    document
+        .querySelectorAll('.input-wrapper input')
+        .forEach(function (input) {
+
+            const wrapper = input.closest('.input-wrapper');
+
+            if (!wrapper) return;
+
+            function updateState() {
+                wrapper.classList.toggle(
+                    'has-value',
+                    input.value.trim().length > 0
+                );
+            }
+
+            input.addEventListener('focus', function () {
+                wrapper.classList.add('is-focused');
+            });
+
+            input.addEventListener('blur', function () {
+                wrapper.classList.remove('is-focused');
+                updateState();
+            });
+
+            input.addEventListener('input', updateState);
+
+            updateState();
+        });
+
+
+    /* ============================================================
+       Login loading state
+       ============================================================ */
+
+    const loginForm = document.getElementById('login-form');
+    const loginButton = document.getElementById('login-submit');
+
+    if (loginForm && loginButton) {
+
+        loginForm.addEventListener('submit', function () {
+
+            if (loginButton.disabled) {
+                return;
+            }
+
+            loginButton.disabled = true;
+            loginButton.classList.add('is-loading');
+
+            /*
+             * Allow Django's normal form submission to continue.
+             * This only changes the visual state.
+             */
+        });
+    }
+
+
+    /* ============================================================
+       Smooth navigation transition
+       ============================================================ */
+
+    const transition = document.querySelector('.auth-page-transition');
+
+    function navigateWithTransition(url) {
+
+        if (!transition) {
+            window.location.href = url;
+            return;
+        }
+
+        transition.classList.add('is-entering');
+
+        window.setTimeout(function () {
+            window.location.href = url;
+        }, 220);
+    }
+
+
+    document
+        .querySelectorAll('[data-nav-link]')
+        .forEach(function (link) {
+
+            link.addEventListener('click', function (event) {
+
+                const href = link.getAttribute('href');
+
+                if (!href) return;
+
+                /*
+                 * Don't interfere with:
+                 * - modifier clicks
+                 * - external links
+                 * - anchors
+                 * - downloads
+                 */
+                if (
+                    event.ctrlKey ||
+                    event.metaKey ||
+                    event.shiftKey ||
+                    event.altKey ||
+                    link.target === '_blank' ||
+                    href.startsWith('#') ||
+                    href.startsWith('http://') ||
+                    href.startsWith('https://')
+                ) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                navigateWithTransition(href);
+            });
+        });
+
+
+    /* ============================================================
+       Page entrance
+       ============================================================ */
+
+    window.addEventListener('pageshow', function () {
+
+        if (!transition) return;
+
+        window.requestAnimationFrame(function () {
+            transition.classList.remove('is-entering');
+            transition.classList.add('is-ready');
+        });
+    });
+
+
+    /* ============================================================
+       Prevent animation when browser prefers reduced motion
+       ============================================================ */
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+
+        document.documentElement.classList.add(
+            'prefers-reduced-motion'
+        );
+    }
+
+})();
+</script>
+
 {% endblock %}

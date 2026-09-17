@@ -5,7 +5,7 @@ app_name = 'market'
 
 urlpatterns = [
     # Marketplace Catalogue / Product Listings
-    path('', views.product_list, name='product_list'),
+    path('products/', views.product_list, name='product_list'),
     path('products/', views.product_list, name='products'),
 
     # Create Product Listing

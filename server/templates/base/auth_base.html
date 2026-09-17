@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="{% block meta_description %}CampusGrid — Multi-Campus P2P Marketplace & Academic Exchange for Students{% endblock %}">
+    <title>{% block title %}CampusGrid — Student Marketplace{% endblock %}</title>
+
+    <!-- Google Fonts: Inter, Plus Jakarta Sans & Space Grotesk for premium feel -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Global Design System & Component Styles -->
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="auth-body">
+    <!-- Home Link / Logo in top-left -->
+    <a href="/" class="auth-home-link" aria-label="Back to CampusGrid Home">
+        <img src="{% static 'images/icon.png' %}" class="auth-home-logo" alt="">
+        <span class="auth-home-text">CampusGrid</span>
+    </a>
+
+    <!-- Global Alert / Messages System -->
+    {% include "base/messages.html" %}
+
+    <!-- Main Content Container - Full viewport -->
+    <main id="main-content" class="auth-main">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Minimal Footer for Auth Pages -->
+    <footer class="auth-footer">
+        <p>&copy; {{ year|default:"2026" }} CampusGrid. Built for student communities.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{% static 'js/global.js' %}"></script>
+    <script src="{% static 'js/navigation.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

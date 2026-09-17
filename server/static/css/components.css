@@ -17,10 +17,6 @@
   background-color: rgba(255, 255, 255, 0.88);
 }
 
-[data-theme="dark"] .cg-header.scrolled {
-  background-color: rgba(9, 13, 22, 0.88);
-}
-
 .cg-nav-inner {
   display: flex;
   align-items: center;
@@ -47,7 +43,33 @@
   transition: transform 0.2s ease;
 }
 
+.cg-nav-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.cg-footer-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
 .cg-brand:hover .cg-logo-mark {
+  transform: scale(1.05);
+}
+
+.cg-brand:hover .cg-nav-logo {
+  transform: scale(1.05);
+}
+
+.cg-brand:hover .cg-footer-logo {
   transform: scale(1.05);
 }
 
@@ -93,19 +115,6 @@
   display: flex;
   align-items: center;
   gap: 0.875rem;
-}
-
-.cg-theme-toggle {
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-md);
-  color: var(--cg-text-main);
-  background: var(--cg-bg-card);
-  border: 1px solid var(--cg-border);
 }
 
 .cg-notif-trigger {
