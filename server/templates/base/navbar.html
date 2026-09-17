@@ -60,7 +60,7 @@
                             </a>
                         </div>
                     </div>
-                    <a href="/seller/products/add/" class="btn btn-sm btn-primary">+ Sell Item</a>
+                    <a href="{% url 'market:create_listing' %}" class="btn btn-sm btn-primary">+ Sell Item</a>
                 {% else %}
                     <a href="{% url 'login' %}" class="btn btn-sm btn-outline">Log in</a>
                     <a href="{% url 'register' %}" class="btn btn-sm btn-primary">Join CampusGrid</a>

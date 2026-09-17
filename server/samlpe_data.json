@@ -1,0 +1,289 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "username": "alex_cs",
+      "email": "alex_cs@campus.edu",
+      "is_active": true,
+      "date_joined": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "username": "sarah_m",
+      "email": "sarah_m@campus.edu",
+      "is_active": true,
+      "date_joined": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "username": "rahul_k",
+      "email": "rahul_k@campus.edu",
+      "is_active": true,
+      "date_joined": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "username": "priya_ee",
+      "email": "priya_ee@campus.edu",
+      "is_active": true,
+      "date_joined": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 5,
+    "fields": {
+      "username": "david_bio",
+      "email": "david_bio@campus.edu",
+      "is_active": true,
+      "date_joined": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 6,
+    "fields": {
+      "username": "ananya_chem",
+      "email": "ananya_chem@campus.edu",
+      "is_active": true,
+      "date_joined": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "market.category",
+    "pk": 1,
+    "fields": {
+      "name": "Laptops & Electronics",
+      "slug": "laptops",
+      "description": "",
+      "is_active": true,
+      "created_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "market.category",
+    "pk": 2,
+    "fields": {
+      "name": "Textbooks & Study Guides",
+      "slug": "books",
+      "description": "",
+      "is_active": true,
+      "created_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "market.category",
+    "pk": 3,
+    "fields": {
+      "name": "Academic Notes & PDFs",
+      "slug": "notes",
+      "description": "",
+      "is_active": true,
+      "created_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "market.category",
+    "pk": 4,
+    "fields": {
+      "name": "Lab Gear & Instruments",
+      "slug": "lab-gear",
+      "description": "",
+      "is_active": true,
+      "created_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "market.category",
+    "pk": 5,
+    "fields": {
+      "name": "Hostel & Room Essentials",
+      "slug": "hostel",
+      "description": "",
+      "is_active": true,
+      "created_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "market.category",
+    "pk": 6,
+    "fields": {
+      "name": "Bicycles & Mobility",
+      "slug": "mobility",
+      "description": "",
+      "is_active": true,
+      "created_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "market.listing",
+    "pk": 1,
+    "fields": {
+      "seller": 1,
+      "category": 1,
+      "title": "MacBook Pro M1 (16GB, 512GB)",
+      "slug": "macbook-pro-m1",
+      "description": "Gently used for 2 semesters of coursework. Battery health is at 91%. Comes with original 67W charger and box. Perfect for CS/IT students needing a fast build machine.",
+      "price": "58000.00",
+      "listing_type": "SALE",
+      "condition": "LIKE_NEW",
+      "rental_period": "",
+      "location": "North Quad / Tech Block",
+      "is_negotiable": false,
+      "is_urgent": false,
+      "status": "ACTIVE",
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "market.listing",
+    "pk": 2,
+    "fields": {
+      "seller": 2,
+      "category": 2,
+      "title": "Calculus: Early Transcendentals (8th Ed.)",
+      "slug": "calculus-early-transcendentals",
+      "description": "Standard Stewart Calculus textbook. Minor pencil annotations in chapters 3 and 4, all problem sets and formula inserts intact.",
+      "price": "450.00",
+      "listing_type": "SALE",
+      "condition": "GOOD",
+      "rental_period": "",
+      "location": "Central Library",
+      "is_negotiable": false,
+      "is_urgent": false,
+      "status": "ACTIVE",
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "market.listing",
+    "pk": 3,
+    "fields": {
+      "seller": 3,
+      "category": 3,
+      "title": "Data Structures & Algorithms Handwritten Notes",
+      "slug": "dsa-handwritten-notes",
+      "description": "Comprehensive revision sheets covering Trees, Graphs, DP, and Greedy algorithms with clean color-coded diagrams and Big-O derivations.",
+      "price": "150.00",
+      "listing_type": "SALE",
+      "condition": "LIKE_NEW",
+      "rental_period": "",
+      "location": "Academic Block B",
+      "is_negotiable": false,
+      "is_urgent": false,
+      "status": "ACTIVE",
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "market.listing",
+    "pk": 4,
+    "fields": {
+      "seller": 4,
+      "category": 1,
+      "title": "Casio FX-991EX ClassWiz Scientific Calculator",
+      "slug": "casio-fx-991ex",
+      "description": "Permitted in university examinations. Solar cell and battery functional. Available for exam week or full semester rental.",
+      "price": "80.00",
+      "listing_type": "RENT",
+      "condition": "GOOD",
+      "rental_period": "SEMESTER",
+      "location": "Engineering Quad",
+      "is_negotiable": false,
+      "is_urgent": false,
+      "status": "ACTIVE",
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "market.listing",
+    "pk": 5,
+    "fields": {
+      "seller": 5,
+      "category": 1,
+      "title": "iPad Air 5th Gen (64GB, Wi-Fi, Space Gray)",
+      "slug": "ipad-air-5th-gen",
+      "description": "M1 chip with Apple Pencil 2 support. Always kept in tempered glass screen protector and magnetic case. Ideal for paperless notes.",
+      "price": "38500.00",
+      "listing_type": "SALE",
+      "condition": "LIKE_NEW",
+      "rental_period": "",
+      "location": "Main Campus Hostels",
+      "is_negotiable": false,
+      "is_urgent": false,
+      "status": "ACTIVE",
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "market.listing",
+    "pk": 6,
+    "fields": {
+      "seller": 6,
+      "category": 2,
+      "title": "Organic Chemistry: Principles & Mechanisms",
+      "slug": "organic-chemistry-mechanisms",
+      "description": "Karthekeyan & Mehta edition. Detailed reaction mechanisms and spectrometry problem sheets included.",
+      "price": "520.00",
+      "listing_type": "SALE",
+      "condition": "GOOD",
+      "rental_period": "",
+      "location": "Science Block A",
+      "is_negotiable": false,
+      "is_urgent": false,
+      "status": "ACTIVE",
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },  
+  {
+    "model": "market.listingimage",
+    "pk": 1,
+    "fields": {
+      "listing": 1,
+      "image": "listings/images/macbook.jpg",
+      "is_primary": true,
+      "alt_text": "MacBook Pro M1 open on desk",
+      "created_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "market.listingimage",
+    "pk": 2,
+    "fields": {
+      "listing": 2,
+      "image": "listings/images/calculus.jpg",
+      "is_primary": true,
+      "alt_text": "Stewart Calculus textbook cover",
+      "created_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "market.listingimage",
+    "pk": 3,
+    "fields": {
+      "listing": 3,
+      "image": "listings/images/dsa_notes.jpg",
+      "is_primary": true,
+      "alt_text": "Handwritten DSA notes notebook",
+      "created_at": "2026-01-01T00:00:00Z"
+    }
+  }
+]
+
+
