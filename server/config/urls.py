@@ -27,7 +27,7 @@ urlpatterns = [
     ),
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
-    path('user/', include('userops.urls')),
+    # path('user/', include('userops.urls')),
     path('', include('userops.urls')),
     path('', include('market.urls')),
 ]

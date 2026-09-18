@@ -8,7 +8,7 @@ urlpatterns = [
     path('products/', views.MarketView.as_view(), name='product_list'),
     path('products/', views.MarketView.as_view(), name='products'),
     path('products/<int:pk>/', views.ProductDetailView.as_view(),name='product_id'),
-    path('wishlist/<int:listing_id>/', views.toggle_wishlist, name="wishlist"),
+    
 
     # Create Product Listing
     path('create/', views.create_listing, name='create_listing'),

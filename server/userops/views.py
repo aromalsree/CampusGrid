@@ -12,6 +12,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.utils import timezone
 from datetime import timedelta
+from market.models import Wishlist, Listing
+from django.views.generic import ListView
 # html path to var
 register_template = 'user/register.html'
 login_template = 'user/login.html'
@@ -221,3 +223,65 @@ def admin_user_change_role(request, user_id):
         else:
             messages.error(request, "Invalid role or cannot change own role.")
     return redirect('admin_users')
+
+@login_required
+def wishlist_view(request):
+    """
+    Renders the saved wishlist page for the authenticated user.
+    """
+    # Use select_related and prefetch_related to optimize query count (N+1 prevention)
+    wishlist_items = (
+        Wishlist.objects.filter(user=request.user)
+        .select_related('listing', 'listing__category', 'listing__seller')
+        .prefetch_related('listing__images')
+    )
+
+    context = {
+        'wishlist_items': wishlist_items,
+    }
+    
+    return render(request, 'dashboard/wishlist.html', context)
+
+
+@login_required
+def toggle_wishlist(request, listing_id):
+    listing = get_object_or_404(Listing, id=listing_id)
+    
+    # Toggle wishlist state
+    wishlist_item, created = Wishlist.objects.get_or_create(
+        user=request.user,
+        listing=listing
+    )
+    
+    if not created:
+        wishlist_item.delete()
+        added = False
+    else:
+        added = True
+
+    # If called via JS AJAX
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'wishlisted': added})
+
+    # If clicked directly as an <a> link without AJAX, redirect back to the referer page
+    return redirect(request.META.get('HTTP_REFERER', 'market:product_list'))
+
+
+class UserListingsListView(LoginRequiredMixin, ListView):
+    """
+    Renders the current user's listings in a tabular dashboard view.
+    """
+    model = Listing
+    template_name = "dashboard/listings.html"
+    context_object_name = "user_listings"  # Matches {% for listing in user_listings %}
+    paginate_by = 15
+
+    def get_queryset(self):
+        # Filter listings created by request.user
+        # Optimize queries to prevent N+1 hits for categories and primary images
+        return (
+            Listing.objects.filter(seller=self.request.user)
+            .select_related("category")
+            .prefetch_related("images")
+            .order_by("-created_at")
+        )

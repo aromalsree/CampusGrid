@@ -35,7 +35,7 @@
                     {% if request.user.is_superuser or request.user.user_roles == 'ADMIN' %}
                     <a href="{% url 'admin_dashboard' %}" class="cg-nav-link {% if 'dashboard' in request.resolver_match.url_name %}active{% endif %}">Dashboard</a>
                     {% else %}
-                    <a href="{% url 'dashboard' %}" class="cg-nav-link {% if 'dashboard' in request.resolver_match.url_name %}active{% endif %}">Dashboard</a>
+                    <a href="{% url 'user_dashboard' %}" class="cg-nav-link {% if 'dashboard' in request.resolver_match.url_name %}active{% endif %}">Dashboard</a>
                     {% endif %}
                 
                     <!-- User Dropdown -->
