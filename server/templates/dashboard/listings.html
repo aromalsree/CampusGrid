@@ -18,7 +18,7 @@
                     <h1 style="font-size: 1.75rem;">My Active Listings</h1>
                     <p class="text-sm text-muted">Manage the items, hardware, and study kits you have posted</p>
                 </div>
-                <a href="/seller/products/add/" class="btn btn-primary btn-sm">+ Add Listing</a>
+                <a href="{% url 'market:seller_products_add' %}" class="btn btn-primary btn-sm">+ Add Listing</a>
             </div>
 
             {% if user_listings %}
@@ -85,7 +85,7 @@
                             </td>
                             <td style="padding: 1rem 1.25rem; text-align: right;">
                                 <div style="display: inline-flex; gap: 0.5rem; justify-content: flex-end;">
-                                    <a href="/products/{{ listing.slug|default:listing.pk }}/" class="btn btn-sm btn-outline">View</a>
+                                    <a href="{% url 'market:product_id' listing.id %}" class="btn btn-sm btn-outline">View</a>
                                 </div>
                             </td>
                         </tr>
