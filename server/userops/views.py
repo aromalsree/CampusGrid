@@ -99,8 +99,7 @@ class UserDashboard(LoginRequiredMixin, View):
         active_listings_count = Listing.objects.filter(seller=request.user, status=Listing.ListingStatus.ACTIVE).count()
         wishlist_count = Wishlist.objects.filter(user=request.user).count()
         inquiries_count = NeedRequest.objects.filter(requester=request.user, status=NeedRequest.Status.OPEN).count()
-        user_listings = recent_listings = Listing.objects.filter(seller=request.user).order_by('-created_at')[:3]
-        user_listings.ex
+        user_listings = Listing.objects.filter(seller=request.user).order_by('-created_at')[:3]
         context = {
         'active_listings_count': active_listings_count,
         'wishlist_count': wishlist_count,
