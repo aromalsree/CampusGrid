@@ -63,16 +63,66 @@
     } else {
       document.querySelectorAll('.scroll-reveal').forEach(el => el.classList.add('in-view'));
     }
-
-    // 5. Wishlist toggle micro-interaction
+// 5. Wishlist toggle micro-interaction (AJAX-Enabled)
     document.querySelectorAll('.cg-wishlist-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        btn.classList.toggle('active');
-        const isActive = btn.classList.contains('active');
-        window.showToast(isActive ? 'Saved to wishlist!' : 'Removed from wishlist', isActive ? 'success' : 'info');
+
+        const form = btn.closest('form');
+        const url = form ? form.action : btn.getAttribute('href');
+        
+        // Grab CSRF token safely
+        const csrfInput = form ? form.querySelector('[name=csrfmiddlewaretoken]') : null;
+        const csrfToken = csrfInput ? csrfInput.value : getCookie('csrftoken');
+
+        if (!url) return;
+
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRFToken': csrfToken,
+              'Content-Type': 'application/json',
+            },
+          });
+
+          // Redirect to login if user is unauthenticated
+          if (response.status === 401 || response.redirected) {
+            window.location.href = '/accounts/login/';
+            return;
+          }
+
+          // Safely check if Django returned JSON
+          const contentType = response.headers.get('content-type');
+          if (!contentType || !contentType.includes('application/json')) {
+            const textResponse = await response.text();
+            console.error('Expected JSON, but received HTML response:', textResponse);
+            window.showToast('Server error. Please try again.', 'danger');
+            return;
+          }
+
+          const data = await response.json();
+
+          if (data && data.status === 'success') {
+            const svgIcon = btn.querySelector('svg');
+
+            if (data.in_wishlist) {
+              btn.classList.add('active');
+              if (svgIcon) svgIcon.setAttribute('fill', 'currentColor');
+            } else {
+              btn.classList.remove('active');
+              if (svgIcon) svgIcon.setAttribute('fill', 'none');
+            }
+
+            window.showToast(data.message, data.in_wishlist ? 'success' : 'info');
+          }
+        } catch (error) {
+          console.error('Wishlist AJAX Error:', error);
+        }
       });
     });
+    
   });
 })();

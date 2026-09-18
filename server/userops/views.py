@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .form import LoginForm
@@ -15,6 +15,8 @@ from datetime import timedelta
 from market.models import Wishlist, Listing, NeedRequest
 from django.views.generic import ListView, UpdateView
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
 # html path to var
 register_template = 'user/register.html'
 login_template = 'user/login.html'
@@ -245,29 +247,32 @@ def wishlist_view(request):
 
 
 @login_required
+@require_POST
 def toggle_wishlist(request, listing_id):
     listing = get_object_or_404(Listing, id=listing_id)
     
     # Toggle wishlist state
-    wishlist_item, created = Wishlist.objects.get_or_create(
-        user=request.user,
-        listing=listing
-    )
+    wishlist_item = Wishlist.objects.filter(user=request.user, listing=listing).first()
     
-    if not created:
+    if wishlist_item:
         wishlist_item.delete()
-        added = False
+        in_wishlist = False
+        message = "Removed from wishlist"
     else:
-        added = True
+        Wishlist.objects.create(user=request.user, listing=listing)
+        in_wishlist = True
+        message = "Saved to wishlist!"
 
-    # If called via JS AJAX
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        return JsonResponse({'wishlisted': added})
+    # Handle AJAX requests dynamically
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        return JsonResponse({
+            "status": "success",
+            "in_wishlist": in_wishlist,
+            "message": message,
+        })
 
-    # If clicked directly as an <a> link without AJAX, redirect back to the referer page
-    return redirect(request.META.get('HTTP_REFERER', 'market:product_list'))
-
-
+    # Non-AJAX fallback (standard form submission redirect)
+    return redirect(request.META.get("HTTP_REFERER", "market:listings"))
 class UserListingsListView(LoginRequiredMixin, ListView):
     """
     Renders the current user's listings in a tabular dashboard view.
