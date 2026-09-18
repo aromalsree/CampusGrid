@@ -128,7 +128,7 @@
                     </div>
                     <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--cg-text-heading); margin-bottom: 0.5rem;">{{ item1.title }}</h3>
                     <div style="font-size: 1.35rem; font-weight: 800; color: var(--cg-emerald-500); font-variant-numeric: tabular-nums; margin-bottom: 0.75rem;">&#8377;{{ item1.price }}</div>
-                    <a href="/products/{{ item1.slug }}/" class="btn btn-sm btn-outline btn-full">View Details</a>
+                    <a href="{% url 'market:product_by_id' item1.id %}" class="btn btn-sm btn-outline btn-full">View Details</a>
                 {% else %}
                     <div style="padding: 2rem 1rem; color: var(--cg-text-muted);">
                         <p class="text-sm">Device A not selected</p>
@@ -150,7 +150,7 @@
                     </div>
                     <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--cg-text-heading); margin-bottom: 0.5rem;">{{ item2.title }}</h3>
                     <div style="font-size: 1.35rem; font-weight: 800; color: var(--cg-emerald-500); font-variant-numeric: tabular-nums; margin-bottom: 0.75rem;">&#8377;{{ item2.price }}</div>
-                    <a href="/products/{{ item2.slug }}/" class="btn btn-sm btn-outline btn-full">View Details</a>
+                    <a href="{% url 'market:product_by_id' item2.id %}" class="btn btn-sm btn-outline btn-full">View Details</a>
                 {% else %}
                     <div style="padding: 2rem 1rem; color: var(--cg-text-muted);">
                         <p class="text-sm">Device B not selected</p>
@@ -170,15 +170,23 @@
             </div>
         </div>
 
-        <div class="compare-spec-row">
-            <div class="compare-spec-label">Category</div>
-            <div class="compare-spec-val">
-                {{ item1.category.name|default:item1.category|default:"&mdash;" }}
-            </div>
-            <div class="compare-spec-val">
-                {{ item2.category.name|default:item2.category|default:"&mdash;" }}
-            </div>
-        </div>
+       <div class="compare-spec-row">
+    <div class="compare-spec-label">Category</div>
+    <div class="compare-spec-val">
+        {% if item1 and item1.category %}
+            {{ item1.category.name|default:item1.category }}
+        {% else %}
+            &mdash;
+        {% endif %}
+    </div>
+    <div class="compare-spec-val">
+        {% if item2 and item2.category %}
+            {{ item2.category.name|default:item2.category }}
+        {% else %}
+            &mdash;
+        {% endif %}
+    </div>
+</div>
 
         <div class="compare-spec-row">
             <div class="compare-spec-label">Condition Rating</div>

@@ -95,42 +95,17 @@ class AdminDashboard(LoginRequiredMixin ,View):
 class UserDashboard(LoginRequiredMixin, View):
     login_url="login"
     def get(self, request):
-        query = request.GET.get('q', '')
-        role_filter = request.GET.get('role', '')
-        status_filter = request.GET.get('status', '')
-
-        users = App_users.objects.all().order_by('-date_joined')
-
-        if query:
-            users = users.filter(
-                Q(username__icontains=query) |
-                Q(email__icontains=query) |
-                Q(first_name__icontains=query) |
-                Q(last_name__icontains=query) |
-                Q(institution__icontains=query)
-            )
-
-        if role_filter:
-            users = users.filter(user_roles=role_filter)
-
-        if status_filter == 'active':
-            users = users.filter(is_active=True)
-        elif status_filter == 'inactive':
-            users = users.filter(is_active=False)
-
-        # Pagination
-
-        paginator = Paginator(users, 25)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-
+        
+        active_listings_count = Listing.objects.filter(seller=request.user, status=Listing.ListingStatus.ACTIVE).count()
+        wishlist_count = Wishlist.objects.filter(user=request.user).count()
+        inquiries_count = NeedRequest.objects.filter(requester=request.user, status=NeedRequest.Status.OPEN).count()
+        user_listings = Listing.objects.filter(seller=request.user).order_by('-created_at')[:3]
         context = {
-            'page_obj': page_obj,
-            'query': query,
-            'role_filter': role_filter,
-            'status_filter': status_filter,
-            'total_count': users.count(),
-        }
+        'active_listings_count': active_listings_count,
+        'wishlist_count': wishlist_count,
+        'inquiries_count': inquiries_count,
+        'user_listings':user_listings
+    }
         return render(request, 'dashboard/dashboard.html', context)
 
 @login_required
@@ -227,7 +202,7 @@ def admin_user_change_role(request, user_id):
             messages.error(request, "Invalid role or cannot change own role.")
     return redirect('admin_users')
 
-@login_required
+@login_required(login_url="login")
 def wishlist_view(request):
     """
     Renders the saved wishlist page for the authenticated user.
@@ -246,7 +221,7 @@ def wishlist_view(request):
     return render(request, 'dashboard/wishlist.html', context)
 
 
-@login_required
+@login_required(login_url="login")
 @require_POST
 def toggle_wishlist(request, listing_id):
     listing = get_object_or_404(Listing, id=listing_id)
