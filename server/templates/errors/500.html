@@ -4,14 +4,18 @@
 {% block title %}500 — Server Error | CampusGrid{% endblock %}
 
 {% block content %}
-<div class="cg-container" style="padding: 5rem 1.5rem; text-align: center;">
-    <div style="font-size: 5rem; font-weight: 900; color: var(--cg-rose-600); line-height: 1; margin-bottom: 1rem;">
+<div class="cg-container" style="padding: 5rem 1.5rem; text-align: center; max-width: 680px; margin: 0 auto;">
+    <div style="font-family: var(--cg-font-serif); font-size: 7rem; font-weight: 800; color: var(--cg-terracotta); line-height: 1; margin-bottom: 0.5rem; letter-spacing: -0.04em;">
         500
     </div>
-    <h1 style="font-size: 2rem; margin-bottom: 0.75rem;">CampusGrid System Error</h1>
-    <p class="text-muted" style="max-width: 480px; margin: 0 auto 2rem; font-size: 1rem;">
-        Something unexpected occurred while processing your request. Our technical staff has been notified.
+    <span style="display: inline-block; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: var(--cg-terracotta); background: var(--cg-terracotta-light); padding: 0.35rem 0.85rem; border-radius: 999px; margin-bottom: 1.25rem;">Server Interruption</span>
+    <h1 style="font-family: var(--cg-font-serif); font-size: 2.25rem; font-weight: 700; color: var(--cg-forest); margin-bottom: 0.85rem; letter-spacing: -0.02em;">CampusGrid System Error</h1>
+    <p style="color: var(--cg-muted); max-width: 480px; margin: 0 auto 2.25rem; font-size: 1.05rem; line-height: 1.6;">
+        Something unexpected occurred while processing your campus request. Our technical staff has been notified and is on it.
     </p>
-    <a href="/" class="btn btn-primary">Return to Homepage</a>
+    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <a href="/" class="btn btn-primary" style="padding: 0.8rem 1.75rem;">Return to Homepage</a>
+        <a href="/contact/" class="btn btn-outline" style="padding: 0.8rem 1.75rem;">Contact Support</a>
+    </div>
 </div>
 {% endblock %}

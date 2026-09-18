@@ -4,17 +4,18 @@
 {% block title %}404 — Page Not Found | CampusGrid{% endblock %}
 
 {% block content %}
-<div class="cg-container" style="padding: 5rem 1.5rem; text-align: center;">
-    <div style="font-size: 5rem; font-weight: 900; color: var(--cg-emerald-600); line-height: 1; margin-bottom: 1rem;">
+<div class="cg-container" style="padding: 5rem 1.5rem; text-align: center; max-width: 680px; margin: 0 auto;">
+    <div style="font-family: var(--cg-font-serif); font-size: 7rem; font-weight: 800; color: var(--cg-sage); line-height: 1; margin-bottom: 0.5rem; letter-spacing: -0.04em;">
         404
     </div>
-    <h1 style="font-size: 2rem; margin-bottom: 0.75rem;">Campus Route Not Found</h1>
-    <p class="text-muted" style="max-width: 480px; margin: 0 auto 2rem; font-size: 1rem;">
-        The listing, category, or student resource you are trying to reach has either been completed or relocated.
+    <span style="display: inline-block; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: var(--cg-terracotta); background: var(--cg-terracotta-light); padding: 0.35rem 0.85rem; border-radius: 999px; margin-bottom: 1.25rem;">Route Not Found</span>
+    <h1 style="font-family: var(--cg-font-serif); font-size: 2.25rem; font-weight: 700; color: var(--cg-forest); margin-bottom: 0.85rem; letter-spacing: -0.02em;">Campus Route Not Found</h1>
+    <p style="color: var(--cg-muted); max-width: 480px; margin: 0 auto 2.25rem; font-size: 1.05rem; line-height: 1.6;">
+        The listing, category, or student resource you are trying to reach has either been completed, relocated, or never existed on this campus grid.
     </p>
-    <div style="display: flex; justify-content: center; gap: 1rem;">
-        <a href="/" class="btn btn-primary">Back to Home</a>
-        <a href="/products/" class="btn btn-outline">Explore Marketplace</a>
+    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <a href="/" class="btn btn-primary" style="padding: 0.8rem 1.75rem;">Return to Home</a>
+        <a href="/products/" class="btn btn-outline" style="padding: 0.8rem 1.75rem;">Explore Marketplace</a>
     </div>
 </div>
 {% endblock %}

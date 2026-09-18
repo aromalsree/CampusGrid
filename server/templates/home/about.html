@@ -3,167 +3,352 @@
 
 {% block title %}About CampusGrid | Multi-Campus P2P Marketplace{% endblock %}
 
-{% block meta_description %}Learn about CampusGrid - the multi-campus peer-to-peer marketplace and academic exchange platform built for students. Buy, sell, rent, and share academic resources with verified peers.{% endblock %}
+{% block meta_description %}Learn about CampusGrid — the multi-campus peer-to-peer marketplace and academic exchange platform built for students. Buy, sell, rent, and share academic resources with verified peers.{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/pages/home.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/about.css' %}">
 {% endblock %}
 
 {% block content %}
-<section class="page-hero" style="padding: 4rem 0 3rem; background: linear-gradient(180deg, var(--cg-bg-subtle) 0%, var(--cg-bg-page) 100%);">
+<!-- Hero Section -->
+<section class="about-hero">
     <div class="cg-container">
-        <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-            <h1 style="font-size: clamp(2.5rem, 5vw, 3.5rem); margin-bottom: 1rem;">About CampusGrid</h1>
-            <p class="text-lg" style="color: var(--cg-text-body); max-width: 600px; margin: 0 auto;">
-                Empowering student communities with a trusted, campus-first marketplace for buying, selling, renting, and sharing academic resources.
+        <div class="about-hero-inner">
+            <div class="cg-eyebrow" style="justify-content: center;">
+                <span class="cg-eyebrow-line"></span>
+                The Student Exchange Story
+            </div>
+            <h1 class="about-hero-title">
+                Built by students, for <em>authentic campus life.</em>
+            </h1>
+            <p class="about-hero-lead">
+                Empowering university communities with a trusted, campus-first marketplace for buying, selling, renting, and sharing academic resources.
             </p>
+
+            <!-- Key Platform Metrics Bar -->
+            <div class="about-metrics-bar">
+                <div class="about-metric-item">
+                    <div class="about-metric-number" style="color: var(--cg-sage);">100%</div>
+                    <div class="about-metric-label">Student Verified</div>
+                </div>
+                <div class="about-metric-item">
+                    <div class="about-metric-number" style="color: var(--cg-gold);">0%</div>
+                    <div class="about-metric-label">Platform Fees</div>
+                </div>
+                <div class="about-metric-item">
+                    <div class="about-metric-number" style="color: var(--cg-terracotta);">2 Min</div>
+                    <div class="about-metric-label">WhatsApp Handover</div>
+                </div>
+                <div class="about-metric-item">
+                    <div class="about-metric-number" style="color: var(--cg-forest);">5+</div>
+                    <div class="about-metric-label">Campus Categories</div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<section style="padding: 4rem 0;">
+<!-- Core Pillars Section -->
+<section style="padding: 5rem 0 2rem;">
     <div class="cg-container">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-bottom: 4rem;">
-            <article style="background: var(--cg-surface); border: 1px solid var(--cg-border); border-radius: var(--radius-xl); padding: 2rem; transition: var(--transition);">
-                <div style="width: 56px; height: 56px; background: var(--cg-emerald-100); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--cg-emerald-600);">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
-                </div>
-                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Campus-First Design</h3>
-                <p style="color: var(--cg-text-body); line-height: 1.7;">Built specifically for university ecosystems. Every feature considers campus logistics — handover spots, semester timelines, and student budgets.</p>
-            </article>
-
-            <article style="background: var(--cg-surface); border: 1px solid var(--cg-border); border-radius: var(--radius-xl); padding: 2rem; transition: var(--transition);">
-                <div style="width: 56px; height: 56px; background: var(--cg-primary-100); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--cg-navy-700);">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                    </svg>
-                </div>
-                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Verified Student Community</h3>
-                <p style="color: var(--cg-text-body); line-height: 1.7;">Academic email verification (.edu, .ac.in, .edu.in) creates a trusted network. Verified badges on profiles and listings reduce scams and build confidence.</p>
-            </article>
-
-            <article style="background: var(--cg-surface); border: 1px solid var(--cg-border); border-radius: var(--radius-xl); padding: 2rem; transition: var(--transition);">
-                <div style="width: 56px; height: 56px; background: var(--cg-amber-100); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--cg-amber-600);">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                </div>
-                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Multi-Modal Listings</h3>
-                <p style="color: var(--cg-text-body); line-height: 1.7;">Sell, rent, offer services, or share digital assets — all in one platform. Flexible pricing, rental periods, and condition ratings for every item type.</p>
-            </article>
-
-            <article style="background: var(--cg-surface); border: 1px solid var(--cg-border); border-radius: var(--radius-xl); padding: 2rem; transition: var(--transition);">
-                <div style="width: 56px; height: 56px; background: var(--cg-rose-100); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--cg-rose-600);">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.734-.988-2.386l-.548-.547z"></path>
-                    </svg>
-                </div>
-                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Smart Comparison Engine</h3>
-                <p style="color: var(--cg-text-body); line-height: 1.7;">Side-by-side hardware specs comparison for laptops, tablets, and electronics. Automatic winner highlighting for processor, RAM, storage, battery health, and price.</p>
-            </article>
-
-            <article style="background: var(--cg-surface); border: 1px solid var(--cg-border); border-radius: var(--radius-xl); padding: 2rem; transition: var(--transition);">
-                <div style="width: 56px; height: 56px; background: var(--cg-slate-100); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--cg-slate-600);">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                    </svg>
-                </div>
-                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Need Board (Reverse Marketplace)</h3>
-                <p style="color: var(--cg-text-body); line-height: 1.7;">Students post what they need with budgets. Automated matching notifies sellers when their listings match open requests — demand drives supply.</p>
-            </article>
-
-            <article style="background: var(--cg-surface); border: 1px solid var(--cg-border); border-radius: var(--radius-xl); padding: 2rem; transition: var(--transition);">
-                <div style="width: 56px; height: 56px; background: var(--cg-emerald-50); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--cg-emerald-600);">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                    </svg>
-                </div>
-                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">WhatsApp Handover Integration</h3>
-                <p style="color: var(--cg-text-body); line-height: 1.7;">One-click WhatsApp deep links pre-filled with item details, price, and campus meetup notes. Secure peer-to-peer coordination without exposing contact info.</p>
-            </article>
+        <div class="about-section-head">
+            <span class="cg-section-label" style="color: var(--cg-sage);">CORE ARCHITECTURE</span>
+            <h2 class="about-section-title">Engineered for Campus Ecosystems</h2>
+            <p class="about-section-desc">Generic classifieds fail students because they ignore campus logistics. Every CampusGrid capability was conceived around collegiate realities.</p>
         </div>
 
-        <div style="background: linear-gradient(135deg, var(--cg-navy-900) 0%, var(--cg-navy-800) 100%); border-radius: var(--radius-xl); padding: 3rem; margin-bottom: 4rem; color: #FFFFFF;">
-            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-                <h2 style="font-size: clamp(1.75rem, 3.5vw, 2.25rem); margin-bottom: 1rem;">Why CampusGrid?</h2>
-                <p style="font-size: 1.125rem; color: var(--cg-slate-300); line-height: 1.8; margin-bottom: 2rem;">
-                    Student marketplaces on WhatsApp, Discord, and Facebook Groups are chaotic, unsafe, and lack accountability. CampusGrid brings structure, trust, and campus-specific features to peer-to-peer exchange.
-                </p>
-                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
-                    <span style="background: rgba(16, 185, 129, 0.2); color: var(--cg-emerald-400); padding: 0.5rem 1rem; border-radius: var(--radius-full); font-size: 0.875rem; font-weight: 500;">Zero platform fees for students</span>
-                    <span style="background: rgba(59, 130, 246, 0.2); color: var(--cg-sky-400); padding: 0.5rem 1rem; border-radius: var(--radius-full); font-size: 0.875rem; font-weight: 500;">Academic email verification</span>
-                    <span style="background: rgba(245, 158, 11, 0.2); color: var(--cg-amber-400); padding: 0.5rem 1rem; border-radius: var(--radius-full); font-size: 0.875rem; font-weight: 500;">Semester-aware rental cycles</span>
-                    <span style="background: rgba(244, 63, 94, 0.2); color: var(--cg-rose-400); padding: 0.5rem 1rem; border-radius: var(--radius-full); font-size: 0.875rem; font-weight: 500;">Protected digital downloads</span>
+        <div class="about-pillars-grid">
+            <!-- Pillar 1 -->
+            <article class="about-pillar-card">
+                <div class="about-pillar-top">
+                    <div class="about-pillar-icon" style="background: var(--cg-sage-light); color: var(--cg-sage-dark);">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <span class="about-pillar-number">01</span>
+                </div>
+                <h3 class="about-pillar-title">Campus-First Design</h3>
+                <p class="about-pillar-body">Built specifically for university ecosystems. Every feature accommodates campus logistics — recognizable handover spots, semester timelines, and student budgets.</p>
+            </article>
+
+            <!-- Pillar 2 -->
+            <article class="about-pillar-card">
+                <div class="about-pillar-top">
+                    <div class="about-pillar-icon" style="background: var(--cg-gold-light); color: #8A6517;">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <span class="about-pillar-number">02</span>
+                </div>
+                <h3 class="about-pillar-title">Verified Student Trust</h3>
+                <p class="about-pillar-body">Academic email validation (.edu, .ac.in, .edu.in) establishes an authenticated collegiate directory. Profile badges ensure you always know you are dealing with a real peer.</p>
+            </article>
+
+            <!-- Pillar 3 -->
+            <article class="about-pillar-card">
+                <div class="about-pillar-top">
+                    <div class="about-pillar-icon" style="background: var(--cg-terracotta-light); color: var(--cg-terracotta-dark);">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <span class="about-pillar-number">03</span>
+                </div>
+                <h3 class="about-pillar-title">Multi-Modal Commerce</h3>
+                <p class="about-pillar-body">Buy outright, rent for exam season, or share digital course material. Flexible rental durations (daily, weekly, semesterly) save thousands compared to new retail.</p>
+            </article>
+
+            <!-- Pillar 4 -->
+            <article class="about-pillar-card">
+                <div class="about-pillar-top">
+                    <div class="about-pillar-icon" style="background: var(--cg-cream); color: var(--cg-forest); border: 1px solid var(--cg-border);">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.734-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <span class="about-pillar-number">04</span>
+                </div>
+                <h3 class="about-pillar-title">Smart Spec Comparison</h3>
+                <p class="about-pillar-body">Side-by-side hardware benchmarking for laptops, tablets, and lab equipment. Automatic highlight badges for processor, RAM, and storage take the guesswork out of student tech.</p>
+            </article>
+
+            <!-- Pillar 5 -->
+            <article class="about-pillar-card">
+                <div class="about-pillar-top">
+                    <div class="about-pillar-icon" style="background: var(--cg-sand); color: var(--cg-forest);">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                    </div>
+                    <span class="about-pillar-number">05</span>
+                </div>
+                <h3 class="about-pillar-title">Reverse Need Board</h3>
+                <p class="about-pillar-body">Can't find what you need? Post a request with your budget on the Need Board. Sellers on campus receive notifications when their listings match student demands.</p>
+            </article>
+
+            <!-- Pillar 6 -->
+            <article class="about-pillar-card">
+                <div class="about-pillar-top">
+                    <div class="about-pillar-icon" style="background: var(--cg-sage-light); color: var(--cg-sage);">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                    </div>
+                    <span class="about-pillar-number">06</span>
+                </div>
+                <h3 class="about-pillar-title">Direct WhatsApp Handover</h3>
+                <p class="about-pillar-body">One-click WhatsApp deep links pre-filled with listing title, agreed price, and campus meeting points. Frictionless, instant peer coordination without sharing personal contact cards.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works / Campus Journey Section -->
+<section class="about-journey-section">
+    <div class="cg-container">
+        <div class="about-section-head" style="margin-bottom: 3rem;">
+            <span class="cg-section-label" style="color: var(--cg-terracotta);">CAMPUS WORKFLOW</span>
+            <h2 class="about-section-title">How Peer Exchange Works</h2>
+            <p class="about-section-desc">From registration to physical campus meetup in four clear, accountable steps.</p>
+        </div>
+
+        <div class="about-journey-grid">
+            <div class="about-step-card">
+                <div class="about-step-badge">1</div>
+                <h3 class="about-step-title">Academic Sign-In</h3>
+                <p class="about-step-desc">Create an account with your official university email to unlock verified badges and campus-filtered listings.</p>
+            </div>
+            <div class="about-step-card">
+                <div class="about-step-badge">2</div>
+                <h3 class="about-step-title">Browse or Request</h3>
+                <p class="about-step-desc">Search textbook notes, lab coats, and hardware — or post an immediate request onto the Need Board.</p>
+            </div>
+            <div class="about-step-card">
+                <div class="about-step-badge">3</div>
+                <h3 class="about-step-title">Evaluate & Compare</h3>
+                <p class="about-step-desc">Inspect condition ratings, seller reputations, and side-by-side hardware spec comparisons before committing.</p>
+            </div>
+            <div class="about-step-card">
+                <div class="about-step-badge">4</div>
+                <h3 class="about-step-title">Campus Handover</h3>
+                <p class="about-step-desc">Launch pre-filled WhatsApp chat and meet right at the library, student union, or dorm courtyard with zero shipping delay.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- The Campus Advantage: Dark Moss Card -->
+<section style="padding: 1rem 0 4rem;">
+    <div class="cg-container">
+        <div class="about-advantage-banner">
+            <div class="about-advantage-inner">
+                <div style="text-align: center; max-width: 720px; margin: 0 auto;">
+                    <span class="cg-section-label" style="color: var(--cg-gold);">WHY CAMPUSGRID MATTERS</span>
+                    <h2 style="font-family: var(--cg-font-serif); font-size: clamp(2rem, 3.8vw, 2.6rem); color: #FFFFFF; margin-bottom: 1rem; letter-spacing: -0.02em;">
+                        Unverified Social Feeds vs. CampusGrid
+                    </h2>
+                    <p style="color: #D3E2DA; font-size: 1.05rem; line-height: 1.7;">
+                        Trading resources on WhatsApp groups and Craigslist exposes students to ghosting, inflated pricing, and security risks. We built a protected space dedicated to university life.
+                    </p>
+                </div>
+
+                <div class="about-comparison-grid">
+                    <!-- The Old Way -->
+                    <div class="about-comp-col">
+                        <div class="about-comp-header">
+                            <span class="about-comp-badge" style="background: rgba(201, 111, 82, 0.25); color: #FFA98F; border: 1px solid rgba(201, 111, 82, 0.4);">The Old Way</span>
+                            <span style="font-size: 0.95rem; font-weight: 600; color: #FFFFFF;">Ad-hoc Social Groups</span>
+                        </div>
+                        <ul class="about-comp-list">
+                            <li>
+                                <svg width="18" height="18" fill="none" stroke="#FFA98F" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                <span>Anonymous buyers and non-students posing scam risks</span>
+                            </li>
+                            <li>
+                                <svg width="18" height="18" fill="none" stroke="#FFA98F" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                <span>Endless scrolling through chaotic, unindexed chat threads</span>
+                            </li>
+                            <li>
+                                <svg width="18" height="18" fill="none" stroke="#FFA98F" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                <span>High middleman marketplace commissions and postal fees</span>
+                            </li>
+                            <li>
+                                <svg width="18" height="18" fill="none" stroke="#FFA98F" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                <span>No structured rental terms or hardware spec comparisons</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- The CampusGrid Way -->
+                    <div class="about-comp-col highlight">
+                        <div class="about-comp-header">
+                            <span class="about-comp-badge" style="background: var(--cg-sage); color: #FFFFFF;">CampusGrid Standard</span>
+                            <span style="font-size: 0.95rem; font-weight: 700; color: #FFFFFF;">Verified Campus Network</span>
+                        </div>
+                        <ul class="about-comp-list">
+                            <li>
+                                <svg width="18" height="18" fill="none" stroke="#91D4B0" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                                <span>100% Academic email verification protects your peer community</span>
+                            </li>
+                            <li>
+                                <svg width="18" height="18" fill="none" stroke="#91D4B0" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                                <span>Faceted category search, price filters, and instant Need Board</span>
+                            </li>
+                            <li>
+                                <svg width="18" height="18" fill="none" stroke="#91D4B0" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                                <span>Zero platform fees — student keeps 100% of the sale value</span>
+                            </li>
+                            <li>
+                                <svg width="18" height="18" fill="none" stroke="#91D4B0" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                                <span>Instant WhatsApp deep-link handover with safety guidelines</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div style="max-width: 800px; margin: 0 auto;">
-            <h2 style="font-size: 1.75rem; text-align: center; margin-bottom: 2rem;">Our Mission</h2>
-            <div style="background: var(--cg-surface); border: 1px solid var(--cg-border); border-radius: var(--radius-xl); padding: 2.5rem;">
-                <p style="font-size: 1.1rem; color: var(--cg-slate-700); line-height: 1.8; margin-bottom: 1.5rem;">
-                    CampusGrid was built to solve a simple problem: students need a better way to exchange resources within their campus community. Whether it's a graduating senior passing down textbooks, a CS student selling their laptop, or a freshman needing a calculator for exams — the current solutions are fragmented, unsafe, and inefficient.
+        <!-- Mission & Sustainable Campus Cycle -->
+        <div class="about-mission-wrapper">
+            <div class="about-quote-box">
+                <div class="about-quote-mark">&ldquo;</div>
+                <p class="about-quote-text">
+                    Campus life moves in semesters, not financial quarters. Student commerce must reflect that cadence — keeping academic gear circulating affordably between graduating seniors and incoming freshmen.
                 </p>
-                <p style="font-size: 1.1rem; color: var(--cg-slate-700); line-height: 1.8; margin-bottom: 1.5rem;">
-                    We believe that by combining academic verification, campus-aware logistics, and purpose-built tools (like hardware comparison and need-based matching), we can create a marketplace that truly serves students — not advertisers, not resellers, but the campus community itself.
+                <div class="about-quote-author">
+                    <div class="about-author-avatar">CG</div>
+                    <div>
+                        <div style="font-weight: 700; color: var(--cg-forest); font-size: 0.95rem;">The CampusGrid Initiative</div>
+                        <div style="color: var(--cg-muted); font-size: 0.82rem;">Open Collegiate P2P Network</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-mission-narrative">
+                <span class="cg-section-label" style="color: var(--cg-sage);">OUR PURPOSE</span>
+                <h2>Championing the Circular Campus Economy</h2>
+                <p>
+                    Every semester, thousands of dollars worth of functional graphing calculators, textbooks, lab coats, and monitors end up gathering dust in dorm closets or thrown away during graduation move-out. Meanwhile, incoming students face escalating book bills and expensive tech requirements.
                 </p>
-                <p style="font-size: 1.1rem; color: var(--cg-slate-700); line-height: 1.8;">
-                    CampusGrid is open-source, student-focused, and built with modern web technologies. Join us in building the future of campus commerce.
+                <p>
+                    CampusGrid bridges this divide. By making local student reuse effortless, transparent, and direct, we empower universities to foster circular sustainability, reduce e-waste, and significantly lighten the financial burden of higher education.
                 </p>
             </div>
         </div>
     </div>
 </section>
 
+<!-- FAQ Accordion Section -->
 <section class="about-faq-section" aria-labelledby="faq-heading">
     <div class="cg-container about-faq-layout">
         <div class="about-faq-intro">
-            <span class="about-section-eyebrow">Common questions</span>
-            <h2 id="faq-heading">Everything you need to know.</h2>
-            <p>Still have a question? Our community is here to help you get started with confidence.</p>
-            <a href="{% url 'contact' %}" class="btn btn-outline">Ask the CampusGrid team</a>
+            <span class="cg-section-label" style="color: var(--cg-terracotta);">HELP & CLARITY</span>
+            <h2 id="faq-heading">Frequently Asked Questions</h2>
+            <p>Everything you need to know about trading, renting, and verifying your identity on CampusGrid.</p>
+            <a href="{% url 'contact' %}" class="btn btn-outline" style="background: var(--cg-surface);">Ask the CampusGrid Team</a>
         </div>
 
         <div class="about-faq-list">
-            <details>
+            <details class="about-faq-item">
                 <summary>Who can use CampusGrid?</summary>
-                <p>CampusGrid is designed for verified students and staff. Use your academic email when creating an account so your campus identity can be recognized.</p>
+                <div class="about-faq-content">
+                    <p>CampusGrid is engineered primarily for verified students, researchers, and campus faculty. Registering with an institutional email (.edu, .ac.in, .edu.in) awards you a Verified Student badge and full privileges to list, rent, and coordinate peer handovers.</p>
+                </div>
             </details>
-            <details>
-                <summary>Does CampusGrid charge platform fees?</summary>
-                <p>No. CampusGrid does not charge students platform fees for buying, selling, renting, or sharing resources with peers.</p>
+
+            <details class="about-faq-item">
+                <summary>Does CampusGrid charge any platform fees?</summary>
+                <div class="about-faq-content">
+                    <p>No. CampusGrid never charges transaction fees or takes a commission cut from student exchanges. 100% of the proceeds go directly from peer to peer during physical handover.</p>
+                </div>
             </details>
-            <details>
-                <summary>How do I stay safe when meeting another student?</summary>
-                <p>Review profiles and listing details before agreeing to a handover, use busy campus locations, and never share passwords or payment details unnecessarily.</p>
+
+            <details class="about-faq-item">
+                <summary>How do I stay safe during campus meetups?</summary>
+                <div class="about-faq-content">
+                    <p>Always arrange handovers in busy, well-lit university locations such as the central library foyer, student center, campus cafeteria, or academic department lounges. Inspect all items thoroughly before completing the transaction, and use our pre-filled WhatsApp handover notes for a documented interaction trail.</p>
+                </div>
             </details>
-            <details>
-                <summary>Can I rent items instead of buying them?</summary>
-                <p>Yes. Listings can include rental periods such as a week, month, or semester, making short-term access to equipment more practical.</p>
+
+            <details class="about-faq-item">
+                <summary>Can I rent items instead of buying them outright?</summary>
+                <div class="about-faq-content">
+                    <p>Yes. Sellers can configure flexible rental pricing across daily, weekly, or semester-long periods. This makes short-term access to lab equipment, reference textbooks, or specialized project components accessible without paying full purchase prices.</p>
+                </div>
             </details>
-            <details>
-                <summary>What can I list on the marketplace?</summary>
-                <p>You can list electronics, textbooks, academic notes, lab gear, room essentials, bicycles, and other useful campus resources.</p>
+
+            <details class="about-faq-item">
+                <summary>What items are permitted on the marketplace?</summary>
+                <div class="about-faq-content">
+                    <p>Approved items include textbooks, study notes, graphing calculators, lab coats, laptops, monitors, dorm furniture, campus bicycles, and academic electronics. Dangerous goods, non-academic contraband, and prohibited substances are strictly disallowed.</p>
+                </div>
             </details>
-            <details>
-                <summary>How can I report a problem or ask for help?</summary>
-                <p>Visit our Contact page and send the team a message with the relevant listing or account details. We will follow up as soon as possible.</p>
+
+            <details class="about-faq-item">
+                <summary>How do I report an issue or fraudulent listing?</summary>
+                <div class="about-faq-content">
+                    <p>You can visit our Contact page or flag the listing directly. Our administration team continuously monitors reported items and takes immediate action against fraudulent or non-compliant accounts.</p>
+                </div>
             </details>
         </div>
     </div>
 </section>
 
-<section style="padding: 4rem 0; background: var(--cg-bg-subtle);">
-    <div class="cg-container" style="text-align: center;">
-        <h2 style="font-size: 1.75rem; margin-bottom: 1rem;">Ready to Join?</h2>
-        <p style="color: var(--cg-text-body); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-            Create your account with your academic email and start buying, selling, and connecting with peers on your campus today.
-        </p>
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
-            <a href="/register/" class="btn btn-primary btn-lg">Get Started Free</a>
-            <a href="/products/" class="btn btn-outline btn-lg">Browse Marketplace</a>
+<!-- Bottom Call to Action -->
+<section class="about-cta-section">
+    <div class="cg-container">
+        <div class="about-cta-card">
+            <span class="cg-section-label" style="color: var(--cg-sage-dark); margin-bottom: 0.5rem;">JOIN THE NETWORK</span>
+            <h2>Ready to Join Your Campus Grid?</h2>
+            <p>
+                Create your account with your academic email and start buying, selling, and exchanging resources with peers on your campus today.
+            </p>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
+                <a href="/register/" class="btn btn-primary" style="padding: 0.85rem 2rem; font-size: 1.05rem;">Get Started Free</a>
+                <a href="/products/" class="btn btn-outline" style="padding: 0.85rem 2rem; font-size: 1.05rem; background: var(--cg-surface);">Browse Marketplace</a>
+            </div>
         </div>
     </div>
 </section>

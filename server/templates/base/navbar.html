@@ -11,9 +11,8 @@
             <!-- Primary Navigation Links -->
             <nav class="cg-nav-links" aria-label="Primary Navigation">
                 <a href="{% url 'home' %}" class="cg-nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
-                <a href="{% url 'market:product_list' %}" class="cg-nav-link {% if request.resolver_match.app_name == 'market' and 'request' not in request.resolver_match.url_name %}active{% endif %}">Marketplace</a>
-               
-                <a href="{% url 'market:need_board' %}" class="cg-nav-link {% if request.resolver_match.url_name == 'need_board' or 'request' in request.resolver_match.url_name %}active{% endif %}">Need Board</a>
+                <a href="{% url 'market:product_list' %}" class="cg-nav-link {% if request.resolver_match.app_name == 'market' and 'need' not in request.resolver_match.url_name and 'request' not in request.resolver_match.url_name %}active{% endif %}">Marketplace</a>
+                <a href="{% url 'market:need_board' %}" class="cg-nav-link {% if 'need' in request.resolver_match.url_name or 'request' in request.resolver_match.url_name %}active{% endif %}">Need Board</a>
                 <a href="{% url 'about' %}" class="cg-nav-link {% if 'about' in request.resolver_match.url_name %}active{% endif %}">About</a>
                 <a href="{% url 'contact' %}" class="cg-nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
             </nav>
@@ -40,7 +39,7 @@
                 
                     <!-- User Dropdown -->
                     <div class="user-dropdown">
-                        <button class="btn btn-sm btn-outline dropdown-toggle" type="button">
+                        <button class="btn btn-sm btn-outline dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">
                             <span class="cg-seller-avatar-sm" style="margin-right: 0.375rem; width: 20px; height: 20px; font-size: 0.625rem;">{{ request.user.username|slice:":1"|upper }}</span>
                             {{ request.user.username|default:"Profile" }}
                             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-left: 0.375rem;">

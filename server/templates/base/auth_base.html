@@ -8,10 +8,10 @@
     <meta name="description" content="{% block meta_description %}CampusGrid — Multi-Campus P2P Marketplace & Academic Exchange for Students{% endblock %}">
     <title>{% block title %}CampusGrid — Student Marketplace{% endblock %}</title>
 
-    <!-- Google Fonts: Inter, Plus Jakarta Sans & Space Grotesk for premium feel -->
+    <!-- Google Fonts: DM Sans & Playfair Display (CampusGrid Design System) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 
     <!-- Global Design System & Component Styles -->
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
@@ -20,12 +20,6 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body class="auth-body">
-    <!-- Home Link / Logo in top-left -->
-    <a href="/" class="auth-home-link" aria-label="Back to CampusGrid Home">
-        <img src="{% static 'images/icon.png' %}" class="auth-home-logo" alt="">
-        <span class="auth-home-text">CampusGrid</span>
-    </a>
-
     <!-- Global Alert / Messages System -->
     {% include "base/messages.html" %}
 

@@ -6,150 +6,523 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/pages/marketplace.css' %}">
 <style>
+/* ==========================================================================
+   CampusGrid — Student Need Board (Editorial Reverse Marketplace)
+   ========================================================================== */
+
+/* Hero Banner */
 .need-board-hero {
-    background: var(--cg-surface);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(247, 243, 234, 0.85) 100%);
     border: 1px solid var(--cg-border);
     border-radius: var(--radius-2xl);
-    padding: 2.25rem;
+    padding: 2.5rem;
     margin-bottom: 2rem;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 4px 24px rgba(41, 53, 47, 0.04);
     position: relative;
     overflow: hidden;
 }
 .need-board-hero::before {
     content: '';
     position: absolute;
-    top: 0;
-    right: 0;
-    width: 320px;
-    height: 100%;
-    background: radial-gradient(circle at right, rgba(59, 130, 246, 0.08), transparent 70%);
+    top: -60px;
+    right: -60px;
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle, rgba(198, 161, 91, 0.16) 0%, rgba(85, 122, 104, 0.06) 50%, transparent 70%);
     pointer-events: none;
+    border-radius: 50%;
 }
-.need-stats-row {
-    display: flex;
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
+.need-board-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px;
+    left: 15%;
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, rgba(201, 111, 82, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+    border-radius: 50%;
 }
-.need-stat-pill {
-    background: var(--cg-bg-subtle);
-    border: 1px solid var(--cg-border-light);
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+.hero-top-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.32rem 0.85rem;
+    background: var(--cg-sage-light);
+    color: var(--cg-sage-dark);
+    border-radius: var(--radius-full);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.75rem;
+    border: 1px solid rgba(85, 122, 104, 0.2);
+}
+.hero-badge-pulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--cg-sage);
+    box-shadow: 0 0 0 3px rgba(85, 122, 104, 0.25);
+    animation: pulseGlow 2.2s infinite;
+}
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 rgba(85, 122, 104, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(85, 122, 104, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(85, 122, 104, 0); }
+}
+.hero-title {
+    font-family: var(--font-heading);
+    font-size: 2.35rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--cg-text-heading);
+    margin-bottom: 0.65rem;
+    letter-spacing: -0.015em;
+}
+.hero-desc {
+    font-family: var(--font-sans);
+    font-size: 0.96rem;
+    color: var(--cg-text-body);
+    line-height: 1.65;
+    max-width: 620px;
+    margin-bottom: 0;
+}
+.hero-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.65rem;
+    border-radius: var(--radius-md);
+    background: var(--cg-sage);
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(85, 122, 104, 0.25);
+    transition: all var(--speed-normal) ease;
+    border: 1px solid var(--cg-sage);
+    white-space: nowrap;
+}
+.hero-cta-btn:hover {
+    background: var(--cg-sage-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(63, 98, 83, 0.32);
+    color: #FFFFFF;
+}
+
+/* Metric Cards Grid */
+.need-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    margin-top: 2rem;
+    position: relative;
+    z-index: 1;
+}
+@media (max-width: 768px) {
+    .need-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 0.85rem;
+    }
+}
+.need-stat-card {
+    background: var(--cg-white);
+    border: 1px solid var(--cg-border);
     border-radius: var(--radius-lg);
-    padding: 0.625rem 1.125rem;
+    padding: 1.15rem 1.35rem;
     display: flex;
     align-items: center;
-    gap: 0.625rem;
+    gap: 1rem;
+    box-shadow: 0 2px 8px rgba(41, 53, 47, 0.03);
+    transition: transform var(--speed-fast) ease, box-shadow var(--speed-fast) ease, border-color var(--speed-fast) ease;
+}
+.need-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(85, 122, 104, 0.35);
+}
+.stat-icon-wrap {
+    width: 46px;
+    height: 46px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+.stat-icon-sage {
+    background: var(--cg-sage-light);
+    color: var(--cg-sage-dark);
+}
+.stat-icon-terracotta {
+    background: var(--cg-terracotta-light);
+    color: var(--cg-terracotta);
+}
+.stat-icon-gold {
+    background: var(--cg-gold-light);
+    color: var(--cg-gold);
 }
 .need-stat-val {
-    font-size: 1.25rem;
-    font-weight: 800;
+    font-family: var(--font-heading);
+    font-size: 1.55rem;
+    font-weight: 700;
+    line-height: 1.1;
     color: var(--cg-text-heading);
     font-variant-numeric: tabular-nums;
 }
-.need-stat-lbl {
-    font-size: 0.8125rem;
-    color: var(--cg-text-muted);
+.need-stat-val.val-urgent {
+    color: var(--cg-terracotta);
 }
-.need-filter-bar {
+.need-stat-val.val-fulfilled {
+    color: var(--cg-sage-dark);
+}
+.need-stat-lbl {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--cg-text-soft);
+    margin-top: 0.15rem;
+}
+
+/* Filter Dock */
+.need-filter-dock {
+    background: var(--cg-white);
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-xl);
+    padding: 1.15rem 1.35rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(41, 53, 47, 0.03);
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
     gap: 1rem;
-    margin-bottom: 1.75rem;
+}
+.need-tabs-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
     flex-wrap: wrap;
 }
 .need-tabs-strip {
     display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+    gap: 0.45rem;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+.need-tabs-strip::-webkit-scrollbar {
+    display: none;
 }
 .need-tab-btn {
     padding: 0.5rem 1rem;
     border-radius: var(--radius-full);
-    font-size: 0.875rem;
+    font-size: 0.84rem;
     font-weight: 600;
     text-decoration: none;
-    background: var(--cg-surface);
-    border: 1px solid var(--cg-border);
-    color: var(--cg-text-body);
+    background: var(--cg-cream);
+    border: 1px solid var(--cg-border-soft);
+    color: var(--cg-text-soft);
     transition: all var(--speed-fast) ease;
     display: inline-flex;
     align-items: center;
-    gap: 0.375rem;
+    gap: 0.35rem;
+    white-space: nowrap;
 }
 .need-tab-btn:hover {
-    border-color: var(--cg-blue-500);
-    color: var(--cg-blue-600);
+    background: var(--cg-white);
+    border-color: var(--cg-sage);
+    color: var(--cg-sage-dark);
 }
 .need-tab-btn.active {
-    background: var(--cg-text-heading);
-    color: var(--cg-surface);
-    border-color: var(--cg-text-heading);
+    background: var(--cg-sage);
+    color: #FFFFFF;
+    border-color: var(--cg-sage);
+    box-shadow: 0 2px 10px rgba(85, 122, 104, 0.28);
 }
-.need-card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 3rem;
+
+/* Search & Category Filter Form */
+.need-search-form {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+@media (max-width: 768px) {
+    .need-search-form {
+        width: 100%;
+    }
+    .need-search-form > * {
+        flex: 1 1 auto;
+    }
+}
+.filter-select {
+    padding: 0.5rem 2.2rem 0.5rem 0.85rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    background: var(--cg-cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2359665F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 0.75rem center;
+    color: var(--cg-text-heading);
+    border: 1px solid var(--cg-border);
+    cursor: pointer;
+    transition: all var(--speed-fast) ease;
+    appearance: none;
+    -webkit-appearance: none;
+}
+.filter-select:focus {
+    outline: none;
+    border-color: var(--cg-sage);
+    background-color: var(--cg-white);
+    box-shadow: 0 0 0 3px rgba(85, 122, 104, 0.12);
+}
+.filter-search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.filter-search-input {
+    padding: 0.5rem 0.85rem 0.5rem 2.2rem;
+    font-size: 0.85rem;
+    border-radius: var(--radius-md);
+    background: var(--cg-cream);
+    color: var(--cg-text-heading);
+    border: 1px solid var(--cg-border);
+    width: 210px;
+    transition: all var(--speed-fast) ease;
+}
+.filter-search-input:focus {
+    outline: none;
+    border-color: var(--cg-sage);
+    background: var(--cg-white);
+    width: 240px;
+    box-shadow: 0 0 0 3px rgba(85, 122, 104, 0.12);
 }
 @media (max-width: 640px) {
+    .filter-search-input, .filter-search-input:focus {
+        width: 100%;
+    }
+}
+.filter-search-icon {
+    position: absolute;
+    left: 0.75rem;
+    color: var(--cg-muted);
+    pointer-events: none;
+}
+
+/* Need Request Cards Grid */
+.need-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3.5rem;
+}
+@media (max-width: 680px) {
     .need-card-grid {
         grid-template-columns: 1fr;
     }
 }
+
+/* Need Request Card */
 .need-card {
-    background: var(--cg-surface);
+    background: var(--cg-white);
     border: 1px solid var(--cg-border);
     border-radius: var(--radius-xl);
-    padding: 1.5rem;
+    padding: 1.65rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: transform var(--speed-normal) ease, box-shadow var(--speed-normal) ease, border-color var(--speed-normal) ease;
-    box-shadow: var(--shadow-sm);
+    transition: transform var(--speed-normal) cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow var(--speed-normal) cubic-bezier(0.2, 0.7, 0.2, 1), border-color var(--speed-normal) ease;
+    box-shadow: 0 2px 10px rgba(41, 53, 47, 0.03);
     position: relative;
+    overflow: hidden;
 }
 .need-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--cg-border-focus);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(41, 53, 47, 0.08);
+    border-color: rgba(85, 122, 104, 0.45);
 }
 .need-card.urgent-card {
-    border-left: 4px solid var(--cg-rose-500);
+    border-top: 3.5px solid var(--cg-terracotta);
 }
-.need-card-title {
-    font-size: 1.2rem;
+.need-card.urgent-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 90px;
+    height: 90px;
+    background: radial-gradient(circle at top right, rgba(201, 111, 82, 0.14), transparent 70%);
+    pointer-events: none;
+}
+
+/* Card Header Row */
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.65rem;
+    margin-bottom: 0.85rem;
+}
+.badge-stack {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.budget-pill {
+    padding: 0.3rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.825rem;
     font-weight: 700;
-    margin: 0.75rem 0 0.35rem;
-    color: var(--cg-text-heading);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+.budget-pill.budget-set {
+    background: rgba(85, 122, 104, 0.1);
+    color: var(--cg-sage-dark);
+    border: 1px solid rgba(85, 122, 104, 0.25);
+}
+.budget-pill.budget-flexible {
+    background: var(--cg-cream);
+    color: var(--cg-muted);
+    font-weight: 500;
+    font-size: 0.76rem;
+    border: 1px solid var(--cg-border-soft);
+}
+
+/* Card Title */
+.need-card-title {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
     line-height: 1.35;
+    margin: 0.6rem 0 0.45rem;
+    color: var(--cg-text-heading);
+    letter-spacing: -0.01em;
 }
 .need-card-title a {
     color: inherit;
     text-decoration: none;
+    transition: color var(--speed-fast) ease;
 }
 .need-card-title a:hover {
-    color: var(--cg-blue-600);
+    color: var(--cg-sage-dark);
 }
+
+/* Meta Information */
+.need-card-meta {
+    font-size: 0.78rem;
+    color: var(--cg-text-soft);
+    margin-bottom: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+}
+.meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+/* Description */
 .need-card-desc {
-    font-size: 0.875rem;
+    font-size: 0.88rem;
     color: var(--cg-text-body);
     line-height: 1.6;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+/* Card Footer */
 .need-card-footer {
-    padding-top: 1rem;
-    border-top: 1px solid var(--cg-border-light);
+    padding-top: 1.1rem;
+    border-top: 1px dashed var(--cg-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
     flex-wrap: wrap;
+}
+.requester-info {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+.requester-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--cg-sage), var(--cg-sage-dark));
+    color: #FFFFFF;
+    font-size: 0.78rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(63, 98, 83, 0.2);
+    flex-shrink: 0;
+}
+.requester-name-row {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--cg-text-heading);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+.requester-campus {
+    font-size: 0.75rem;
+    color: var(--cg-muted);
+}
+.card-actions {
+    display: flex;
+    gap: 0.45rem;
+    align-items: center;
+}
+.btn-card-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.42rem 0.8rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--speed-fast) ease;
+}
+.btn-card-whatsapp {
+    background-color: #25D366;
+    color: #FFFFFF;
+    border: 1px solid #25D366;
+}
+.btn-card-whatsapp:hover {
+    background-color: #1EBE5D;
+    color: #FFFFFF;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+}
+.btn-card-view {
+    background: var(--cg-cream);
+    color: var(--cg-text-heading);
+    border: 1px solid var(--cg-border);
+}
+.btn-card-view:hover {
+    background: var(--cg-white);
+    border-color: var(--cg-sage);
+    color: var(--cg-sage-dark);
+    transform: translateY(-1px);
 }
 </style>
 {% endblock %}
@@ -160,103 +533,116 @@
 
     <!-- Hero Banner -->
     <div class="need-board-hero">
-        <div class="cg-flex-between" style="flex-wrap: wrap; gap: 1rem;">
-            <div>
-                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                    <span class="cg-badge cg-badge-emerald" style="font-size: 0.75rem;">Campus Reverse Marketplace</span>
-                    <span class="text-xs text-muted">&bull; Direct Peer-to-Peer</span>
+        <div class="hero-content">
+            <div class="cg-flex-between" style="flex-wrap: wrap; gap: 1.5rem; align-items: flex-start;">
+                <div>
+                    <div class="hero-top-badge">
+                        <span class="hero-badge-pulse"></span>
+                        <span>Campus Reverse Marketplace &bull; Peer-to-Peer</span>
+                    </div>
+                    <h1 class="hero-title">Student Need Board</h1>
+                    <p class="hero-desc">
+                        Need a scientific calculator for tomorrow's midterm? Seeking a textbook, lab coat, or exam notes? Broadcast your request to campus peers and fulfill it in hours.
+                    </p>
                 </div>
-                <h1 style="font-size: 2.15rem; margin-bottom: 0.5rem; color: var(--cg-text-heading);">Student Need Board</h1>
-                <p class="text-muted" style="max-width: 620px; font-size: 0.95rem; line-height: 1.6;">
-                    Need a scientific calculator for tomorrow's midterm? Seeking a textbook, lab coat, or exam notes? Broadcast your request to campus peers and fulfill it in hours.
-                </p>
+                <div>
+                    <a href="{% url 'market:create_need_request' %}" class="hero-cta-btn">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                        <span>Broadcast a Need</span>
+                    </a>
+                </div>
             </div>
-            <div style="display: flex; gap: 0.75rem; align-items: center;">
-                <a href="{% url 'market:create_need_request' %}" class="btn btn-primary btn-lg" style="box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);">
-                    + Broadcast a Need
-                </a>
-            </div>
-        </div>
 
-        <!-- Live Metrics Strip -->
-        <div class="need-stats-row">
-            <div class="need-stat-pill">
-                <span style="font-size: 1.15rem;">📋</span>
-                <div>
-                    <div class="need-stat-val">{{ total_open_count }}</div>
-                    <div class="need-stat-lbl">Active Seeking Needs</div>
+            <!-- Live Metrics Strip -->
+            <div class="need-stats-grid">
+                <div class="need-stat-card">
+                    <div class="stat-icon-wrap stat-icon-sage">
+                        <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                    </div>
+                    <div>
+                        <div class="need-stat-val">{{ total_open_count }}</div>
+                        <div class="need-stat-lbl">Active Seeking Needs</div>
+                    </div>
                 </div>
-            </div>
-            <div class="need-stat-pill" style="border-color: rgba(244, 63, 94, 0.25);">
-                <span style="font-size: 1.15rem;">🔥</span>
-                <div>
-                    <div class="need-stat-val" style="color: var(--cg-rose-500);">{{ urgent_count }}</div>
-                    <div class="need-stat-lbl">Urgent (Needed in 24h)</div>
+
+                <div class="need-stat-card">
+                    <div class="stat-icon-wrap stat-icon-terracotta">
+                        <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"/></svg>
+                    </div>
+                    <div>
+                        <div class="need-stat-val val-urgent">{{ urgent_count }}</div>
+                        <div class="need-stat-lbl">Urgent (Needed in 24h)</div>
+                    </div>
                 </div>
-            </div>
-            <div class="need-stat-pill">
-                <span style="font-size: 1.15rem;">🤝</span>
-                <div>
-                    <div class="need-stat-val" style="color: var(--cg-emerald-500);">{{ fulfilled_count }}</div>
-                    <div class="need-stat-lbl">Peer Fulfillments</div>
+
+                <div class="need-stat-card">
+                    <div class="stat-icon-wrap stat-icon-gold">
+                        <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
+                    </div>
+                    <div>
+                        <div class="need-stat-val val-fulfilled">{{ fulfilled_count }}</div>
+                        <div class="need-stat-lbl">Peer Fulfillments</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Filter & Search Controls -->
-    <div class="need-filter-bar">
-        <!-- Quick Tab Buttons -->
-        <div class="need-tabs-strip">
-            <a href="?{% if search_query %}q={{ search_query }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}"
-               class="need-tab-btn {% if not selected_type and not selected_urgency and selected_status == 'OPEN' %}active{% endif %}">
-                All Needs
-            </a>
-            <a href="?urgency=URGENT{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
-               class="need-tab-btn {% if selected_urgency == 'URGENT' %}active{% endif %}">
-                🔥 Urgent (24h)
-            </a>
-            <a href="?type=BUY{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
-               class="need-tab-btn {% if selected_type == 'BUY' %}active{% endif %}">
-                Wanted to Buy
-            </a>
-            <a href="?type=BORROW{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
-               class="need-tab-btn {% if selected_type == 'BORROW' %}active{% endif %}">
-                Wanted to Borrow
-            </a>
-            <a href="?type=SERVICE{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
-               class="need-tab-btn {% if selected_type == 'SERVICE' %}active{% endif %}">
-                Tutoring / Services
-            </a>
-            <a href="?status=FULFILLED{% if search_query %}&q={{ search_query }}{% endif %}"
-               class="need-tab-btn {% if selected_status == 'FULFILLED' %}active{% endif %}">
-                ✓ Fulfilled
-            </a>
-        </div>
-
-        <!-- Search & Category Filters -->
-        <form method="GET" action="" style="display: flex; gap: 0.5rem; align-items: center;">
-            {% if selected_type %}<input type="hidden" name="type" value="{{ selected_type }}">{% endif %}
-            {% if selected_urgency %}<input type="hidden" name="urgency" value="{{ selected_urgency }}">{% endif %}
-            
-            {% if categories %}
-            <select name="category" onchange="this.form.submit()" class="cg-input" style="padding: 0.45rem 0.75rem; font-size: 0.875rem; border-radius: var(--radius-md); background: var(--cg-surface); color: var(--cg-text-heading); border: 1px solid var(--cg-border);">
-                <option value="">All Categories</option>
-                {% for cat in categories %}
-                    <option value="{{ cat.slug }}" {% if selected_category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
-                {% endfor %}
-            </select>
-            {% endif %}
-
-            <div style="position: relative; display: flex; align-items: center;">
-                <input type="text" name="q" value="{{ search_query }}" placeholder="Search needs..." class="cg-input" style="padding: 0.45rem 0.75rem 0.45rem 2rem; font-size: 0.875rem; border-radius: var(--radius-md); background: var(--cg-surface); color: var(--cg-text-heading); border: 1px solid var(--cg-border); width: 180px;">
-                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="position: absolute; left: 0.65rem; color: var(--cg-text-muted); pointer-events: none;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+    <!-- Filter Dock & Search Controls -->
+    <div class="need-filter-dock">
+        <div class="need-tabs-row">
+            <!-- Quick Tab Buttons -->
+            <div class="need-tabs-strip">
+                <a href="?{% if search_query %}q={{ search_query }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}"
+                   class="need-tab-btn {% if not selected_type and not selected_urgency and selected_status == 'OPEN' %}active{% endif %}">
+                    <span>All Needs</span>
+                </a>
+                <a href="?urgency=URGENT{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
+                   class="need-tab-btn {% if selected_urgency == 'URGENT' %}active{% endif %}">
+                    <span>🔥 Urgent (24h)</span>
+                </a>
+                <a href="?type=BUY{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
+                   class="need-tab-btn {% if selected_type == 'BUY' %}active{% endif %}">
+                    <span>Wanted to Buy</span>
+                </a>
+                <a href="?type=BORROW{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
+                   class="need-tab-btn {% if selected_type == 'BORROW' %}active{% endif %}">
+                    <span>Wanted to Borrow</span>
+                </a>
+                <a href="?type=SERVICE{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
+                   class="need-tab-btn {% if selected_type == 'SERVICE' %}active{% endif %}">
+                    <span>Tutoring / Services</span>
+                </a>
+                <a href="?status=FULFILLED{% if search_query %}&q={{ search_query }}{% endif %}"
+                   class="need-tab-btn {% if selected_status == 'FULFILLED' %}active{% endif %}">
+                    <span>✓ Fulfilled</span>
+                </a>
             </div>
-            <button type="submit" class="btn btn-outline btn-sm">Find</button>
-            {% if search_query or selected_type or selected_urgency or selected_category or selected_status != 'OPEN' %}
-                <a href="{% url 'market:requests' %}" class="btn btn-ghost btn-sm" title="Clear filters">✕</a>
-            {% endif %}
-        </form>
+
+            <!-- Search & Category Filters -->
+            <form method="GET" action="" class="need-search-form">
+                {% if selected_type %}<input type="hidden" name="type" value="{{ selected_type }}">{% endif %}
+                {% if selected_urgency %}<input type="hidden" name="urgency" value="{{ selected_urgency }}">{% endif %}
+
+                {% if categories %}
+                <select name="category" onchange="this.form.submit()" class="filter-select">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.slug }}" {% if selected_category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+
+                <div class="filter-search-box">
+                    <svg class="filter-search-icon" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input type="text" name="q" value="{{ search_query }}" placeholder="Search needs..." class="filter-search-input">
+                </div>
+                <button type="submit" class="btn btn-outline btn-sm" style="padding: 0.48rem 0.95rem; font-weight: 600;">Find</button>
+                {% if search_query or selected_type or selected_urgency or selected_category or selected_status != 'OPEN' %}
+                    <a href="{% url 'market:requests' %}" class="btn btn-ghost btn-sm" title="Clear filters" style="padding: 0.48rem 0.75rem;">✕ Clear</a>
+                {% endif %}
+            </form>
+        </div>
     </div>
 
     <!-- Need Requests Grid -->
@@ -266,8 +652,8 @@
                 <div class="need-card {% if need.urgency == 'URGENT' and need.status == 'OPEN' %}urgent-card{% endif %}">
                     <div>
                         <!-- Top Badges & Budget -->
-                        <div class="cg-flex-between" style="align-items: flex-start; gap: 0.5rem; margin-bottom: 0.75rem;">
-                            <div style="display: flex; gap: 0.375rem; flex-wrap: wrap; align-items: center;">
+                        <div class="card-header-row">
+                            <div class="badge-stack">
                                 {% if need.status == 'FULFILLED' %}
                                     <span class="cg-badge cg-badge-slate">✓ Fulfilled</span>
                                 {% elif need.urgency == 'URGENT' %}
@@ -286,13 +672,13 @@
                             </div>
 
                             <!-- Budget -->
-                            <div style="text-align: right; flex-shrink: 0;">
+                            <div>
                                 {% if need.max_budget %}
-                                    <span style="font-weight: 800; color: var(--cg-emerald-500); font-size: 0.95rem; font-variant-numeric: tabular-nums;">
+                                    <span class="budget-pill budget-set">
                                         Up to &#8377;{{ need.max_budget }}
                                     </span>
                                 {% else %}
-                                    <span class="text-xs text-muted">Budget: Flexible</span>
+                                    <span class="budget-pill budget-flexible">Budget: Flexible</span>
                                 {% endif %}
                             </div>
                         </div>
@@ -303,13 +689,22 @@
                         </h3>
 
                         <!-- Meta Info -->
-                        <div class="text-xs text-muted" style="margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.375rem; flex-wrap: wrap;">
-                            <span>{{ need.category.name|default:"Campus Need" }}</span>
+                        <div class="need-card-meta">
+                            <span class="meta-chip">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                                {{ need.category.name|default:"Campus Need" }}
+                            </span>
                             <span>&bull;</span>
-                            <span>{{ need.created_at|timesince }} ago</span>
+                            <span class="meta-chip">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                {{ need.created_at|timesince }} ago
+                            </span>
                             {% if need.location %}
                                 <span>&bull;</span>
-                                <span title="Preferred Handover Spot">📍 {{ need.location }}</span>
+                                <span class="meta-chip" title="Preferred Handover Spot">
+                                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                    {{ need.location }}
+                                </span>
                             {% endif %}
                         </div>
 
@@ -321,31 +716,32 @@
 
                     <!-- Footer: Requester & Quick Contact -->
                     <div class="need-card-footer">
-                        <div style="display: flex; align-items: center; gap: 0.625rem;">
-                            <div style="width: 32px; height: 32px; border-radius: var(--radius-full); background: var(--cg-blue-600); color: #FFFFFF; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center;">
+                        <div class="requester-info">
+                            <div class="requester-avatar">
                                 {{ need.requester.username|slice:":2"|upper }}
                             </div>
                             <div>
-                                <div style="font-size: 0.8125rem; font-weight: 600; color: var(--cg-text-heading); display: flex; align-items: center; gap: 0.25rem;">
-                                    {{ need.requester.username }}
+                                <div class="requester-name-row">
+                                    <span>{{ need.requester.username }}</span>
                                     {% if need.requester.is_verified %}
-                                        <svg width="13" height="13" fill="none" stroke="var(--cg-emerald-500)" viewBox="0 0 24 24" title="Verified Campus Student"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <svg width="14" height="14" fill="none" stroke="var(--cg-sage)" viewBox="0 0 24 24" title="Verified Campus Student"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                     {% endif %}
                                 </div>
-                                <div class="text-xs text-muted">{{ need.requester.institution|default:"Campus Peer"|truncatechars:20 }}</div>
+                                <div class="requester-campus">{{ need.requester.institution|default:"Campus Peer"|truncatechars:20 }}</div>
                             </div>
                         </div>
 
-                        <div style="display: flex; gap: 0.375rem; align-items: center;">
+                        <div class="card-actions">
                             {% if need.requester.phone and need.status == 'OPEN' %}
                                 <a href="https://wa.me/{{ need.requester.phone }}?text=Hi%20{{ need.requester.username }},%20I%20saw%20your%20need%20request%20for%20'{{ need.title|urlencode }}'%20on%20CampusGrid.%20I%20can%20help!"
-                                   target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-whatsapp" style="padding: 0.35rem 0.625rem; font-size: 0.775rem;" title="Chat directly on WhatsApp">
+                                   target="_blank" rel="noopener noreferrer" class="btn-card-action btn-card-whatsapp" title="Chat directly on WhatsApp">
                                     <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
                                     <span>Help</span>
                                 </a>
                             {% endif %}
-                            <a href="{% url 'market:need_request_detail' need.pk %}" class="btn btn-sm btn-outline" style="padding: 0.35rem 0.625rem; font-size: 0.775rem;">
-                                View
+                            <a href="{% url 'market:need_request_detail' need.pk %}" class="btn-card-action btn-card-view">
+                                <span>View</span>
+                                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                             </a>
                         </div>
                     </div>

@@ -14,11 +14,11 @@
 
         <main>
             <div style="margin-bottom: 1.75rem;">
-                <h1 style="font-size: 1.75rem;">Add User</h1>
-                <p class="text-sm text-muted">Create a CampusGrid account from the admin dashboard.</p>
+                <h1 style="font-family: var(--cg-font-serif); font-size: 2rem; font-weight: 700; color: var(--cg-forest); letter-spacing: -0.02em;">Add User</h1>
+                <p class="text-sm text-muted">Create a new student or admin CampusGrid account from the administration portal.</p>
             </div>
 
-            <div style="max-width: 680px; background: var(--cg-surface); border: 1px solid var(--cg-border); border-radius: var(--radius-lg); padding: 1.5rem;">
+            <div style="max-width: 680px; background: var(--cg-surface); border: 1px solid var(--cg-border); border-radius: var(--radius-lg); padding: 2rem;">
                 {% if form.non_field_errors %}
                     <div class="cg-alert cg-alert-error" style="margin-bottom: 1.25rem;">
                         {{ form.non_field_errors }}
@@ -41,13 +41,13 @@
 
                     <div class="form-group">
                         <label for="id_user_roles" class="form-label">Role</label>
-                        <select name="user_roles" id="id_user_roles" class="form-control">
+                        <select name="user_roles" id="id_user_roles" class="form-input">
                             <option value="USER" {% if request.POST.user_roles != 'ADMIN' %}selected{% endif %}>User</option>
                             <option value="ADMIN" {% if request.POST.user_roles == 'ADMIN' %}selected{% endif %}>Admin</option>
                         </select>
                     </div>
 
-                    <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                    <div style="display: flex; gap: 0.75rem; margin-top: 1.75rem;">
                         <button type="submit" class="btn btn-primary">Create User</button>
                         <a href="{% url 'admin_users' %}" class="btn btn-outline">Cancel</a>
                     </div>

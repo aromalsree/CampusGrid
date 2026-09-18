@@ -1,0 +1,627 @@
+/* ==========================================================================
+   CampusGrid — About Page Stylesheet (Editorial Design System)
+   ========================================================================== */
+
+/* --- Hero Section --- */
+.about-hero {
+    padding: 5rem 0 3.5rem;
+    background: linear-gradient(180deg, var(--cg-cream) 0%, var(--cg-ivory) 100%);
+    border-bottom: 1px solid var(--cg-border);
+    position: relative;
+    overflow: hidden;
+}
+
+.about-hero::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(198, 161, 91, 0.08) 0%, rgba(85, 122, 104, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.about-hero-inner {
+    max-width: 840px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.about-hero-title {
+    font-family: var(--cg-font-serif);
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--cg-forest);
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.025em;
+}
+
+.about-hero-title em {
+    font-style: italic;
+    color: var(--cg-sage-dark);
+    font-weight: 600;
+}
+
+.about-hero-lead {
+    font-size: 1.15rem;
+    color: var(--cg-muted);
+    max-width: 660px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.75;
+}
+
+/* --- Metrics Strip --- */
+.about-metrics-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    background: var(--cg-surface);
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-xl);
+    padding: 1.75rem 2rem;
+    box-shadow: var(--shadow-sm);
+    max-width: 920px;
+    margin: 0 auto;
+}
+
+.about-metric-item {
+    text-align: center;
+    position: relative;
+}
+
+.about-metric-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 15%;
+    height: 70%;
+    width: 1px;
+    background: var(--cg-border);
+}
+
+.about-metric-number {
+    font-family: var(--cg-font-serif);
+    font-size: clamp(1.85rem, 3vw, 2.35rem);
+    font-weight: 700;
+    color: var(--cg-forest);
+    line-height: 1.1;
+    margin-bottom: 0.25rem;
+}
+
+.about-metric-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--cg-muted);
+}
+
+/* --- Section Heads --- */
+.about-section-head {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 3.5rem;
+}
+
+.about-section-title {
+    font-family: var(--cg-font-serif);
+    font-size: clamp(2rem, 3.5vw, 2.5rem);
+    font-weight: 700;
+    color: var(--cg-forest);
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+}
+
+.about-section-desc {
+    color: var(--cg-muted);
+    font-size: 1.025rem;
+    line-height: 1.65;
+}
+
+/* --- Core Pillars Grid --- */
+.about-pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.75rem;
+    margin-bottom: 5rem;
+}
+
+.about-pillar-card {
+    background: var(--cg-surface);
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-lg);
+    padding: 2.25rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.about-pillar-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(28, 43, 34, 0.07);
+    border-color: var(--cg-sage);
+}
+
+.about-pillar-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+}
+
+.about-pillar-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--transition-fast);
+}
+
+.about-pillar-card:hover .about-pillar-icon {
+    transform: scale(1.05);
+}
+
+.about-pillar-number {
+    font-family: var(--cg-font-serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--cg-muted);
+    opacity: 0.6;
+}
+
+.about-pillar-title {
+    font-family: var(--cg-font-serif);
+    font-size: 1.28rem;
+    font-weight: 700;
+    color: var(--cg-forest);
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.015em;
+}
+
+.about-pillar-body {
+    color: var(--cg-muted);
+    font-size: 0.925rem;
+    line-height: 1.7;
+    margin: 0;
+    flex-grow: 1;
+}
+
+/* --- Campus Journey / How It Works --- */
+.about-journey-section {
+    padding: 4.5rem 0;
+    background: var(--cg-cream);
+    border-top: 1px solid var(--cg-border);
+    border-bottom: 1px solid var(--cg-border);
+    margin-bottom: 5rem;
+}
+
+.about-journey-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1.5rem;
+    position: relative;
+}
+
+.about-step-card {
+    background: var(--cg-surface);
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.75rem;
+    position: relative;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.about-step-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(28, 43, 34, 0.06);
+}
+
+.about-step-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--cg-sage-light);
+    color: var(--cg-sage-dark);
+    font-weight: 800;
+    font-size: 0.875rem;
+    border-radius: 50%;
+    margin-bottom: 1.25rem;
+    border: 2px solid var(--cg-surface);
+    box-shadow: 0 0 0 1px var(--cg-sage);
+}
+
+.about-step-title {
+    font-family: var(--cg-font-serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--cg-forest);
+    margin-bottom: 0.5rem;
+}
+
+.about-step-desc {
+    font-size: 0.885rem;
+    color: var(--cg-muted);
+    line-height: 1.65;
+    margin: 0;
+}
+
+/* --- Advantage Banner --- */
+.about-advantage-banner {
+    background: linear-gradient(145deg, #223429 0%, #17241C 100%);
+    border-radius: var(--radius-xl);
+    padding: 4rem 3rem;
+    margin-bottom: 5rem;
+    color: #FFFFFF;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.about-advantage-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(198, 161, 91, 0.12) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.about-advantage-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+.about-comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2.75rem;
+}
+
+.about-comp-col {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    backdrop-filter: blur(8px);
+}
+
+.about-comp-col.highlight {
+    background: rgba(85, 122, 104, 0.18);
+    border-color: rgba(198, 161, 91, 0.4);
+}
+
+.about-comp-header {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.about-comp-badge {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+}
+
+.about-comp-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.about-comp-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.915rem;
+    line-height: 1.55;
+    color: #E2ECE5;
+}
+
+.about-comp-list li svg {
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+}
+
+/* --- Mission Magazine Section --- */
+.about-mission-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 3.5rem;
+    align-items: center;
+    margin-bottom: 5.5rem;
+}
+
+.about-quote-box {
+    background: var(--cg-cream);
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-xl);
+    padding: 3rem 2.5rem;
+    position: relative;
+}
+
+.about-quote-mark {
+    font-family: var(--cg-font-serif);
+    font-size: 5rem;
+    line-height: 1;
+    color: var(--cg-sage);
+    opacity: 0.35;
+    position: absolute;
+    top: 1.25rem;
+    left: 1.75rem;
+    pointer-events: none;
+}
+
+.about-quote-text {
+    font-family: var(--cg-font-serif);
+    font-size: 1.35rem;
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--cg-forest);
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.about-quote-author {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.about-author-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--cg-sage);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.about-mission-narrative h2 {
+    font-family: var(--cg-font-serif);
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--cg-forest);
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+}
+
+.about-mission-narrative p {
+    color: var(--cg-muted);
+    font-size: 1.025rem;
+    line-height: 1.8;
+    margin-bottom: 1.25rem;
+}
+
+/* --- FAQ Section --- */
+.about-faq-section {
+    padding: 4.5rem 0 5rem;
+    background: var(--cg-cream);
+    border-top: 1px solid var(--cg-border);
+}
+
+.about-faq-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 3.5rem;
+    align-items: flex-start;
+}
+
+.about-faq-intro {
+    position: sticky;
+    top: 5rem;
+}
+
+.about-faq-intro h2 {
+    font-family: var(--cg-font-serif);
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--cg-forest);
+    line-height: 1.2;
+    margin-bottom: 0.85rem;
+    letter-spacing: -0.02em;
+}
+
+.about-faq-intro p {
+    color: var(--cg-muted);
+    font-size: 0.985rem;
+    line-height: 1.7;
+    margin-bottom: 1.75rem;
+}
+
+.about-faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.about-faq-item {
+    background: var(--cg-surface);
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-lg);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    overflow: hidden;
+}
+
+.about-faq-item:hover {
+    border-color: var(--cg-sage);
+}
+
+.about-faq-item[open] {
+    border-color: var(--cg-sage);
+    box-shadow: 0 4px 14px rgba(28, 43, 34, 0.05);
+}
+
+.about-faq-item summary {
+    padding: 1.35rem 1.75rem;
+    cursor: pointer;
+    font-family: var(--cg-font-serif);
+    font-size: 1.12rem;
+    font-weight: 700;
+    color: var(--cg-forest);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    list-style: none;
+    transition: color var(--transition-fast);
+}
+
+.about-faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.about-faq-item summary::after {
+    content: '+';
+    font-family: var(--cg-font-sans);
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--cg-sage);
+    transition: transform var(--transition-fast);
+    margin-left: 1rem;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.about-faq-item[open] summary::after {
+    content: '−';
+    transform: rotate(180deg);
+}
+
+.about-faq-content {
+    padding: 0 1.75rem 1.5rem;
+    color: var(--cg-muted);
+    font-size: 0.95rem;
+    line-height: 1.75;
+    margin: 0;
+}
+
+/* --- Bottom CTA Card --- */
+.about-cta-section {
+    padding: 5rem 0;
+    background: var(--cg-ivory);
+}
+
+.about-cta-card {
+    background: linear-gradient(135deg, var(--cg-cream) 0%, #F1ECE0 100%);
+    border: 1px solid var(--cg-border);
+    border-radius: var(--radius-xl);
+    padding: 4rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.about-cta-card h2 {
+    font-family: var(--cg-font-serif);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 700;
+    color: var(--cg-forest);
+    margin-bottom: 0.85rem;
+    letter-spacing: -0.02em;
+}
+
+.about-cta-card p {
+    color: var(--cg-muted);
+    font-size: 1.1rem;
+    max-width: 580px;
+    margin: 0 auto 2.25rem;
+    line-height: 1.7;
+}
+
+/* --- Responsive Breakpoints --- */
+@media (max-width: 900px) {
+    .about-metrics-bar {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+    
+    .about-metric-item:nth-child(2)::after {
+        display: none;
+    }
+
+    .about-comparison-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .about-mission-wrapper {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .about-faq-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .about-faq-intro {
+        position: static;
+    }
+}
+
+@media (max-width: 600px) {
+    .about-hero {
+        padding: 3.5rem 0 2.5rem;
+    }
+
+    .about-metrics-bar {
+        grid-template-columns: 1fr;
+        padding: 1.5rem;
+    }
+
+    .about-metric-item:not(:last-child)::after {
+        display: none;
+    }
+
+    .about-pillar-card {
+        padding: 1.75rem;
+    }
+
+    .about-advantage-banner {
+        padding: 2.5rem 1.5rem;
+    }
+
+    .about-quote-box {
+        padding: 2rem 1.5rem;
+    }
+
+    .about-cta-card {
+        padding: 3rem 1.5rem;
+    }
+}
