@@ -480,4 +480,25 @@ def create_need_offer(request, pk):
 
     return redirect('market:need_request_detail', pk=need_request.pk)
 
+@login_required
+def toggle_wishlist(request, listing_id):
+    listing = get_object_or_404(Listing, id=listing_id)
+    
+    # get_or_create checks for existing Wishlist item or creates a new one
+    wishlist_item, created = Wishlist.objects.get_or_create(
+        user=request.user,
+        listing=listing
+    )
+    
+    if not created:
+        # If it already existed, remove it (toggle off)
+        wishlist_item.delete()
+        added = False
+    else:
+        added = True
 
+    # If called via AJAX / Frontend JS
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'wishlisted': added})
+
+    return redirect('market:product_id', id=listing.id)

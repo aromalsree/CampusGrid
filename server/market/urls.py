@@ -7,6 +7,8 @@ urlpatterns = [
     # Marketplace Catalogue / Product Listings
     path('products/', views.MarketView.as_view(), name='product_list'),
     path('products/', views.MarketView.as_view(), name='products'),
+    path('products/<int:pk>/', views.ProductDetailView.as_view(),name='product_id'),
+    path('wishlist/<int:listing_id>/', views.toggle_wishlist, name="wishlist"),
 
     # Create Product Listing
     path('create/', views.create_listing, name='create_listing'),
@@ -30,6 +32,6 @@ urlpatterns = [
     path('requests/<int:pk>/offer/', views.create_need_offer, name='create_need_offer'),
 
     # Product Details (supports pk / integer id, slug, or generic string)
-    path('products/<int:pk>/', views.ProductDetailView.as_view(),name='product_id'),
+    
    
 ]
