@@ -126,7 +126,7 @@ class UserDashboard(LoginRequiredMixin, View):
             'status_filter': status_filter,
             'total_count': users.count(),
         }
-        return render(request, 'admin/users.html', context)
+        return render(request, 'dashboard/dashboard.html', context)
 
 @login_required
 @user_passes_test(is_admin)
