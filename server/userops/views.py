@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .form import LoginForm
 from django.contrib import messages
 from .models import App_users
-from .form import UserRegForm, LoginForm
+from .form import UserRegForm, LoginForm, UserProfileForm
 from django.views import View
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.db.models import Q
@@ -12,8 +12,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.utils import timezone
 from datetime import timedelta
-from market.models import Wishlist, Listing
-from django.views.generic import ListView
+from market.models import Wishlist, Listing, NeedRequest
+from django.views.generic import ListView, UpdateView
+from django.urls import reverse_lazy
 # html path to var
 register_template = 'user/register.html'
 login_template = 'user/login.html'
@@ -283,5 +284,43 @@ class UserListingsListView(LoginRequiredMixin, ListView):
             Listing.objects.filter(seller=self.request.user)
             .select_related("category")
             .prefetch_related("images")
+            .order_by("-created_at")
+        )
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    Renders and updates the currently authenticated user's profile.
+    """
+    form_class = UserProfileForm
+    template_name = "user/profile.html"  # Adjust path to match your template location
+    success_url = reverse_lazy("profile")     # Replace with your profile URL pattern name
+
+    def get_object(self, queryset=None):
+        # Ensures a user can only edit their own account instance
+        return self.request.user
+
+    def form_valid(self, form):
+        messages.success(self.request, "Your profile details have been updated successfully.")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Please correct the errors below and try again.")
+        return super().form_invalid(form)
+
+class UserNeedRequestsListView(LoginRequiredMixin, ListView):
+    """
+    Renders a list of Need Requests created exclusively by the logged-in user.
+    """
+    model = NeedRequest
+    template_name = "dashboard/requests.html"
+    context_object_name = "user_requests"
+    paginate_by = 10
+
+    def get_queryset(self):
+        return (
+            NeedRequest.objects.filter(requester=self.request.user)
+            .select_related("category")
+            .prefetch_related("offers")  # Ensure related_name="offers" exists on Offer model
             .order_by("-created_at")
         )

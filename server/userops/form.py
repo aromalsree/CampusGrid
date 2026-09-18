@@ -75,4 +75,12 @@ class LoginForm(AuthenticationForm):
                                                                 "placeholder": "••••••••",
                                                             }))
 
-    
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = App_users
+        fields = ['institution', 'phone']
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone')
+        # Custom logic or extra sanitization can go here if needed
+        return phone
