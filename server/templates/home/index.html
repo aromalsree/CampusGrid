@@ -1,220 +1,736 @@
+
 {% extends "base/base.html" %}
 {% load static %}
 
 {% block title %}CampusGrid — Multi-Campus P2P Marketplace & Academic Exchange{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/pages/home.css' %}?v=3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{% static 'css/pages/home.css' %}?v=5">
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section">
-    <div class="hero-grid-bg" aria-hidden="true"></div>
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+<section class="cg-hero">
+
+    <div class="cg-hero-decoration cg-decoration-one"></div>
+    <div class="cg-hero-decoration cg-decoration-two"></div>
+
     <div class="cg-container">
-        <div class="hero-layout">
-            <div class="hero-content">
-                <div class="hero-pill">
-                    <span>Verified Peer Network</span>
+
+        <div class="cg-hero-layout">
+
+            <!-- HERO CONTENT -->
+            <div class="cg-hero-content">
+
+                <div class="cg-eyebrow">
+                    <span class="cg-eyebrow-line"></span>
+                    The student marketplace
                 </div>
-                <h1 class="hero-title">
-                    The Campus Marketplace Built for <span>Students</span>
+
+                <h1 class="cg-hero-title">
+                    Things you need.
+                    <em>Students who have them.</em>
                 </h1>
-                <p class="hero-subtitle">
-                    Buy, sell, and rent engineering hardware, semester textbooks, lab gear, and verified study notes with zero middleman fees.
+
+                <p class="cg-hero-description">
+                    Buy, sell, and rent textbooks, electronics, lab equipment,
+                    study materials, and everyday campus essentials directly
+                    from fellow students.
                 </p>
-                
-                <div class="hero-search-wrap">
-                    {% include "components/search_bar.html" with placeholder="Search MacBook, engineering textbooks, lab kits, DSA notes..." %}
+
+                <div class="cg-hero-search">
+                    {% include "components/search_bar.html" with placeholder="Search textbooks, laptops, lab kits, notes..." %}
                 </div>
 
-                <div class="hero-cta-row">
-                    <a href="{% url 'market:product_list' %}" class="btn btn-primary btn-lg">Explore Marketplace &rarr;</a>
-                    <a href="{% url 'market:create_listing' %}" class="btn btn-outline btn-lg">+ Post a Free Listing</a>
+                <div class="cg-hero-actions">
+
+                    <a href="{% url 'market:product_list' %}"
+                       class="cg-btn cg-btn-primary">
+                        Explore Marketplace
+                        <span>→</span>
+                    </a>
+
+                    <a href="{% url 'market:create_listing' %}"
+                       class="cg-btn cg-btn-outline">
+                        Post a Free Listing
+                    </a>
+
                 </div>
 
-                <div class="hero-stats-strip">
-                    <span>{{ listing_count|default:"1,200" }}+ active listings</span>
-                    <span class="dot">&bull;</span>
-                    <span>8 universities</span>
-                    <span class="dot">&bull;</span>
-                    <span>&#8377;0 platform fees</span>
+                <div class="cg-hero-trust">
+
+                    <span>
+                        <strong>{{ listing_count|default:"1,200" }}+</strong>
+                        listings
+                    </span>
+
+                    <i></i>
+
+                    <span>
+                        <strong>8</strong>
+                        universities
+                    </span>
+
+                    <i></i>
+
+                    <span>
+                        <strong>₹0</strong>
+                        platform fees
+                    </span>
+
                 </div>
+
             </div>
 
-            <!-- Floating Product Mockup (Desktop) -->
-            <div class="hero-visual" aria-hidden="true">
-                <div class="hero-float-card">
-                    <div class="float-img-placeholder">
-                        <img src="{% static 'images/marketplace/products/macbook-pro.jpg' %}" alt="MacBook Pro M1" loading="eager">
+
+            <!-- HERO IMAGE / PRODUCT -->
+            <div class="cg-hero-visual">
+
+                <div class="cg-hero-image-frame">
+
+                    <img
+                        src="{% static 'images/marketplace/products/macbook-pro.jpg' %}"
+                        alt="CampusGrid marketplace product"
+                        loading="eager"
+                    >
+
+                    <div class="cg-image-overlay"></div>
+
+                    <div class="cg-floating-tag cg-floating-top">
+                        <span class="cg-status-dot"></span>
+                        Recently listed
                     </div>
-                    <div class="float-meta-row">
-                        <span class="float-badge">Like New &bull; For Sale</span>
-                        <span style="font-size: 0.75rem; color: #94A3B8;">IIT Bombay</span>
+
+                    <div class="cg-floating-product">
+
+                        <div class="cg-floating-product-top">
+
+                            <div>
+                                <span class="cg-small-label">
+                                    Like New
+                                </span>
+
+                                <h3>
+                                    MacBook Pro M1
+                                </h3>
+                            </div>
+
+                            <span class="cg-product-price">
+                                ₹58,000
+                            </span>
+
+                        </div>
+
+                        <div class="cg-floating-product-bottom">
+                            <span>IIT Bombay</span>
+                            <span>For Sale</span>
+                        </div>
+
                     </div>
-                    <div class="float-title">MacBook Pro M1 (16GB)</div>
-                    <div class="float-price">&#8377;58,000</div>
+
                 </div>
+
+                <div class="cg-image-caption">
+                    <span>01</span>
+                    <span>From one student to another.</span>
+                </div>
+
             </div>
+
         </div>
+
     </div>
+
 </section>
 
-<!-- Value Proposition Features -->
-<section class="cg-section scroll-reveal" style="border-bottom: 1px solid var(--cg-border); background: var(--cg-bg-card);">
+
+<!-- =========================================================
+     TRUST / BENEFITS
+========================================================= -->
+<section class="cg-benefits">
+
     <div class="cg-container">
-        <div class="feature-grid">
-            <div class="feature-card">
-                <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--cg-emerald-50); color: var(--cg-emerald-600); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+
+        <div class="cg-benefits-grid">
+
+            <div class="cg-benefit">
+
+                <div class="cg-benefit-icon cg-benefit-sage">
+                    <svg viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M9 12l2 2 4-4m5.618-4.016
+                              A11.955 11.955 0 0112 2.944
+                              a11.955 11.955 0 01-8.618 3.04
+                              A12.02 12.02 0 003 9c0 5.591
+                              3.824 10.29 9 11.622
+                              5.176-1.332 9-6.03 9-11.622
+                              0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
                 </div>
+
                 <div>
-                    <h3 style="font-size: 1.1rem; margin-bottom: 0.35rem; color: var(--cg-text-main);">Verified University Peers</h3>
-                    <p class="text-sm text-muted">All active seller profiles validated with verified academic credentials (.edu / .ac.in).</p>
+                    <h3>Verified students</h3>
+                    <p>
+                        Connect with people from the academic community.
+                    </p>
                 </div>
+
             </div>
 
-            <div class="feature-card">
-                <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--cg-amber-50); color: var(--cg-amber-600); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+
+            <div class="cg-benefit">
+
+                <div class="cg-benefit-icon cg-benefit-gold">
+                    <svg viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M12 1v22m5-18H9.5a3.5
+                              3.5 0 000 7h5a3.5 3.5
+                              0 010 7H7"/>
+                    </svg>
                 </div>
+
                 <div>
-                    <h3 style="font-size: 1.1rem; margin-bottom: 0.35rem; color: var(--cg-text-main);">Zero Middleman Fees</h3>
-                    <p class="text-sm text-muted">Direct student-to-student transactions with safe in-person campus handover.</p>
+                    <h3>Zero platform fees</h3>
+                    <p>
+                        Keep the value of your item between students.
+                    </p>
                 </div>
+
             </div>
 
-            <div class="feature-card">
-                <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--cg-slate-100); color: var(--cg-text-main); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+
+            <div class="cg-benefit">
+
+                <div class="cg-benefit-icon cg-benefit-clay">
+                    <svg viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M8 12h.01M12 12h.01M16 12h.01
+                              M21 12c0 4.418-4.03 8-9 8a9.863
+                              9.863 0 01-4.255-.949L3 20l1.395
+                              -3.72C3.512 15.042 3 13.574
+                              3 12c0-4.418 4.03-8 9-8s9
+                              3.582 9 8z"/>
+                    </svg>
                 </div>
+
                 <div>
-                    <h3 style="font-size: 1.1rem; margin-bottom: 0.35rem; color: var(--cg-text-main);">Direct WhatsApp Handover</h3>
-                    <p class="text-sm text-muted">One-click deep link to coordinate campus handover directly with fellow students.</p>
+                    <h3>Simple campus handover</h3>
+                    <p>
+                        Meet nearby and exchange things without hassle.
+                    </p>
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
 </section>
 
-<!-- Why CampusGrid (Redesigned Concept Cards) -->
-<section class="why-campus-cards-section scroll-reveal" aria-labelledby="why-campus-heading">
+
+<!-- =========================================================
+     WHY CAMPUSGRID
+========================================================= -->
+<section class="cg-why">
+
     <div class="cg-container">
-        <div class="why-campus-cards-shell">
-            <div class="why-campus-cards-header">
-                <div>
-                    <span class="why-campus-cards-eyebrow">Why CampusGrid?</span>
-                    <h2 id="why-campus-heading">A campus marketplace that makes sense.</h2>
-                </div>
-                <p>Built for student budgets, campus handovers, and the trust that comes from knowing who is on the other side of the exchange.</p>
-            </div>
 
-            <div class="why-campus-cards-grid">
-                <article class="why-campus-card">
-                    <div class="why-campus-card-top">
-                        <span class="why-campus-card-number">01</span>
-                        <div class="why-campus-card-icon why-campus-card-icon-green" aria-hidden="true">
-                            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3>Trust starts on campus</h3>
-                    <p>Academic verification helps you discover real peers and make exchanges with more confidence.</p>
-                    <span class="why-campus-card-link">Verified student network <span aria-hidden="true">&rarr;</span></span>
-                </article>
+        <div class="cg-why-heading">
 
-                <article class="why-campus-card">
-                    <div class="why-campus-card-top">
-                        <span class="why-campus-card-number">02</span>
-                        <div class="why-campus-card-icon why-campus-card-icon-amber" aria-hidden="true">
-                            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 1v22m5-18H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H7"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3>More value, less friction</h3>
-                    <p>Buy, sell, or rent useful things directly from students without platform fees getting in the way.</p>
-                    <span class="why-campus-card-link">Keep more of your money <span aria-hidden="true">&rarr;</span></span>
-                </article>
-
-                <article class="why-campus-card">
-                    <div class="why-campus-card-top">
-                        <span class="why-campus-card-number">03</span>
-                        <div class="why-campus-card-icon why-campus-card-icon-blue" aria-hidden="true">
-                            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3>Local by design</h3>
-                    <p>Coordinate simple handovers around your campus, from library meetups to hostel drop-offs.</p>
-                    <span class="why-campus-card-link">Move things forward locally <span aria-hidden="true">&rarr;</span></span>
-                </article>
-            </div>
-
-            <div class="why-campus-cards-footer">
-                <span><strong>One platform.</strong> Many ways to make student life easier.</span>
-                <a href="{% url 'market:product_list' %}" class="btn btn-primary">Explore the marketplace &rarr;</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Popular Categories -->
-<section class="cg-section scroll-reveal">
-    <div class="cg-container">
-        <div class="cg-flex-between" style="margin-bottom: 1.5rem;">
             <div>
-                <h2 style="font-size: 1.85rem; color: var(--cg-text-main);">Popular Categories</h2>
-                <p class="text-sm text-muted">Find exactly what you need for this semester</p>
+                <span class="cg-section-label">
+                    WHY CAMPUSGRID
+                </span>
+
+                <h2>
+                    Built around
+                    <span>student life.</span>
+                </h2>
             </div>
-            <a href="{% url 'market:categories' %}" class="btn btn-sm btn-outline">View All Categories &rarr;</a>
+
+            <p>
+                CampusGrid brings the things students need closer to the
+                people who already have them — making everyday exchanges
+                simpler, more local, and more useful.
+            </p>
+
         </div>
 
-        <div class="categories-grid">
-            {% if categories %}
-                {% for category in categories %}
-                    {% include "components/category_card.html" with category=category %}
-                {% endfor %}
-            {% else %}
-                {% include "components/category_card.html" with category=None %}
-            {% endif %}
+
+        <div class="cg-why-layout">
+
+            <!-- IMAGE -->
+            <div class="cg-why-image">
+
+                <img
+                    src="{% static 'images/campus/student-marketplace.jpg' %}"
+                    alt="Students exchanging items on campus"
+                    loading="lazy"
+                    onerror="this.style.display='none'; this.parentElement.classList.add('cg-image-fallback');"
+                >
+
+                <div class="cg-image-number">
+                    <span>CampusGrid</span>
+                    <strong>01</strong>
+                </div>
+
+            </div>
+
+
+            <!-- CONTENT -->
+            <div class="cg-why-content">
+
+                <article class="cg-why-item cg-why-item-active">
+
+                    <div class="cg-why-number">
+                        01
+                    </div>
+
+                    <div class="cg-why-item-content">
+
+                        <h3>
+                            Trust starts on campus
+                        </h3>
+
+                        <p>
+                            Discover listings from students and make
+                            exchanges within an academic community.
+                        </p>
+
+                        <span>
+                            Verified student network
+                            <b>→</b>
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+                <article class="cg-why-item">
+
+                    <div class="cg-why-number">
+                        02
+                    </div>
+
+                    <div class="cg-why-item-content">
+
+                        <h3>
+                            More value, less friction
+                        </h3>
+
+                        <p>
+                            Buy, sell, or rent useful things without
+                            unnecessary middlemen or platform fees.
+                        </p>
+
+                        <span>
+                            Keep more of your money
+                            <b>→</b>
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+                <article class="cg-why-item">
+
+                    <div class="cg-why-number">
+                        03
+                    </div>
+
+                    <div class="cg-why-item-content">
+
+                        <h3>
+                            Local by design
+                        </h3>
+
+                        <p>
+                            Coordinate simple handovers around your
+                            department, library, hostel, or campus.
+                        </p>
+
+                        <span>
+                            Exchange locally
+                            <b>→</b>
+                        </span>
+
+                    </div>
+
+                </article>
+
+            </div>
+
         </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     DISCOVER CAMPUSGRID
+========================================================= -->
+<section class="cg-discover" id="discover">
+    <div class="cg-container">
+
+        <!-- Section Header -->
+        <div class="cg-section-header cg-discover-header">
+
+            <div class="cg-section-heading">
+                <span class="cg-section-kicker">
+                    EXPLORE THE CAMPUS
+                </span>
+
+                <h2>
+                    Find something
+                    <em>worth finding.</em>
+                </h2>
+
+                <p>
+                    Browse what students are buying, selling, renting,
+                    and sharing across campus.
+                </p>
+            </div>
+
+            <a href="{% url 'market:product_list' %}" class="cg-view-all">
+                <span>View all items</span>
+                <span class="cg-view-arrow">↗</span>
+            </a>
+
+        </div>
+
+
+        <!-- Category Grid -->
+        <div class="cg-discover-grid">
+
+            {% for category in categories %}
+
+                <div class="
+                    cg-discover-item
+                    cg-discover-item-{{ forloop.counter }}
+                ">
+
+                    <div class="cg-discover-card">
+
+                        <!-- Decorative number -->
+                        <span class="cg-discover-number">
+                            0{{ forloop.counter }}
+                        </span>
+
+                        <!-- Category content -->
+                        <div class="cg-discover-card-content">
+
+                            <div class="cg-discover-icon">
+                                {% if forloop.counter == 1 %}
+                                    <svg viewBox="0 0 24 24" fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="1.8">
+                                        <rect x="5" y="3" width="14" height="18"
+                                              rx="2"/>
+                                        <path d="M9 7h6"/>
+                                        <path d="M9 11h6"/>
+                                        <path d="M9 15h3"/>
+                                    </svg>
+
+                                {% elif forloop.counter == 2 %}
+                                    <svg viewBox="0 0 24 24" fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="1.8">
+                                        <path d="M12 3l8 4.5-8 4.5-8-4.5L12 3z"/>
+                                        <path d="M4 12l8 4.5 8-4.5"/>
+                                        <path d="M4 16.5l8 4.5 8-4.5"/>
+                                    </svg>
+
+                                {% elif forloop.counter == 3 %}
+                                    <svg viewBox="0 0 24 24" fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="1.8">
+                                        <path d="M4 11.5L12 4l8 7.5"/>
+                                        <path d="M6 10.5V20h12v-9.5"/>
+                                        <path d="M10 20v-5h4v5"/>
+                                    </svg>
+
+                                {% elif forloop.counter == 4 %}
+                                    <svg viewBox="0 0 24 24" fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="1.8">
+                                        <rect x="6" y="3" width="12" height="18"
+                                              rx="2"/>
+                                        <path d="M9 7h6"/>
+                                        <path d="M9 11h6"/>
+                                        <path d="M9 15h2"/>
+                                        <path d="M13 15h2"/>
+                                    </svg>
+
+                                {% elif forloop.counter == 5 %}
+                                    <svg viewBox="0 0 24 24" fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="1.8">
+                                        <rect x="3" y="6" width="18" height="12"
+                                              rx="2"/>
+                                        <path d="M7 18v2"/>
+                                        <path d="M17 18v2"/>
+                                        <path d="M8 10h8"/>
+                                    </svg>
+
+                                {% else %}
+                                    <svg viewBox="0 0 24 24" fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="1.8">
+                                        <path d="M5 5h14v14H5z"/>
+                                        <path d="M8 9h8"/>
+                                        <path d="M8 13h5"/>
+                                    </svg>
+                                {% endif %}
+                            </div>
+
+
+                            <div class="cg-discover-info">
+
+                                <span class="cg-discover-label">
+                                    CATEGORY
+                                </span>
+
+                                <h3>
+                                    {{ category.name }}
+                                </h3>
+
+                                {% if category.product_count %}
+                                    <p>
+                                        {{ category.product_count }} listings
+                                    </p>
+                                {% elif category.listing_count %}
+                                    <p>
+                                        {{ category.listing_count }} listings
+                                    </p>
+                                {% else %}
+                                    <p>
+                                        Explore →
+                                    </p>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Bottom action -->
+                        <div class="cg-discover-action">
+                            <span>Explore category</span>
+
+                            <span class="cg-discover-arrow">
+                                →
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="cg-discover-empty">
+                    <span>No categories available yet.</span>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
     </div>
 </section>
 
-<!-- Featured Campus Listings -->
-<section class="cg-section scroll-reveal" style="background: var(--cg-slate-100); border-top: 1px solid var(--cg-border);">
+
+<!-- =========================================================
+     RECENT CAMPUS LISTINGS
+========================================================= -->
+<section class="cg-listings scroll-reveal" id="recent-listings">
+
     <div class="cg-container">
-        <div class="cg-flex-between" style="margin-bottom: 1.5rem;">
-            <div>
-                <h2 style="font-size: 1.85rem; color: var(--cg-text-main);">Recent Campus Listings</h2>
-                <p class="text-sm text-muted">Freshly posted items from peers across your university</p>
+
+        <!-- Section Header -->
+        <div class="cg-listings-header">
+
+            <div class="cg-listings-heading">
+
+                <span class="cg-listings-kicker">
+                    FRESH FROM CAMPUS
+                </span>
+
+                <h2>
+                    Things students are
+                    <em>selling now.</em>
+                </h2>
+
+                <p>
+                    Discover useful items posted by students nearby —
+                    from textbooks and laptops to lab equipment and
+                    everyday campus essentials.
+                </p>
+
             </div>
-            <a href="{% url 'market:product_list' %}" class="btn btn-sm btn-outline">Browse Catalogue &rarr;</a>
+
+
+            <div class="cg-listings-header-action">
+
+                <span class="cg-listings-count">
+                    <span class="cg-count-dot"></span>
+                    Fresh listings
+                </span>
+
+                <a href="{% url 'market:product_list' %}"
+                   class="cg-listings-view-all">
+
+                    Browse marketplace
+
+                    <span aria-hidden="true">↗</span>
+
+                </a>
+
+            </div>
+
         </div>
 
-        <div class="product-grid">
+
+        <!-- Decorative divider -->
+        <div class="cg-listings-divider">
+            <span></span>
+        </div>
+
+
+        <!-- Product Listings -->
+        <div class="cg-listings-grid">
+
             {% if featured_products %}
+
                 {% for product in featured_products %}
-                    {% include "components/product_card.html" with product=product %}
+
+                    <article class="cg-listing-item">
+
+                        <div class="cg-listing-index">
+                            <span>
+                                {{ forloop.counter|stringformat:"02d" }}
+                            </span>
+                        </div>
+
+                        <div class="cg-listing-product">
+
+                            {% include "components/product_card.html" with product=product %}
+
+                        </div>
+
+                    </article>
+
                 {% endfor %}
+
             {% else %}
-                {% include "components/product_card.html" with product=None %}
-                {% include "components/product_card.html" with product=None %}
-                {% include "components/product_card.html" with product=None %}
+
+                <article class="cg-listing-item cg-listing-empty-item">
+                    <div class="cg-listing-product">
+                        {% include "components/product_card.html" with product=None %}
+                    </div>
+                </article>
+
+                <article class="cg-listing-item cg-listing-empty-item">
+                    <div class="cg-listing-product">
+                        {% include "components/product_card.html" with product=None %}
+                    </div>
+                </article>
+
+                <article class="cg-listing-item cg-listing-empty-item">
+                    <div class="cg-listing-product">
+                        {% include "components/product_card.html" with product=None %}
+                    </div>
+                </article>
+
             {% endif %}
+
         </div>
+
+
+        <!-- Bottom Navigation -->
+        <div class="cg-listings-footer">
+
+            <div class="cg-listings-footer-note">
+                <span class="cg-footer-line"></span>
+
+                <span>
+                    New items are added by students every day.
+                </span>
+            </div>
+
+            <a href="{% url 'market:product_list' %}"
+               class="cg-listings-footer-link">
+
+                Explore all listings
+
+                <span aria-hidden="true">→</span>
+
+            </a>
+
+        </div>
+
     </div>
+
 </section>
 
-<!-- Pre-Footer Call to Action -->
-<section class="cg-prefooter scroll-reveal">
+<!-- =========================================================
+     FINAL CTA
+========================================================= -->
+<section class="cg-cta">
+
     <div class="cg-container">
-        <h2>Ready to declutter your hostel room?</h2>
-        <p>Join {{ listing_count|default:"1,200" }}+ verified students buying and selling hardware, textbooks, and notes on campus.</p>
-        <a href="{% url 'market:create_listing' %}" class="btn btn-primary btn-lg">+ Post a Free Listing</a>
+
+        <div class="cg-cta-box">
+
+            <div class="cg-cta-decoration"></div>
+
+            <div class="cg-cta-content">
+
+                <span class="cg-section-label cg-label-light">
+                    YOUR NEXT EXCHANGE
+                </span>
+
+                <h2>
+                    Have something<br>
+                    another student needs?
+                </h2>
+
+                <p>
+                    Give your unused textbooks, electronics,
+                    lab equipment, or essentials a second life.
+                </p>
+
+            </div>
+
+            <a href="{% url 'market:create_listing' %}"
+               class="cg-btn cg-btn-cream">
+                Post a Free Listing
+                <span>→</span>
+            </a>
+
+        </div>
+
     </div>
+
 </section>
+
 {% endblock %}
+
