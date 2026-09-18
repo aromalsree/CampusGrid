@@ -427,7 +427,7 @@
                     cg-discover-item-{{ forloop.counter }}
                 ">
 
-                    <div class="cg-discover-card">
+                    <a href="{% url 'market:product_list' %}?category={{ category.slug|default:category.name|lower }}" class="cg-discover-card" aria-label="Explore {{ category.name }} category">
 
                         <!-- Decorative number -->
                         <span class="cg-discover-number">
@@ -540,7 +540,7 @@
                             </span>
                         </div>
 
-                    </div>
+                    </a>
 
                 </div>
 

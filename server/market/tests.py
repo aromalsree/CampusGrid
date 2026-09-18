@@ -41,7 +41,10 @@ class ProductListFilterTests(TestCase):
 			password='strong-test-password',
 			institution='Campus University',
 		)
-		self.category = Category.objects.get(slug='laptops')
+		self.category, _ = Category.objects.get_or_create(
+			slug='laptops',
+			defaults={'name': 'Laptops & Electronics', 'is_active': True}
+		)
 		Listing.objects.create(
 			seller=self.user,
 			category=self.category,
@@ -60,7 +63,10 @@ class ProductListFilterTests(TestCase):
 		self.assertContains(response, 'MacBook Pro M1')
 
 	def test_laptop_filter_keeps_sample_products_when_user_listings_exist(self):
-		other_category = Category.objects.get(slug='notes')
+		other_category, _ = Category.objects.get_or_create(
+			slug='notes',
+			defaults={'name': 'Academic Notes & PDFs', 'is_active': True}
+		)
 		Listing.objects.create(
 			seller=self.user,
 			category=other_category,
@@ -89,3 +95,26 @@ class ProductListFilterTests(TestCase):
 		self.assertEqual(response.status_code, 200)
 		for category in Category.objects.filter(is_active=True):
 			self.assertContains(response, f'/products/?category={category.slug}')
+
+	def test_home_page_category_cards_link_to_product_list(self):
+		response = self.client.get('/')
+
+		self.assertEqual(response.status_code, 200)
+		for category in Category.objects.filter(is_active=True):
+			self.assertContains(response, f'/products/?category={category.slug}')
+			self.assertContains(response, 'Explore category')
+
+	def test_explore_category_navigates_and_filters_catalogue(self):
+		response = self.client.get(f'/products/?category={self.category.slug}')
+
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, 'Category: Laptops &amp; Electronics')
+		self.assertContains(response, 'MacBook Pro M1')
+
+	def test_seed_products_ensures_at_least_six_products_per_category(self):
+		from django.core.management import call_command
+		call_command('seed_products')
+		for category in Category.objects.filter(is_active=True):
+			count = Listing.objects.filter(category=category, status=Listing.ListingStatus.ACTIVE).count()
+			self.assertGreaterEqual(count, 6)
+

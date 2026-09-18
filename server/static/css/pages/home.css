@@ -1242,6 +1242,10 @@
 
     overflow: hidden;
 
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+
     border: 1px solid var(--cg-border);
     border-radius: 28px;
 

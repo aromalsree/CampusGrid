@@ -18,7 +18,7 @@ def home(request):
         from market.models import Listing, Category
         featured_products = Listing.objects.filter(
             status=Listing.ListingStatus.ACTIVE
-        ).select_related('seller', 'category').prefetch_related('images').order_by('-created_at')[:6]
+        ).select_related('seller', 'category').prefetch_related('images').order_by('-created_at')[:8]
         categories = Category.objects.filter(is_active=True)
         listing_count = Listing.objects.filter(status=Listing.ListingStatus.ACTIVE).count()
     except Exception:

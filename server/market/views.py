@@ -64,7 +64,10 @@ class MarketView(ListView):
 
         # 2. Category filter
         if category_slug:
-            qs = qs.filter(category__slug__iexact=category_slug)
+            qs = qs.filter(
+                Q(category__slug__iexact=category_slug) |
+                Q(category__name__iexact=category_slug)
+            )
 
         # 3. Listing Type filter using type_aliases
         if type_filter:
@@ -88,7 +91,20 @@ class MarketView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['selected_category'] = self.request.GET.get('category', '').strip().lower()
+        categories = _get_active_categories()
+        selected_category = self.request.GET.get('category', '').strip().lower()
+        selected_category_name = ''
+        if selected_category:
+            for cat in categories:
+                slug_val = getattr(cat, 'slug', '') if hasattr(cat, 'slug') else cat.get('slug', '')
+                name_val = getattr(cat, 'name', '') if hasattr(cat, 'name') else cat.get('name', '')
+                if slug_val.lower() == selected_category or name_val.lower() == selected_category:
+                    selected_category_name = name_val
+                    break
+
+        context['categories'] = categories
+        context['selected_category'] = selected_category
+        context['selected_category_name'] = selected_category_name or selected_category.title()
         context['selected_type'] = self.request.GET.get('type', '').strip().lower()
         context['selected_condition'] = self.request.GET.get('condition', '').strip().lower()
         context['search_query'] = self.request.GET.get('q', '').strip()

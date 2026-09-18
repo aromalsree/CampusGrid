@@ -51,26 +51,35 @@
                         <input type="radio" name="category" value="" {% if not request.GET.category %}checked{% endif %}>
                         <span>All Categories</span>
                     </label>
-                    <label class="filter-item">
-                        <input type="radio" name="category" value="laptops" {% if request.GET.category == 'laptops' %}checked{% endif %}>
-                        <span>Laptops &amp; Electronics</span>
-                    </label>
-                    <label class="filter-item">
-                        <input type="radio" name="category" value="books" {% if request.GET.category == 'books' %}checked{% endif %}>
-                        <span>Textbooks &amp; Guides</span>
-                    </label>
-                    <label class="filter-item">
-                        <input type="radio" name="category" value="notes" {% if request.GET.category == 'notes' %}checked{% endif %}>
-                        <span>Academic Notes &amp; PDFs</span>
-                    </label>
-                    <label class="filter-item">
-                        <input type="radio" name="category" value="hostel" {% if request.GET.category == 'hostel' %}checked{% endif %}>
-                        <span>Hostel &amp; Dorm Essentials</span>
-                    </label>
-                    <label class="filter-item">
-                        <input type="radio" name="category" value="services" {% if request.GET.category == 'services' %}checked{% endif %}>
-                        <span>Peer Tutoring &amp; Services</span>
-                    </label>
+                    {% if categories %}
+                        {% for cat in categories %}
+                            <label class="filter-item">
+                                <input type="radio" name="category" value="{{ cat.slug|default:cat.name|lower }}" {% if request.GET.category == cat.slug or request.GET.category == cat.name|lower %}checked{% endif %}>
+                                <span>{{ cat.name }}</span>
+                            </label>
+                        {% endfor %}
+                    {% else %}
+                        <label class="filter-item">
+                            <input type="radio" name="category" value="laptops" {% if request.GET.category == 'laptops' %}checked{% endif %}>
+                            <span>Laptops &amp; Electronics</span>
+                        </label>
+                        <label class="filter-item">
+                            <input type="radio" name="category" value="books" {% if request.GET.category == 'books' %}checked{% endif %}>
+                            <span>Textbooks &amp; Guides</span>
+                        </label>
+                        <label class="filter-item">
+                            <input type="radio" name="category" value="notes" {% if request.GET.category == 'notes' %}checked{% endif %}>
+                            <span>Academic Notes &amp; PDFs</span>
+                        </label>
+                        <label class="filter-item">
+                            <input type="radio" name="category" value="hostel" {% if request.GET.category == 'hostel' %}checked{% endif %}>
+                            <span>Hostel &amp; Dorm Essentials</span>
+                        </label>
+                        <label class="filter-item">
+                            <input type="radio" name="category" value="services" {% if request.GET.category == 'services' %}checked{% endif %}>
+                            <span>Peer Tutoring &amp; Services</span>
+                        </label>
+                    {% endif %}
                 </div>
 
                 <div class="filter-group">
@@ -143,7 +152,7 @@
                     <span class="filter-chip">Query: "{{ request.GET.q }}"</span>
                 {% endif %}
                 {% if request.GET.category %}
-                    <span class="filter-chip">Category: {{ request.GET.category|title }}</span>
+                    <span class="filter-chip">Category: {{ selected_category_name|default:request.GET.category|title }}</span>
                 {% endif %}
                 {% if request.GET.type %}
                     <span class="filter-chip">Type: {{ request.GET.type|title }}</span>
