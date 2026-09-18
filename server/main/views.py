@@ -32,6 +32,17 @@ def home(request):
     return render(request, 'home/index.html', context)
 
 
+def contact(request):
+    if request.method == 'POST':
+        required_fields = ('name', 'email', 'subject', 'message')
+        if all(request.POST.get(field, '').strip() for field in required_fields):
+            messages.success(request, 'Thanks for reaching out. The CampusGrid team will get back to you soon.')
+            return redirect('contact')
+        messages.error(request, 'Please complete all contact form fields.')
+
+    return render(request, 'home/contact.html')
+
+
 def is_admin(user):
     return user.is_authenticated and (user.is_superuser or user.user_roles == 'ADMIN')
 

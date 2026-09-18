@@ -1,0 +1,71 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Contact CampusGrid{% endblock %}
+
+{% block meta_description %}Contact the CampusGrid team for help, feedback, partnerships, or marketplace support.{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/contact.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="contact-hero">
+    <div class="cg-container contact-hero-inner">
+        <div class="contact-eyebrow">We are here to help</div>
+        <h1>Let’s talk CampusGrid.</h1>
+        <p>Have a question, idea, or issue to report? Send us a message and our team will get back to you.</p>
+    </div>
+</section>
+
+<section class="contact-section">
+    <div class="cg-container contact-layout">
+        <aside class="contact-info">
+            <h2>Get in touch</h2>
+            <p>For account support, marketplace questions, or feedback, reach out through the form or use one of the channels below.</p>
+
+            <div class="contact-methods">
+                <div class="contact-method">
+                    <div class="contact-method-icon" aria-hidden="true">✉</div>
+                    <div><strong>Email support</strong><span>support@campusgrid.example</span></div>
+                </div>
+                <div class="contact-method">
+                    <div class="contact-method-icon" aria-hidden="true">?</div>
+                    <div><strong>Response time</strong><span>Usually within one business day</span></div>
+                </div>
+                <div class="contact-method">
+                    <div class="contact-method-icon" aria-hidden="true">⌂</div>
+                    <div><strong>Built for students</strong><span>Campus-first support from the CampusGrid team</span></div>
+                </div>
+            </div>
+        </aside>
+
+        <section class="contact-form-card">
+            <h2>Send a message</h2>
+            <p>Tell us how we can help.</p>
+            <form method="post" class="contact-form">
+                {% csrf_token %}
+                <div class="contact-form-row">
+                    <div>
+                        <label for="contact-name">Name</label>
+                        <input id="contact-name" name="name" type="text" required autocomplete="name" placeholder="Your name">
+                    </div>
+                    <div>
+                        <label for="contact-email">Email</label>
+                        <input id="contact-email" name="email" type="email" required autocomplete="email" placeholder="you@university.edu">
+                    </div>
+                </div>
+                <div>
+                    <label for="contact-subject">Subject</label>
+                    <input id="contact-subject" name="subject" type="text" required placeholder="How can we help?">
+                </div>
+                <div>
+                    <label for="contact-message">Message</label>
+                    <textarea id="contact-message" name="message" required placeholder="Write your message here..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg">Send message</button>
+            </form>
+        </section>
+    </div>
+</section>
+{% endblock %}

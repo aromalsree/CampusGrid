@@ -18,6 +18,8 @@
             <a href="{% url 'market:product_list' %}" class="cg-nav-link {% if 'market' in request.resolver_match.app_names or 'product' in request.resolver_match.url_name %}active{% endif %}">Marketplace</a>
             <a href="{% url 'market:products_compare' %}" class="cg-nav-link {% if 'compare' in request.resolver_match.url_name %}active{% endif %}">Compare Electronics</a>
             <a href="/requests/" class="cg-nav-link {% if 'requests' in request.resolver_match.url_name %}active{% endif %}">Student Need Board</a>
+            <a href="{% url 'about' %}" class="cg-nav-link {% if 'about' in request.resolver_match.url_name %}active{% endif %}">About</a>
+            <a href="{% url 'contact' %}" class="cg-nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
             <hr style="border: 0; border-top: 1px solid var(--cg-border); margin: 0.5rem 0;">
             {% if request.user.is_authenticated %}
                 <a href="/dashboard/" class="cg-nav-link">Dashboard Overview</a>
