@@ -7,7 +7,7 @@ urlpatterns = [
     # Marketplace Catalogue / Product Listings
     path('products/', views.MarketView.as_view(), name='product_list'),
     path('products/', views.MarketView.as_view(), name='products'),
-    path('products/<int:pk>/', views.ProductDetailView.as_view(),name='product_id'),
+    path('products/<int:pk>/', views.ProductDetailView.as_view(),name='product_by_id'),
     
 
     # Create Product Listing

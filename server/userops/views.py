@@ -227,7 +227,7 @@ def admin_user_change_role(request, user_id):
             messages.error(request, "Invalid role or cannot change own role.")
     return redirect('admin_users')
 
-@login_required
+@login_required(login_url="login")
 def wishlist_view(request):
     """
     Renders the saved wishlist page for the authenticated user.
@@ -246,7 +246,7 @@ def wishlist_view(request):
     return render(request, 'dashboard/wishlist.html', context)
 
 
-@login_required
+@login_required(login_url="login")
 @require_POST
 def toggle_wishlist(request, listing_id):
     listing = get_object_or_404(Listing, id=listing_id)

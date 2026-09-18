@@ -90,7 +90,7 @@
 
           // Redirect to login if user is unauthenticated
           if (response.status === 401 || response.redirected) {
-            window.location.href = '/accounts/login/';
+            window.location.href = '/login/';
             return;
           }
 
