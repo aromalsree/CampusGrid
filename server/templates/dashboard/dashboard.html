@@ -78,7 +78,7 @@
                         {% for listing in user_listings|slice:":4" %}
                         <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.875rem; border-bottom: 1px solid var(--cg-border);">
                             <div>
-                                <a href="{% url 'market:product_detail' slug_or_id=listing.slug %}" style="font-weight: 600; font-size: 0.9375rem; color: var(--cg-text-main);">
+                                <a href="{% url 'market:product_by_id' listing.id %}" style="font-weight: 600; font-size: 0.9375rem; color: var(--cg-text-main);">
                                     {{ listing.title }}
                                 </a>
                                 <div class="text-xs text-muted" style="margin-top: 0.15rem;">
